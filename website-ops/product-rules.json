@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-05-26",
+  "sourceOfTruth": "website-ops/product-rules.json",
+  "rules": [
+    {
+      "id": "payment-discounts-stacking",
+      "title": "Payment discount stacking",
+      "status": "active",
+      "area": "payment",
+      "owner": "product",
+      "summary": "Alumni discount and promo-code discount do not stack with each other. If both are valid, Alumni wins. Either one can stack with the 5% crypto/USDT payment-method discount.",
+      "terms": {
+        "alumniDiscount": {
+          "label": "Alumni discount",
+          "rate": 0.2,
+          "currentCodeEvidence": "TELEGRAM_ALUMNI_DISCOUNT_HANDLES",
+          "currentAcceptedHandles": ["aim", "@aim"]
+        },
+        "promoCodeDiscount": {
+          "label": "Promo-code discount",
+          "rate": 0.05,
+          "currentCodeEvidence": "PROMO_CODE_DISCOUNTS",
+          "currentAcceptedCodes": ["ponchik"]
+        },
+        "cryptoPaymentDiscount": {
+          "label": "Crypto/USDT payment discount",
+          "rate": 0.05,
+          "currentCodeEvidence": "selectedMethod === 'usdt'"
+        }
+      },
+      "stackingPolicy": [
+        {
+          "case": "alumni_only",
+          "expectedDiscounts": ["alumniDiscount"],
+          "expectedTotalFormula": "basePrice * 0.80"
+        },
+        {
+          "case": "promo_only",
+          "expectedDiscounts": ["promoCodeDiscount"],
+          "expectedTotalFormula": "basePrice * 0.95"
+        },
+        {
+          "case": "alumni_and_promo",
+          "expectedDiscounts": ["alumniDiscount"],
+          "excludedDiscounts": ["promoCodeDiscount"],
+          "expectedTotalFormula": "basePrice * 0.80"
+        },
+        {
+          "case": "alumni_and_crypto",
+          "expectedDiscounts": ["alumniDiscount", "cryptoPaymentDiscount"],
+          "expectedTotalFormula": "basePrice * 0.80 * 0.95"
+        },
+        {
+          "case": "promo_and_crypto",
+          "expectedDiscounts": ["promoCodeDiscount", "cryptoPaymentDiscount"],
+          "expectedTotalFormula": "basePrice * 0.95 * 0.95"
+        },
+        {
+          "case": "alumni_promo_and_crypto",
+          "expectedDiscounts": ["alumniDiscount", "cryptoPaymentDiscount"],
+          "excludedDiscounts": ["promoCodeDiscount"],
+          "expectedTotalFormula": "basePrice * 0.80 * 0.95"
+        }
+      ],
+      "currentImplementation": [
+        {
+          "path": "V3 Site Repo - aimwebsite0.5/src/components/PricingPaymentPopupDatalineHeader.tsx",
+          "notes": [
+            "appliedDiscountRate selects Alumni 20% before promo-code 5%",
+            "isPromoCodeSuperseded is true when both Alumni and promo are valid",
+            "USDT price applies 0.95 after the selected base discount",
+            "USDT-only selection still shows a crossed original USDT price, so the 5% method discount is visible before any Alumni or promo discount is entered"
+          ]
+        }
+      ],
+      "surikatBehavior": [
+        "If asked whether Alumni and promo-code discounts stack, answer that they do not; Alumni wins if both are valid.",
+        "If asked whether crypto payment discount stacks, answer that USDT/crypto 5% can stack with either Alumni or promo-code discount.",
+        "If a user reports a different checkout total, treat it as a payment bug candidate."
+      ],
+      "qaExpectations": [
+        "Payment popup tests should cover alumni_only, promo_only, alumni_and_promo, alumni_and_crypto, promo_and_crypto, and alumni_promo_and_crypto.",
+        "Website Hub should expose this rule in Product Rules and Pipelines.",
+        "Surikat docs should link to this rule before answering payment-rule questions."
+      ]
+    },
+    {
+      "id": "case-source-fidelity",
+      "title": "Case source fidelity",
+      "status": "active",
+      "area": "cases",
+      "owner": "content",
+      "summary": "New or updated case studies must be built from the exact provided sources. YouTube fragments require clean video-frame screenshots, source-matched task and description copy, and an explicit source-fidelity review of technologies before handoff.",
+      "sourcePolicy": [
+        "Use the exact source set for the case: user notes, supplied markdown, transcript, YouTube fragment, screenshots, and links.",
+        "When a YouTube fragment exists, verify the task, description, result, tools, roles, and claims against the video or transcript before publishing.",
+        "Do not import facts, tools, or project details from another case by the same person unless the provided source explicitly says they belong to this exact case.",
+        "If the source is ambiguous or the evidence is missing, mark the item as unverified and ask the user instead of filling the gap from memory."
+      ],
+      "technologyPolicy": [
+        "List only technologies that are explicitly named in the exact case sources or directly visible in the case media.",
+        "Do not include tools such as WHOOP, WOOP, Plaid, PostgreSQL, Tmux, GitHub, GitLab, hardware, or wearables unless they are evidenced for this case.",
+        "Keep the technology list understandable for humans: AI models/products and user-facing tools first, code/repository tools next, infrastructure/storage/runtime tools later, hardware/wearables last.",
+        "A technology that appears in a personal side project or adjacent discussion is not valid evidence for the current case.",
+        "A technology that appears only as prehistory/background, Personal OS context, or a side project must not be shown in the visible tools list for the current case. Put it in a background note or ask the user."
+      ],
+      "mediaPolicy": [
+        "If the case has a YouTube fragment, take screenshots from the YouTube video frame whenever those frames are relevant.",
+        "Product screenshots must show the actual product, workflow, UI, document, board, graph, or artifact from the case.",
+        "Do not use a speaker intro, talking-head frame, portrait, or the first visible frame of the fragment as a product screenshot.",
+        "If the product is demonstrated during a video call, keep the speaker webcam thumbnail in the product screenshot as part of the case context.",
+        "It is acceptable for the webcam thumbnail to overlap part of the product screenshot.",
+        "The webcam thumbnail may be cropped separately and repositioned only if it sits on empty background or another otherwise disposable area that should be cropped away; do not generate or reconstruct product UI behind it.",
+        "Scrub through the fragment beyond the intro before deciding there is no product frame; if no product/workflow frame exists, do not add a product screenshot and ask the user if needed.",
+        "If the source video does not show the product/workflow at all, do not add a product screenshot.",
+        "Crop screenshots to the meaningful product or workflow area. Remove browser chrome, OS menu bars, docks, player controls, timeline bars, unrelated captions, and computer UI unless those elements are the subject of the case.",
+        "If the case card or popup needs a speaker image, crop a separate portrait from the YouTube fragment and keep the speaker's face/body uncut and readable.",
+        "Do not use a blurry, partially cut, or irrelevant frame if a clearer frame exists in the fragment."
+      ],
+      "reviewAgent": {
+        "id": "case-source-fidelity-reviewer",
+        "name": "Case Source Fidelity Reviewer",
+        "promptPath": "website-ops/case-source-fidelity-reviewer.md",
+        "trigger": "Before publishing or handing off any new or materially updated case study.",
+        "checks": [
+          "Task is supported by the source and written as the original business/user problem, not as a solution summary.",
+          "Description matches what the speaker or supplied notes actually say.",
+          "Technology list contains only evidenced tools and is ordered by human relevance.",
+          "Screenshots and speaker portrait are cleanly cropped from relevant source frames.",
+          "Case structure is understandable: task, solution, tools, result, and media do not contradict each other.",
+          "Any unsupported or ambiguous claim is removed, marked unverified, or returned to the user as a question."
+        ]
+      },
+      "currentImplementation": [
+        {
+          "path": "V3 Site Repo - aimwebsite0.5/src/components/LabW26PageV3.tsx",
+          "notes": [
+            "Community Night cases and popup content currently live in the V3 site component.",
+            "Case media assets live under public/assets/cases when extracted for the site."
+          ]
+        }
+      ],
+      "qaExpectations": [
+        "Every new or materially updated case should have a Case Source Fidelity Reviewer pass before local review handoff.",
+        "For YouTube-sourced cases, reviewer notes should explicitly confirm screenshots, speaker portrait, transcript/video claims, and technology list evidence.",
+        "Website Hub should expose this rule in Product Rules and Pipelines so future agents can find it."
+      ]
+    }
+  ]
+}

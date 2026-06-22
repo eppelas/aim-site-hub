@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-06-22",
+  "sourceOfTruth": "website-ops/bot-operating-rules.json",
+  "rules": [
+    {
+      "id": "vasily-cloud-run-owner",
+      "title": "Vasily Cloud Run owns Telegram delivery",
+      "bot": "Surikat Vasily",
+      "area": "runtime",
+      "status": "active",
+      "summary": "@aim_surikat_bot is served by Cloud Run service aim-surikat-vasily in dedicated Google Cloud project aim-surikat-vasily, separate from Surikat Sonya's project. Telegram webhook delivery goes to /telegram with max_connections=1; the local launchd poller must stay disabled while the webhook is set. The old Sonya-project Vasily Cloud Run services are rollback only unless the webhook/site secrets are intentionally moved back.",
+      "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/cloud-run/README.md",
+      "checks": [
+        "Health endpoint https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/health must report mode=webhook, genaiProvider=vertex, vertexProjectConfigured=true, stateGcsEnabled=true, and linearConfigured=true.",
+        "Telegram getWebhookInfo must point to https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/telegram and pending_update_count should normally be 0.",
+        "Rollback is deleteWebhook, then launchctl enable/bootstrap ai.aim.surikat.bot."
+      ]
+    },
+    {
+      "id": "vasily-intake-scope",
+      "title": "Vasily is QA intake, not a generic chat bot",
+      "bot": "Surikat Vasily",
+      "area": "telegram",
+      "status": "active",
+      "summary": "Vasily listens for AIM/NIMS website bugs, QA questions, link/date/content problems, CTA/form/payment issues, and direct owner commands. In group chats he stays conservative: react or stay silent unless addressed, the message is clearly bug-like, or the owner gives a semantic long audit/QA task with an explicit URL. Voice/audio/video-note messages are transcribed through Gemini/Vertex before routing so spoken owner tasks are handled like typed text.",
+      "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/README.md",
+      "checks": [
+        "Accepted names include Сурикат Василий, Сурикат, суркат, Вася, Вась, Васек, Васёк, Васька and @aim_surikat_bot.",
+        "Owner DMs, addressed owner messages, and owner messages with an explicit URL are classified by the LLM semantic intent router before conversational replies.",
+        "The semantic router decides by meaning, not task regexes: wording such as 'давай сделаем аудит вот этого сайта https://...' is accepted as LLM task mode because it asks Vasily to perform website QA.",
+        "Addressed messages are classified semantically before action: long site/visual QA tasks go to task mode, concrete breakage goes to bug intake, and questions or discussion stay conversational/silent.",
+        "If Vasily asks a task clarification and the owner replies with scope such as 'всего сайта', the reply continues the pending audit task instead of falling through to conversational LLM wording.",
+        "In owner private chat, follow-up QA questions and pointers such as 'ту же самую' reuse the latest accepted site task URL instead of asking for the URL again.",
+        "Telegram voice/audio/video-note messages are transcribed through Gemini/Vertex before routing; the transcript becomes effective text for semantic task/conversation/bug classification and private owner context memory.",
+        "Human coordination replies to a report thread, such as tagging a teammate to proofread copy, do not create a new bug only because the replied-to message had a screenshot or bug-like caption.",
+        "Per-thread link aliases are learned from real URLs, Telegram text_link labels, explicit naming phrases, and URL-derived labels; later commands can use the alias without repeating the URL.",
+        "If a report is clear, use the 👀 reaction instead of noisy text.",
+        "If context is missing, ask for page/link, device/browser, screenshot, or expected behavior."
+      ]
+    },
+    {
+      "id": "vasily-durable-telegram-learned-state",
+      "title": "Owner Telegram rule changes persist through GCS",
+      "bot": "Surikat Vasily",
+      "area": "runtime",
+      "status": "active",
+      "summary": "Owner Telegram messages that tune Vasily's behavior must change runtime state, not just generate a reply. Cloud Run hydrates mutable state from GCS before each webhook and persists it after processing, so owner runtime instructions, conversational reply style, Metrika lead DM allowlists, and remembered chat aliases survive cold starts and new revisions. After deployment health must include stateGcsEnabled=true and stateGcsPrefix=vasily/state.",
+      "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/runtime-options.md",
+      "checks": [
+        "Production enables VASILY_STATE_GCS_ENABLED with bucket aim-surikat-vasily-state and prefix vasily/state.",
+        "Health must report stateGcsEnabled=true, stateGcsBucketConfigured=true, and stateGcsPrefix=vasily/state after deployment.",
+        "Vasily writes only to its own vasily/state prefix, never to sonya/state.",
+        "OwnerRuntimeInstructions persist in bot-rules.local.json and are included in future LLM conversational and task prompts.",
+        "If GCS hydrate fails while enabled, the webhook is acknowledged without changing behavior to avoid overwriting durable state from stale local /tmp files."
+      ]
+    },
+    {
+      "id": "vasily-llm-conversation-layer",
+      "title": "Vasily uses LLM for short scoped conversation",
+      "bot": "Surikat Vasily",
+      "area": "llm",
+      "status": "active",
+      "summary": "After hard guards and semantic intent classification decide that an addressed/private message is a question, discussion, bot-flow critique, light conversation, or off-topic redirect, Vasily may use Vertex/Gemini to write the final short Telegram wording. This does not make him a generic ChatGPT: the reply stays inside AIM/NIMS website, QA dashboards, staging/production, links, CTA/forms/payment, bot behavior, and routing. Owner feedback like 'говори нормально / не по-ишному / по-человечески' updates conversationalReplyStyle instead of being treated as a normal question. Broader owner instructions like 'запомни правило' or 'когда я говорю QA сайта' update ownerRuntimeInstructions and guide future routing/wording.",
+      "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/runtime-options.md",
+      "checks": [
+        "SURIKAT_LLM_CHAT_ENABLED controls conversational wording separately from long crawl/audit tasks and from SURIKAT_LLM_INTENT_ROUTER_ENABLED.",
+        "The LLM must not accept tasks, create Linear issues, claim screenshots/dashboard files, or invent QA status.",
+        "Owner style feedback returns rules_style_updated and persists conversationalReplyStyle through the Vasily GCS state mirror.",
+        "Generic owner runtime rules return rules_owner_instruction_updated and do not override Metrika DM allowlists, read-only audit limits, secrets, Linear, or deploy guards.",
+        "Provider failures fall back to deterministic reply variants and deterministic task fallback; LLM semantic routing is the primary owner task-vs-conversation classifier when available."
+      ]
+    },
+    {
+      "id": "vasily-llm-site-audit",
+      "title": "Owner-gated LLM site audits",
+      "bot": "Surikat Vasily",
+      "area": "llm",
+      "status": "active",
+      "summary": "Owner requests like 'сходи проверь сайт, ссылки, даты и названия' or 'давай сделаем аудит вот этого сайта https://...' trigger bounded read-only website QA via Vertex/Gemini. Vasily crawls the target, same-origin pages, linked AIM Labs/sprint pages, and a bounded external-link sample, then answers in DM or the source chat.",
+      "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/runtime-options.md",
+      "checks": [
+        "SURIKAT_LLM_TASK_OWNER_ONLY stays true unless the owner explicitly opens access.",
+        "The LLM semantic intent router runs before conversational replies, so owner audit/QA tasks with URLs are classified by meaning and cannot be answered as casual chat just because they miss a task regex.",
+        "Visual QA/full pass/dashboard/screenshot requests for ai-native are task-mode requests even when the visible Telegram text hides the full URL in a text_link entity.",
+        "If a previously linked URL was named ai-native or another alias in the same thread, future owner task commands may refer to that alias and should resolve to the remembered URL.",
+        "In owner private chat, the latest accepted site task target is working context for follow-up QA questions about broken designs, devices/browsers, screenshots, Markdown, or page content.",
+        "For 'QA сайта' / ai-native visual QA, the dashboard target is AIM Site Agent Evaluation/reports/latest/dashboard.html; the desired artifact is a separate AI Native dashboard page linked from the top choose-site selector.",
+        "Cloud Run LLM mode must not claim screenshots or dashboard files were created unless a local QA/Codex runner actually produced them.",
+        "When a real long task is accepted after owner/config/URL checks, Vasily must immediately reply in the source chat with a short 'Принято...' message, then send the results separately.",
+        "This immediate acceptance reply applies to LLM/QA task mode only; ordinary bug intake stays quiet with reactions or clarifying questions.",
+        "Related Labs such as health/selfdev must be checked for stale or ending-soon dates, not only HTTP 200.",
+        "The bot must never edit the site or push code from a Telegram audit command."
+      ]
+    },
+    {
+      "id": "vasily-linear-and-product-rules",
+      "title": "Linear and product-rule discipline",
+      "bot": "Surikat Vasily",
+      "area": "linear",
+      "status": "active",
+      "summary": "Real bug reports go to Linear with Telegram source evidence and source_key dedupe. Product/payment answers must use website-ops/product-rules.json and product-rules.md, not memory or improvised chat logic.",
+      "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/linear-routing.md",
+      "checks": [
+        "If LINEAR_API_KEY is missing, save to pending queue and do not drop the report.",
+        "GitHub/GitHub Pages draft links are excluded surfaces unless the same issue is reproduced on staging/production.",
+        "Payment discount logic must match product-rules.json."
+      ]
+    },
+    {
+      "id": "vasily-metrika-lead-dm-allowlist",
+      "title": "Metrika lead DMs require an owner allowlist",
+      "bot": "Surikat Vasily",
+      "area": "privacy",
+      "status": "active",
+      "summary": "Metrika/form/payment leads may be sent to personal Telegram messages only for explicit owner-approved recipients. The allowlist and delivery map are separate: @stavenski, @Irhen_N, and @dan_named are approved usernames, but the live relay sends only to active username=chat_id targets. Normal live staging/payment delivery is active for @stavenski / 75263878 and @Irhen_N / 125291022. Owner-approved night tests may temporarily narrow delivery to owner-only stavenski=75263878, but the normal map must be restored after the test window. Successful deliveries must be traceable through lead_relay_delivered logs with masked contact and Telegram messageId. This is not a blanket permission to DM anyone. Recipient expansion remains owner-approved; payment lead notification pause/resume may also be controlled by configured notification managers, currently Anca / @stavenski and Ira / @Irhen_N, through the durable metrikaLeadDmDeliveryPaused state.",
+      "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/runtime-options.md; Site Repo - ai-mindset-website/cloud-run/telegram-lead-relay/README.md",
+      "checks": [
+        "Use SURIKAT_METRIKA_LEAD_DM_ALLOWED_USERNAMES or owner-updated metrikaLeadDmAllowedUsernames as the source of truth.",
+        "The browser-facing staging service is aim-pay-lead-relay in project aim-surikat-vasily for https://staging.aimindset.org form/payment leads.",
+        "Use SURIKAT_METRIKA_LEAD_DM_RECIPIENTS as the concrete username=chat_id delivery map; normal active production value is stavenski=75263878,Irhen_N=125291022 unless the owner adds more confirmed DM recipients.",
+        "Use SURIKAT_METRIKA_LEAD_DM_MANAGER_USER_IDS=75263878,125291022 and SURIKAT_METRIKA_LEAD_DM_MANAGER_USERNAMES=stavenski,Irhen_N so Ira can ask Surikat to pause/resume payment lead notifications without becoming a full bot owner.",
+        "When a notification manager pauses delivery, Vasily writes metrikaLeadDmDeliveryPaused=true to vasily/state/bot-rules.local.json; aim-pay-lead-relay must read that GCS state and log lead_relay_delivery_paused instead of sending personal Telegram DMs.",
+        "Successful aim-pay-lead-relay deliveries must write lead_relay_delivered logs with masked contact, contact hash, delivered usernames, and Telegram messageId for diagnostics and precise cleanup.",
+        "For owner-approved live/night test windows, temporarily narrow SURIKAT_METRIKA_LEAD_DM_RECIPIENTS to stavenski=75263878 and verify aim-pay-lead-relay /readyz reports leadDmActiveRecipientCount=1 before sending test leads.",
+        "When the allowlist is configured, aim-pay-lead-relay must not fall back to a generic TELEGRAM_CHAT_ID.",
+        "Future Metrika delivery code must call canSendMetrikaLeadDmTo() before sending any personal message.",
+        "Non-owner Telegram attempts to change the allowlist are rejected; owner commands without concrete @usernames ask for exact recipients.",
+        "Vasily /health must expose metrikaLeadDmAllowlistConfigured=true and a non-zero metrikaLeadDmAllowlistCount; aim-pay-lead-relay /readyz must expose leadDmDeliveryMode=dm_recipient_map and leadDmActiveRecipientCount=1 during owner-only test windows or leadDmActiveRecipientCount=2+ after Ira is restored."
+      ]
+    },
+    {
+      "id": "sonya-cloud-run-runtime",
+      "title": "Sonya Cloud Run owns design-review Telegram",
+      "bot": "Surikat Sonya",
+      "area": "runtime",
+      "status": "active",
+      "summary": "@aim_surikat_sonya_bot runs as Cloud Run webhook aim-surikat-sonya in the Sonya Google Cloud project project-f40c3e3c-0fca-49de-96d. Local polling should not run while webhook mode is active. Sonya uses Vertex AI for the Google Cloud credits path and Cloud Storage for media/state surfaces. Vasily must not be deployed into this project except as an explicit rollback.",
+      "sourceOfTruth": "Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md",
+      "checks": [
+        "Cloud Run exposes GET /health and POST /telegram protected by TELEGRAM_WEBHOOK_SECRET.",
+        "Use SONYA_LLM_PROVIDER=vertex with the credit-linked VERTEX_PROJECT_ID for Cloud Run.",
+        "Do not mix local getUpdates polling with Telegram webhook mode."
+      ]
+    },
+    {
+      "id": "sonya-design-memory",
+      "title": "Sonya ratings become generator memory",
+      "bot": "Surikat Sonya",
+      "area": "design-feedback",
+      "status": "active",
+      "summary": "Sonya sends review-only homepage/payment/element screenshots, collects 0-10 owner ratings, writes the design feedback registry, and appends keep/change/avoid/promote instructions for future generators.",
+      "sourceOfTruth": "website-ops/design-feedback-rules.md",
+      "checks": [
+        "0 is hard reject; 1-3 rejected; 4-6 weak; 7-8 promising; 9-10 strong.",
+        "Explicit low owner ratings override cached Sonya self-scores.",
+        "Bug-like design/page feedback is handed to Vasily instead of creating Linear issues directly."
+      ]
+    },
+    {
+      "id": "site-qa-worker-reports-to-vasily",
+      "title": "AIM Site Agent Evaluation reports to Vasily",
+      "bot": "AIM Site Agent Evaluation",
+      "area": "qa",
+      "status": "active",
+      "summary": "The black-box QA worker checks production/staging links, CTA, screenshots, blank bands, dates, and agent-readability. Vasily is the Telegram dispatcher that can summarize or route those findings.",
+      "sourceOfTruth": "AIM Site Agent Evaluation/README.md",
+      "checks": [
+        "QA reports are read-only and should not edit the website.",
+        "High-severity findings fail the QA run and should be visible in reports/latest.",
+        "Manual or scheduled QA does not replace human review before push/deploy."
+      ]
+    },
+    {
+      "id": "shared-bot-safety",
+      "title": "Shared bot safety and handoff rules",
+      "bot": "All AIM bots",
+      "area": "safety",
+      "status": "active",
+      "summary": "Secrets stay out of tracked files; each Telegram bot has one delivery owner at a time; bots should produce evidence-backed handoffs rather than silently editing production; GitHub push/deploy still requires explicit user approval unless a documented narrow exception applies. Bot rule or architecture changes must update website-ops/bot-operating-rules.json first so the Website Hub can regenerate from that source.",
+      "sourceOfTruth": "website-ops/rules-and-pipelines.md",
+      "checks": [
+        "Store bot tokens in Keychain locally or Secret Manager in Cloud Run.",
+        "Do not publish remote changes without the required review/push authorization path.",
+        "Every meaningful bot rule or architecture change must update website-ops/bot-operating-rules.json first; the Website Hub summary is regenerated from that source by local-preview/sync-bot-operating-rules-summary.mjs and the local preview auto-sync.",
+        "Keep bot behavior changes synchronized across code, README/runtime docs, update rules, Hub, and TASK_VERIFICATION_CANVAS.md."
+      ]
+    }
+  ]
+}

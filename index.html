@@ -1,0 +1,2725 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Гайдлайн AIM Website</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #050505;
+        --ink: #fffaf0;
+        --soft: rgba(255, 255, 255, 0.12);
+        --hair: rgba(255, 255, 255, 0.08);
+        --pale: rgba(255, 250, 240, 0.08);
+        --muted: #9a948a;
+        --accent: #ff4d4d;
+        --green: #1dc263;
+        --red: #d6422b;
+        --blue: #315d9b;
+        --panel: rgba(18, 18, 18, 0.68);
+        --panel-soft: rgba(255, 255, 255, 0.045);
+        --shadow: 0 32px 80px rgba(0, 0, 0, 0.44);
+        --mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        --frame: 1px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(circle at 12% 4%, rgba(255, 77, 77, 0.28), transparent 24rem),
+          radial-gradient(circle at 88% 8%, rgba(29, 194, 99, 0.16), transparent 28rem),
+          radial-gradient(circle at 50% 100%, rgba(49, 93, 155, 0.18), transparent 32rem),
+          var(--bg);
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+        font-feature-settings: "tnum";
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 24px;
+        align-items: center;
+        padding: 14px 22px;
+        border-bottom: var(--frame) solid var(--soft);
+        background: rgba(5, 5, 5, 0.72);
+        backdrop-filter: blur(10px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .brand-mark {
+        width: 28px;
+        height: 28px;
+        flex: 0 0 28px;
+        display: grid;
+        place-items: center;
+        border: var(--frame) solid var(--ink);
+        background: var(--ink);
+        color: var(--bg);
+        font-size: 10px;
+        letter-spacing: 0;
+      }
+
+      .brand-word {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .search input {
+        width: 100%;
+        max-width: 520px;
+        border: var(--frame) solid var(--soft);
+        background: var(--pale);
+        padding: 7px 12px;
+        font: inherit;
+        font-size: 12px;
+        outline: none;
+      }
+
+      .search input:focus {
+        border-color: var(--ink);
+        background: var(--bg);
+      }
+
+      .counter {
+        color: var(--muted);
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .counter b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      main {
+        width: min(1480px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 34px 0 72px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        border-bottom: var(--frame) solid var(--hair);
+        padding-bottom: 26px;
+      }
+
+      .hero-panel {
+        position: relative;
+        border: var(--frame) solid var(--soft);
+        border-radius: 28px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+          var(--panel);
+        background-size: 32px 32px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+      }
+
+      .hero-copy {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.92fr) minmax(320px, 1.08fr);
+        gap: clamp(24px, 5vw, 84px);
+        align-items: end;
+        min-height: 300px;
+        padding: clamp(24px, 4vw, 52px);
+      }
+
+      .kicker {
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 780px;
+        margin-top: 22px;
+        font-size: clamp(44px, 7vw, 96px);
+        line-height: 1;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .hero-lead {
+        max-width: 720px;
+        color: rgba(255, 250, 240, 0.82);
+        font-size: clamp(15px, 1.35vw, 20px);
+        line-height: 1.45;
+      }
+
+      .hero-copy .actions {
+        margin-top: 28px;
+      }
+
+      .hero-map-panel {
+        overflow: visible;
+      }
+
+      .system-map {
+        position: relative;
+        min-height: 620px;
+        padding: 28px;
+      }
+
+      .map-head {
+        position: absolute;
+        left: 34px;
+        top: 28px;
+        width: min(410px, 34vw);
+        z-index: 4;
+      }
+
+      .map-head h2 {
+        margin-top: 8px;
+        font-size: clamp(24px, 3.1vw, 42px);
+        line-height: 0.96;
+      }
+
+      .map-head p:last-child {
+        margin-top: 12px;
+        color: rgba(255, 250, 240, 0.68);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .map-lines {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .map-lines path {
+        fill: none;
+        stroke: rgba(255, 250, 240, 0.26);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.55;
+      }
+
+      .map-lines .strong {
+        stroke: rgba(255, 77, 77, 0.62);
+        stroke-width: 1.8;
+      }
+
+      .map-lines .green {
+        stroke: rgba(29, 194, 99, 0.5);
+      }
+
+      .map-lines .blue {
+        stroke: rgba(111, 151, 255, 0.48);
+      }
+
+      .map-lines .orange {
+        stroke: rgba(255, 193, 122, 0.58);
+      }
+
+      .map-lines .muted {
+        stroke: rgba(255, 250, 240, 0.18);
+      }
+
+      .map-lines .dashed {
+        stroke-dasharray: 8 8;
+      }
+
+      .map-lines text {
+        fill: rgba(255, 250, 240, 0.52);
+        stroke: rgba(7, 8, 8, 0.92);
+        stroke-width: 5px;
+        paint-order: stroke;
+        font: 700 8.5px/1 var(--mono);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .map-node {
+        position: absolute;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        width: 190px;
+        min-height: 96px;
+        padding: 14px;
+        border: var(--frame) solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        background: rgba(14, 14, 14, 0.78);
+        color: inherit;
+        text-decoration: none;
+        font-weight: 700;
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(10px);
+        transition: transform 0.24s ease, border-color 0.24s ease, background 0.24s ease, box-shadow 0.24s ease;
+        z-index: 3;
+        overflow-wrap: anywhere;
+      }
+
+      .map-node:hover,
+      .map-node:focus-visible {
+        transform: translateY(-5px);
+        border-color: rgba(255, 77, 77, 0.52);
+        background: rgba(28, 20, 20, 0.88);
+        box-shadow: 0 26px 70px rgba(0, 0, 0, 0.46);
+        outline: 0;
+        z-index: 40;
+      }
+
+      .map-node::after {
+        content: attr(data-detail);
+        position: absolute;
+        left: 10px;
+        top: calc(100% + 8px);
+        width: min(300px, 36vw);
+        max-width: calc(100vw - 48px);
+        padding: 10px 12px;
+        border: var(--frame) solid rgba(255, 250, 240, 0.2);
+        border-radius: 10px;
+        background: rgba(5, 5, 5, 0.96);
+        color: rgba(255, 250, 240, 0.78);
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 1.42;
+        letter-spacing: 0;
+        text-transform: none;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-4px);
+        transition: opacity 0.18s ease, transform 0.18s ease;
+        z-index: 50;
+      }
+
+      .node-main {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+      }
+
+      .map-node:hover::after,
+      .map-node:focus-visible::after {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .map-node.current::after {
+        display: none;
+      }
+
+      .map-node.surikat::after,
+      .map-node.qa-agent::after,
+      .map-node.sonya::after {
+        right: 10px;
+        left: auto;
+      }
+
+      .map-node.sonya::after,
+      .map-node.workshops::after,
+      .map-node.feedback::after,
+      .map-node.rules::after,
+      .map-node.legacy::after {
+        top: auto;
+        bottom: calc(100% + 8px);
+      }
+
+      .map-glyph {
+        width: 58px;
+        height: 48px;
+        display: block;
+        color: rgba(255, 250, 240, 0.86);
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.44));
+      }
+
+      .bot-portrait {
+        width: 74px;
+        height: 74px;
+        position: relative;
+        display: block;
+        border: var(--frame) solid rgba(255, 250, 240, 0.28);
+        border-radius: 14px;
+        overflow: hidden;
+        background: rgba(255, 250, 240, 0.06);
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.42);
+      }
+
+      .bot-portrait img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .bot-portrait.vasily img {
+        object-position: 50% 38%;
+      }
+
+      .bot-portrait.sonya img {
+        object-position: 52% 42%;
+      }
+
+      .bot-portrait::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: var(--frame) solid rgba(255, 255, 255, 0.14);
+        pointer-events: none;
+      }
+
+      .map-glyph svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .map-glyph path,
+      .map-glyph rect,
+      .map-glyph line,
+      .map-glyph polyline,
+      .map-glyph circle,
+      .map-glyph ellipse {
+        vector-effect: non-scaling-stroke;
+      }
+
+      .map-copy {
+        min-width: 0;
+      }
+
+      .map-node strong {
+        display: block;
+        margin-top: 4px;
+        font-size: 17px;
+        line-height: 1.05;
+        text-transform: uppercase;
+      }
+
+      .map-node .map-eyebrow {
+        display: block;
+        color: var(--muted);
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .map-node small {
+        display: block;
+        margin-top: 6px;
+        color: rgba(255, 250, 240, 0.62);
+        font-size: 10.5px;
+        font-weight: 500;
+        line-height: 1.25;
+      }
+
+      .site-split,
+      .workshop-list,
+      .rule-families,
+      .handoff-list {
+        grid-column: 1 / -1;
+        display: grid;
+        gap: 6px;
+      }
+
+      .site-split {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .site-split span,
+      .workshop-list span,
+      .rule-families span,
+      .handoff-list span,
+      .telegram-badge {
+        box-sizing: border-box;
+        min-width: 0;
+        border: var(--frame) solid rgba(255, 250, 240, 0.16);
+        background: rgba(255, 250, 240, 0.045);
+        color: rgba(255, 250, 240, 0.72);
+        font-size: 8.5px;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        overflow-wrap: anywhere;
+      }
+
+      .site-split span {
+        padding: 7px 6px;
+        border-radius: 6px;
+      }
+
+      .site-split b {
+        display: block;
+        color: var(--ink);
+        font-size: 10px;
+        letter-spacing: 0;
+        text-transform: none;
+        overflow-wrap: anywhere;
+      }
+
+      .workshop-list,
+      .rule-families {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .workshop-list span,
+      .rule-families span,
+      .handoff-list span {
+        padding: 6px 7px;
+        border-radius: 4px;
+      }
+
+      .rule-families span {
+        border-color: rgba(29, 194, 99, 0.28);
+      }
+
+      .workshop-list span {
+        border-color: rgba(255, 193, 122, 0.28);
+      }
+
+      .telegram-badge {
+        grid-column: 1 / -1;
+        width: fit-content;
+        max-width: 100%;
+        margin-top: 2px;
+        padding: 5px 8px;
+        border-color: rgba(111, 151, 255, 0.42);
+        border-radius: 999px;
+        color: rgba(174, 199, 255, 0.88);
+      }
+
+      .node-drawer {
+        grid-column: 1 / -1;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        border-top: var(--frame) solid rgba(255, 250, 240, 0.12);
+        color: rgba(255, 250, 240, 0.62);
+        font-size: 10px;
+        font-weight: 500;
+        line-height: 1.35;
+        transition: max-height 0.24s ease, margin-top 0.24s ease, opacity 0.2s ease, padding-top 0.24s ease;
+      }
+
+      .map-node:hover .node-drawer,
+      .map-node:focus-visible .node-drawer {
+        max-height: 150px;
+        margin-top: 2px;
+        padding-top: 8px;
+        opacity: 1;
+      }
+
+      .map-node.current {
+        left: 37.6%;
+        top: 78px;
+        width: 362px;
+        min-height: 170px;
+        border-color: rgba(255, 250, 240, 0.34);
+        background: rgba(8, 8, 8, 0.92);
+      }
+
+      .map-node.current .node-main {
+        grid-template-columns: 118px minmax(0, 1fr);
+      }
+
+      .map-node.current .map-glyph {
+        width: 112px;
+        height: 82px;
+      }
+
+      .map-node.current strong {
+        font-size: 24px;
+      }
+
+      .map-node.surikat {
+        right: 44px;
+        top: 78px;
+        width: 270px;
+        min-height: 146px;
+        background: rgba(0, 0, 0, 0.92);
+        border-color: rgba(255, 77, 77, 0.62);
+      }
+
+      .map-node.surikat .node-main,
+      .map-node.sonya .node-main {
+        grid-template-columns: 82px minmax(0, 1fr);
+      }
+
+      .map-node.surikat:is(:hover, :focus-visible) {
+        z-index: 40;
+      }
+
+      .map-node.sonya {
+        right: 54px;
+        top: 330px;
+        width: 270px;
+        min-height: 146px;
+        border-color: rgba(255, 193, 122, 0.56);
+        background: rgba(18, 15, 11, 0.9);
+      }
+
+      .map-node.qa-agent {
+        right: 330px;
+        top: 106px;
+        width: 166px;
+        min-height: 112px;
+        border-color: rgba(111, 151, 255, 0.48);
+      }
+
+      .map-node.workshops {
+        left: 36.2%;
+        top: 288px;
+        width: 356px;
+        min-height: 174px;
+        border-color: rgba(255, 193, 122, 0.54);
+      }
+
+      .map-node.rules {
+        left: 40px;
+        top: 210px;
+        width: 310px;
+        min-height: 204px;
+        border-color: rgba(29, 194, 99, 0.62);
+      }
+
+      .map-node.legacy {
+        left: 270px;
+        top: 462px;
+        width: 142px;
+        min-height: 82px;
+        padding: 10px;
+        opacity: 0.62;
+        border-color: rgba(111, 151, 255, 0.3);
+      }
+
+      .map-node.feedback {
+        right: 350px;
+        top: 470px;
+        width: 250px;
+        min-height: 108px;
+        padding: 12px;
+        opacity: 0.86;
+        border-color: rgba(255, 250, 240, 0.22);
+        background: rgba(12, 12, 12, 0.86);
+      }
+
+      .map-node.feedback .node-main,
+      .map-node.legacy .node-main {
+        gap: 10px;
+      }
+
+      .map-node.feedback .map-glyph,
+      .map-node.legacy .map-glyph {
+        width: 42px;
+        height: 36px;
+      }
+
+      [data-surikat-mode-card] {
+        --surikat-mode-border: rgba(255, 193, 122, 0.56);
+        --surikat-mode-glow: rgba(255, 184, 106, 0.22);
+        isolation: isolate;
+      }
+
+      [data-surikat-mode-card][data-surikat-mode="night"] {
+        --surikat-mode-border: rgba(255, 77, 77, 0.62);
+        --surikat-mode-glow: rgba(255, 77, 77, 0.2);
+      }
+
+      .surikat-mode-chip {
+        color: var(--surikat-mode-border);
+      }
+
+      .surikat-hover-art {
+        position: absolute;
+        display: block;
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden;
+        border: var(--frame) solid var(--surikat-mode-border);
+        border-radius: 18px;
+        background: #050505;
+        box-shadow:
+          0 24px 70px rgba(0, 0, 0, 0.56),
+          0 0 0 1px rgba(255, 250, 240, 0.06),
+          0 0 48px var(--surikat-mode-glow);
+        transform: translateY(10px) scale(0.96);
+        transition: opacity 0.24s ease, transform 0.24s ease, border-color 0.24s ease;
+        z-index: 8;
+      }
+
+      .surikat-hover-art img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      [data-surikat-mode-card]:is(:hover, :focus-visible) .surikat-hover-art {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      .map-node.surikat .surikat-hover-art {
+        right: calc(100% + 14px);
+        top: -12px;
+        width: min(260px, 34vw);
+        aspect-ratio: 2 / 3;
+      }
+
+      .status-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        border-top: var(--frame) solid var(--ink);
+      }
+
+      .stat {
+        min-height: 104px;
+        padding: 16px;
+        border-right: var(--frame) solid var(--ink);
+      }
+
+      .stat:last-child {
+        border-right: 0;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 30px;
+        line-height: 1;
+      }
+
+      .stat span {
+        display: block;
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .section {
+        scroll-margin-top: 88px;
+        padding: 28px 0 8px;
+        border-bottom: var(--frame) solid var(--hair);
+      }
+
+      .section-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+
+      h2 {
+        font-size: clamp(24px, 3.6vw, 56px);
+        line-height: 0.96;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .section-note {
+        max-width: 640px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 10px;
+      }
+
+      .tool-registry {
+        display: grid;
+        gap: 18px;
+      }
+
+      .tool-group {
+        display: grid;
+        gap: 10px;
+      }
+
+      .tool-group-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px;
+        padding-top: 4px;
+      }
+
+      .tool-group-head h3 {
+        font-size: 16px;
+        line-height: 1;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .tool-grid {
+        align-items: stretch;
+      }
+
+      .card,
+      .record {
+        position: relative;
+        min-height: 214px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 16px;
+        border: var(--frame) solid var(--soft);
+        background: var(--panel);
+        border-radius: 28px;
+        padding: 16px;
+        color: inherit;
+        text-decoration: none;
+        box-shadow: 0 18px 46px rgba(0, 0, 0, 0.24);
+        backdrop-filter: blur(12px);
+        transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
+      }
+
+      .card:hover,
+      .record:hover {
+        border-color: rgba(255, 77, 77, 0.42);
+        transform: translateY(-10px);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.46);
+      }
+
+      .card.dark {
+        background: #070707;
+        color: #fff;
+        border-color: #070707;
+      }
+
+      .surikat-feature {
+        min-height: 294px;
+        padding-right: min(34%, 300px);
+        border-color: var(--surikat-mode-border);
+        overflow: visible;
+      }
+
+      .surikat-feature[data-surikat-mode="day"] {
+        background:
+          radial-gradient(circle at 90% 18%, rgba(255, 250, 240, 0.12), transparent 18rem),
+          radial-gradient(circle at 82% 74%, rgba(255, 190, 112, 0.16), transparent 16rem),
+          #070707;
+      }
+
+      .surikat-feature[data-surikat-mode="night"] {
+        background:
+          radial-gradient(circle at 88% 16%, rgba(255, 77, 77, 0.18), transparent 17rem),
+          radial-gradient(circle at 82% 80%, rgba(31, 107, 92, 0.2), transparent 18rem),
+          #050505;
+      }
+
+      .surikat-feature .surikat-hover-art {
+        top: 14px;
+        right: 14px;
+        bottom: 14px;
+        width: min(31%, 250px);
+      }
+
+      .surikat-feature .surikat-hover-art img {
+        object-position: center;
+      }
+
+      .card.green {
+        border-color: var(--green);
+        background: rgba(8, 24, 16, 0.72);
+      }
+
+      .card.red {
+        border-color: var(--red);
+      }
+
+      .label-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .pill {
+        display: inline-flex;
+        width: fit-content;
+        max-width: 100%;
+        padding: 3px 7px;
+        border: var(--frame) solid currentColor;
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        overflow-wrap: anywhere;
+      }
+
+      .pill.ok { color: var(--green); }
+      .pill.warn { color: var(--red); }
+      .pill.info { color: var(--blue); }
+
+      .card h3,
+      .record h3 {
+        font-size: 21px;
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      .summary {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .card.dark .summary {
+        color: rgba(255, 255, 255, 0.68);
+      }
+
+      .path {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .action,
+      .mini-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 34px;
+        padding: 8px 10px;
+        border: var(--frame) solid rgba(255, 250, 240, 0.34);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.045);
+        color: inherit;
+        font: inherit;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-decoration: none;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+      }
+
+      .action:hover,
+      .mini-button:hover {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--bg);
+        transform: translateY(-2px);
+      }
+
+      .card.dark .action:hover {
+        background: #fff;
+        color: #000;
+      }
+
+      .wide {
+        grid-column: span 2;
+      }
+
+      .style-notes {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .style-card {
+        min-height: 250px;
+        border: var(--frame) solid var(--soft);
+        border-radius: 28px;
+        background: var(--panel);
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 20px;
+        box-shadow: 0 18px 46px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(12px);
+        transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+      }
+
+      .style-card:hover {
+        border-color: rgba(255, 77, 77, 0.36);
+        transform: translateY(-6px);
+        box-shadow: 0 26px 60px rgba(0, 0, 0, 0.34);
+      }
+
+      .style-card strong {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 18px;
+        line-height: 1.12;
+      }
+
+      .index-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 0.84fr);
+        gap: 14px;
+        align-items: stretch;
+      }
+
+      .card-media {
+        min-height: 260px;
+        border: var(--frame) solid var(--soft);
+        border-radius: 22px;
+        overflow: hidden;
+        background: var(--pale);
+        cursor: pointer;
+      }
+
+      .card-media img {
+        width: 100%;
+        height: 100%;
+        min-height: 260px;
+        display: block;
+        object-fit: cover;
+        object-position: top;
+      }
+
+      .archive-browser {
+        display: grid;
+        grid-template-rows: minmax(260px, 1fr) auto;
+        gap: 10px;
+      }
+
+      .archive-preview {
+        min-height: 340px;
+      }
+
+      .archive-preview img {
+        min-height: 340px;
+      }
+
+      .archive-thumbs {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .archive-thumb {
+        min-height: 74px;
+        padding: 0;
+        border: var(--frame) solid rgba(255, 250, 240, 0.22);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        cursor: pointer;
+        overflow: hidden;
+      }
+
+      .archive-thumb[aria-selected="true"] {
+        border-color: var(--green);
+        box-shadow: 0 0 0 1px rgba(29, 194, 99, 0.36);
+      }
+
+      .archive-thumb img {
+        display: block;
+        width: 100%;
+        height: 74px;
+        object-fit: cover;
+        object-position: top;
+        opacity: 0.74;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+      }
+
+      .archive-thumb:hover img,
+      .archive-thumb[aria-selected="true"] img {
+        opacity: 1;
+        transform: scale(1.03);
+      }
+
+      .preview-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .preview-strip button {
+        border: var(--frame) solid var(--soft);
+        border-radius: 6px;
+        padding: 0;
+        background: #fff;
+        cursor: pointer;
+        overflow: hidden;
+      }
+
+      .preview-strip img {
+        display: block;
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        object-position: top;
+      }
+
+      .rail {
+        display: grid;
+        grid-template-columns: 0.72fr 1.28fr;
+        gap: 10px;
+      }
+
+      .timeline {
+        border: var(--frame) solid var(--soft);
+      }
+
+      .timeline-item {
+        display: grid;
+        grid-template-columns: 110px 1fr auto;
+        gap: 14px;
+        align-items: start;
+        padding: 14px 16px;
+        border-bottom: var(--frame) solid var(--hair);
+      }
+
+      .timeline-item:last-child {
+        border-bottom: 0;
+      }
+
+      .time {
+        color: var(--muted);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .timeline-item strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 10px;
+      }
+
+      .shot {
+        display: grid;
+        grid-template-rows: 210px auto;
+        min-height: 320px;
+        border: var(--frame) solid var(--soft);
+        background: #fffdf8;
+        border-radius: 8px;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .shot:hover {
+        border-color: var(--ink);
+      }
+
+      .shot img {
+        display: block;
+        width: 100%;
+        height: 210px;
+        object-fit: cover;
+        object-position: top;
+        background: var(--pale);
+        border-bottom: var(--frame) solid var(--soft);
+      }
+
+      .shot-body {
+        padding: 14px;
+      }
+
+      .shot-title {
+        display: block;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.15;
+      }
+
+      .shot-caption {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .link-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 8px;
+      }
+
+      .link-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+        min-height: 62px;
+        padding: 12px 14px;
+        border: var(--frame) solid var(--soft);
+        border-radius: 8px;
+        text-decoration: none;
+      }
+
+      .link-row:hover {
+        border-color: var(--ink);
+      }
+
+      .link-row strong {
+        display: block;
+        font-size: 13px;
+      }
+
+      .link-row span {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 10px;
+        overflow-wrap: anywhere;
+      }
+
+      .ops-layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.88fr) minmax(0, 1.12fr);
+        gap: 10px;
+        align-items: stretch;
+      }
+
+      .ops-board {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .ops-panel {
+        min-height: 190px;
+        padding: 18px;
+        border: var(--frame) solid var(--soft);
+        border-radius: 8px;
+        background: rgba(255, 250, 240, 0.055);
+        color: var(--ink);
+        overflow-wrap: anywhere;
+      }
+
+      .ops-panel h3 {
+        margin-bottom: 12px;
+      }
+
+      .ops-list {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .ops-list strong {
+        color: var(--ink);
+      }
+
+      .code-lines {
+        display: grid;
+        gap: 6px;
+      }
+
+      .code-line {
+        display: block;
+        padding: 8px 9px;
+        border: var(--frame) solid var(--hair);
+        border-radius: 6px;
+        background: var(--pale);
+        color: var(--ink);
+        font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
+        font-size: 10px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      .arrow {
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .dark-band {
+        margin-top: 20px;
+        padding: 18px;
+        background: #050505;
+        color: #fff;
+      }
+
+      .dark-band .section-note,
+      .dark-band .summary,
+      .dark-band .path {
+        color: rgba(255, 255, 255, 0.62);
+      }
+
+      dialog {
+        width: min(1080px, calc(100vw - 28px));
+        max-height: min(86vh, 980px);
+        border: var(--frame) solid var(--soft);
+        border-radius: 28px;
+        padding: 0;
+        background: rgba(13, 13, 13, 0.96);
+        color: var(--ink);
+        box-shadow: var(--shadow);
+      }
+
+      dialog::backdrop {
+        background: rgba(0, 0, 0, 0.62);
+      }
+
+      .dialog-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        padding: 14px;
+        border-bottom: var(--frame) solid var(--ink);
+      }
+
+      .dialog-body {
+        padding: 14px;
+      }
+
+      .dialog-body img {
+        display: block;
+        width: 100%;
+        max-height: 70vh;
+        object-fit: contain;
+        object-position: top;
+        background: var(--pale);
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      @media (max-width: 960px) {
+        .top {
+          grid-template-columns: 1fr;
+          gap: 10px;
+          align-items: start;
+        }
+
+        .hero,
+        .rail,
+        .style-notes,
+        .index-card,
+        .ops-layout,
+        .ops-board {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-copy {
+          grid-template-columns: 1fr;
+          min-height: auto;
+        }
+
+        .wide {
+          grid-column: span 1;
+        }
+
+        .surikat-feature {
+          min-height: auto;
+          padding-right: 16px;
+        }
+
+        .surikat-feature .surikat-hover-art {
+          position: relative;
+          inset: auto;
+          width: min(100%, 340px);
+          aspect-ratio: 2 / 3;
+          opacity: 1;
+          transform: none;
+        }
+
+        .status-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .stat:nth-child(2) {
+          border-right: 0;
+        }
+
+        .timeline-item {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        main {
+          width: min(100vw - 18px, 1480px);
+          padding-top: 14px;
+        }
+
+        .hero-panel {
+          min-height: 300px;
+        }
+
+        .hero-copy {
+          padding: 22px;
+        }
+
+        h1 {
+          font-size: clamp(40px, 13vw, 52px);
+          line-height: 0.95;
+        }
+
+        .status-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stat {
+          border-right: 0;
+          border-bottom: var(--frame) solid var(--ink);
+        }
+
+        .stat:last-child {
+          border-bottom: 0;
+        }
+
+        .system-map {
+          display: grid;
+          gap: 10px;
+          min-height: auto;
+          padding: 14px;
+        }
+
+        .map-head {
+          position: static;
+          width: 100%;
+          margin-bottom: 4px;
+        }
+
+        .map-head h2 {
+          font-size: 28px;
+        }
+
+        .map-lines {
+          display: none;
+        }
+
+        .map-node {
+          position: static;
+          width: 100%;
+          min-height: 88px;
+          transform: none;
+        }
+
+        .map-node.current .node-main {
+          grid-template-columns: auto minmax(0, 1fr);
+        }
+
+        .map-node.current .map-glyph {
+          width: 72px;
+          height: 54px;
+        }
+
+        .site-split,
+        .workshop-list,
+        .rule-families {
+          grid-template-columns: 1fr;
+        }
+
+        .map-node:hover,
+        .map-node:focus-visible {
+          transform: none;
+        }
+
+        .map-node::after {
+          display: none;
+        }
+
+        .map-node.current,
+        .map-node.workshops,
+        .map-node.surikat,
+        .map-node.sonya,
+        .map-node.qa-agent,
+        .map-node.feedback,
+        .map-node.legacy,
+        .map-node.rules {
+          width: 100%;
+        }
+
+        .map-node.surikat .surikat-hover-art {
+          display: none;
+        }
+
+        .archive-thumbs {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .section-head {
+          display: grid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <div class="brand-mark">AIM</div>
+        <div class="brand-word">Гайдлайн AIM Website</div>
+      </div>
+      <div class="meta">минимальный гайдлайн</div>
+    </header>
+
+    <main>
+      <section class="hero" id="overview" data-search-item>
+        <div class="hero-panel hero-copy">
+          <div>
+            <p class="kicker">минимум / ссылки + контекст</p>
+            <h1>Гайдлайн AIM Website</h1>
+          </div>
+          <div>
+            <p class="hero-lead">
+              Короткая стартовая страница для сайта AI Mindset: основные ссылки, QA, дизайн-индекс
+              и операционная карта зависимостей. Главная поверхность здесь — текущий сайт; боты,
+              правила и дизайн-лабы показаны как контуры вокруг него.
+            </p>
+            <div class="actions">
+              <a class="action" href="https://aimindset.org/" target="_blank" rel="noopener noreferrer">сайт</a>
+              <a class="action" href="https://eppelas.github.io/aimwebsite0.5/">локально</a>
+              <a class="action" href="https://staging.aimindset.org/" target="_blank" rel="noopener noreferrer">стейджинг</a>
+              <a class="action" href="https://eppelas.github.io/aim-web-design-index/">дизайн-индекс</a>
+              <a class="action" href="#rules-pipelines">правила</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-panel hero-map-panel">
+          <div class="system-map" aria-label="Кликабельная карта зависимостей AIM Website">
+            <div class="map-head">
+              <p class="kicker">dependency map</p>
+              <h2>Что с чем связано</h2>
+              <p>
+                Большие блоки — поверхности и диспетчеры, маленькие — источники.
+                Telegram живет внутри Сони и Василия, а не отдельным входом в сайт.
+              </p>
+            </div>
+            <svg class="map-lines" viewBox="0 0 1200 620" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <marker id="arrow-soft" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L8,4 L0,8 Z" fill="rgba(255,250,240,0.42)" />
+                </marker>
+                <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L8,4 L0,8 Z" fill="rgba(255,77,77,0.72)" />
+                </marker>
+                <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L8,4 L0,8 Z" fill="rgba(29,194,99,0.68)" />
+                </marker>
+                <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L8,4 L0,8 Z" fill="rgba(111,151,255,0.68)" />
+                </marker>
+                <marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L8,4 L0,8 Z" fill="rgba(255,193,122,0.76)" />
+                </marker>
+              </defs>
+              <path class="blue" marker-end="url(#arrow-blue)" d="M816 166 C780 166 758 162 735 154" />
+              <path class="blue" marker-end="url(#arrow-blue)" d="M948 146 C970 140 986 132 1002 126" />
+              <path class="strong dashed" marker-end="url(#arrow-red)" d="M1084 358 C1110 294 1100 228 1074 190" />
+              <path class="green" marker-end="url(#arrow-green)" d="M310 276 C406 206 494 160 526 148" />
+              <path class="green" marker-end="url(#arrow-green)" d="M350 244 C510 190 664 156 816 146" />
+              <path class="green" marker-end="url(#arrow-green)" d="M350 374 C414 390 472 398 502 398" />
+              <path class="muted" marker-end="url(#arrow-soft)" d="M382 536 C442 520 494 482 520 448" />
+              <path class="orange" marker-end="url(#arrow-orange)" d="M646 306 C648 282 650 254 650 232" />
+              <path class="orange" marker-end="url(#arrow-orange)" d="M778 394 C868 366 954 362 1018 388" />
+              <path class="orange" marker-end="url(#arrow-orange)" d="M1032 448 C990 486 948 516 878 536" />
+              <path class="orange dashed" marker-end="url(#arrow-orange)" d="M724 522 C708 484 744 452 778 430" />
+              <text x="946" y="276">bug handoff</text>
+              <text x="760" y="366">дизайн-кандидаты</text>
+              <text x="914" y="502">оценки 0-10</text>
+              <text x="560" y="512">память генераторам</text>
+            </svg>
+            <a class="map-node current" href="https://eppelas.github.io/aimwebsite0.5/" data-detail="Текущий сайт здесь означает боевой домен, staging-домен и локальную папку/preview-контекст `aimwebsite0.5`. Локальный порт не является постоянным адресом сайта; его дает текущий preview launcher." aria-label="Открыть текущий локальный сайт">
+              <span class="node-main">
+                <span class="map-glyph glyph-site" aria-hidden="true">
+                  <svg viewBox="0 0 120 84" fill="none">
+                    <path d="M10 20H92V72H10Z" stroke="currentColor" stroke-width="2" />
+                    <path d="M25 8H110V58H92" stroke="rgba(255,250,240,0.42)" stroke-width="2" />
+                    <path d="M10 31H92" stroke="rgba(255,250,240,0.32)" stroke-width="1.5" />
+                    <rect x="22" y="41" width="28" height="18" stroke="rgba(255,77,77,0.9)" stroke-width="2" />
+                    <path d="M58 42H80M58 52H84M22 66H78" stroke="rgba(255,250,240,0.62)" stroke-width="2" />
+                    <path d="M101 18H106M101 28H106M101 38H106" stroke="rgba(29,194,99,0.72)" stroke-width="2" />
+                  </svg>
+                </span>
+                <span class="map-copy">
+                  <span class="map-eyebrow">site surface</span>
+                  <strong>Текущий сайт</strong>
+                  <small>prod / staging / папка</small>
+                </span>
+              </span>
+              <span class="site-split" aria-hidden="true">
+                <span><b>prod</b> aimindset.org</span>
+                <span><b>stage</b> staging</span>
+                <span><b>папка</b> aimwebsite0.5</span>
+              </span>
+              <span class="node-drawer">QA смотрит prod/staging; локальная проверка идет через текущую папку и preview launcher.</span>
+            </a>
+            <a class="map-node surikat" href="#surikat" data-detail="Василий — главный QA-диспетчер в Telegram: принимает баги, получает отчеты QA-бота, принимает bug-like handoff от Сони, ставит Linear и докладывает людям." aria-label="Перейти к блоку про Суриката Василия">
+              <span class="node-main">
+                <span class="bot-portrait vasily" aria-hidden="true">
+                  <img src="local-preview/site-hub-assets/surikat-mode-day.png" alt="" loading="lazy" />
+                </span>
+                <span class="map-copy">
+                  <span class="map-eyebrow">QA manager</span>
+                  <strong>Сурикат Василий</strong>
+                  <small>QA reports, Linear</small>
+                </span>
+              </span>
+              <span class="telegram-badge">Telegram: @aim_surikat_bot</span>
+            </a>
+            <a class="map-node qa-agent" href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html" data-detail="Автоматический black-box worker: открывает production/staging и текущий local preview как внешний пользователь, проверяет CTA, ссылки, скриншоты, даты и читаемость, затем отдает результат Василию." aria-label="Открыть последний QA-дашборд">
+              <span class="node-main">
+                <span class="map-glyph glyph-scan" aria-hidden="true">
+                  <svg viewBox="0 0 64 56" fill="none">
+                    <path d="M9 9H55V47H9Z" stroke="rgba(111,151,255,0.82)" stroke-width="2" />
+                    <path d="M17 18H47M17 28H47M17 38H35" stroke="currentColor" stroke-width="2" />
+                    <path d="M40 37L46 43L56 31" stroke="rgba(29,194,99,0.85)" stroke-width="2.5" />
+                  </svg>
+                </span>
+                <span class="map-copy">
+                  <span class="map-eyebrow">worker</span>
+                  <strong>QA-бот сайта</strong>
+                  <small>смотрит prod/stage</small>
+                </span>
+              </span>
+            </a>
+            <a class="map-node workshops" href="#review-tools" data-detail="Мастерских несколько: Page Design Lab для страниц и элементов, Payment Page Design Lab для checkout-страниц, popup compare для отдельных popup-состояний, feedback dashboard для рейтингов и памяти." aria-label="Перейти к инструментам и дизайн-мастерским">
+              <span class="node-main">
+                <span class="map-glyph glyph-workshops" aria-hidden="true">
+                  <svg viewBox="0 0 80 64" fill="none">
+                    <path d="M10 16H48V44H10Z" stroke="rgba(255,193,122,0.9)" stroke-width="2" />
+                    <path d="M25 8H67V36H48" stroke="rgba(255,250,240,0.46)" stroke-width="2" />
+                    <path d="M25 52H70" stroke="rgba(255,77,77,0.7)" stroke-width="2" />
+                    <path d="M18 26H40M18 34H31M56 18H62M56 26H62" stroke="currentColor" stroke-width="2" />
+                    <path d="M49 44C55 45 60 48 64 52" stroke="rgba(29,194,99,0.62)" stroke-width="2" />
+                  </svg>
+                </span>
+                <span class="map-copy">
+                  <span class="map-eyebrow">workshops</span>
+                  <strong>Мастерские</strong>
+                  <small>кандидаты для Сони</small>
+                </span>
+              </span>
+              <span class="workshop-list" aria-hidden="true">
+                <span>Page Design Lab</span>
+                <span>Payment Page Lab</span>
+                <span>Popup Compare</span>
+                <span>Feedback Index</span>
+              </span>
+            </a>
+            <a class="map-node sonya" href="#sonya" data-detail="Соня — design taste bot в Telegram: приносит варианты Анке и Саше, собирает 0-10 оценки, пишет taste memory и handoff для генераторов. Багоподобный feedback передает Василию." aria-label="Перейти к блоку про Суриката Соню">
+              <span class="node-main">
+                <span class="bot-portrait sonya" aria-hidden="true">
+                  <img src="local-preview/site-hub-assets/sonya-primary-selfie-20260528-140751.jpeg" alt="" loading="lazy" />
+                </span>
+                <span class="map-copy">
+                  <span class="map-eyebrow">taste bot</span>
+                  <strong>Сурикат Соня</strong>
+                  <small>0-10 -> memory</small>
+                </span>
+              </span>
+              <span class="telegram-badge">Telegram: @aim_surikat_sonya_bot</span>
+            </a>
+            <a class="map-node feedback" href="#review-tools" data-detail="Design feedback memory хранит оценки дизайнов из Сони и site-side review: 0-10, keep/change/avoid, negative memory и preferred mechanics. Это память для следующих генераторов и мастерских, а не QA-рейтинг Василия." aria-label="Открыть дизайн feedback dashboard">
+              <span class="node-main">
+                <span class="map-glyph glyph-feedback" aria-hidden="true">
+                  <svg viewBox="0 0 64 56" fill="none">
+                    <path d="M10 10H54V46H10Z" stroke="rgba(255,250,240,0.5)" stroke-width="2" />
+                    <path d="M18 36V26M30 36V18M42 36V30" stroke="rgba(255,193,122,0.9)" stroke-width="4" />
+                    <path d="M18 43H46" stroke="rgba(111,151,255,0.7)" stroke-width="2" />
+                  </svg>
+                </span>
+                <span class="map-copy">
+                  <span class="map-eyebrow">memory</span>
+                  <strong>Оценки дизайнов</strong>
+                  <small>память для генераторов</small>
+                </span>
+              </span>
+            </a>
+            <a class="map-node rules" href="#rules-pipelines" data-detail="Правила — не одна коробка: product/payment logic, правила ботов, QA/freshness, source fidelity, design feedback и update/generator cadences живут в разных файлах и кормят разные контуры." aria-label="Открыть продуктовые правила и пайплайны сайта">
+              <span class="node-main">
+                <span class="map-glyph glyph-rules" aria-hidden="true">
+                  <svg viewBox="0 0 76 60" fill="none">
+                    <path d="M8 8H68V52H8Z" stroke="rgba(29,194,99,0.82)" stroke-width="2" />
+                    <path d="M8 20H68M26 20V52M48 20V52" stroke="rgba(255,250,240,0.3)" stroke-width="1.5" />
+                    <path d="M15 14H24M34 14H43M54 14H62" stroke="currentColor" stroke-width="2" />
+                    <path d="M14 30H20M14 40H20M34 30H42M34 40H42M55 30H62M55 40H62" stroke="rgba(255,250,240,0.56)" stroke-width="2" />
+                  </svg>
+                </span>
+                <span class="map-copy">
+                  <span class="map-eyebrow">rule families</span>
+                  <strong>Правила</strong>
+                  <small>к сайту, QA, мастерским</small>
+                </span>
+              </span>
+              <span class="rule-families" aria-hidden="true">
+                <span>payment logic</span>
+                <span>bot behavior</span>
+                <span>QA / freshness</span>
+                <span>source fidelity</span>
+                <span>design feedback</span>
+                <span>generator cadence</span>
+              </span>
+            </a>
+            <a class="map-node legacy" href="https://eppelas.github.io/aim-web-design-index/" data-detail="Дизайн-архив — меньший источник: Style Index, legacy-направления, старые элементы и удачные механики. Он дает семена мастерским, но не управляет сайтом напрямую." aria-label="Открыть дизайн-индекс">
+              <span class="node-main">
+                <span class="map-glyph glyph-archive" aria-hidden="true">
+                  <svg viewBox="0 0 56 48" fill="none">
+                    <path d="M8 14H48V40H8Z" stroke="rgba(111,151,255,0.76)" stroke-width="2" />
+                    <path d="M14 8H42L48 14H8Z" stroke="rgba(255,250,240,0.42)" stroke-width="2" />
+                    <path d="M23 24H33M20 31H36" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </span>
+                <span class="map-copy">
+                  <span class="map-eyebrow">seeds</span>
+                  <strong>Архив</strong>
+                  <small>Style Index / legacy</small>
+                </span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="styles">
+        <div class="section-head">
+          <h2>Стилевой ориентир</h2>
+          <p class="section-note">Три источника, которые смешаны здесь, без подробного разбора.</p>
+        </div>
+        <div class="style-notes">
+          <article class="style-card" data-search-item>
+            <div>
+              <span class="pill">1</span>
+              <strong>Галерея проектов</strong>
+              <p class="summary">Карточки и быстрые переходы к материалам.</p>
+            </div>
+          </article>
+          <article class="style-card" data-search-item>
+            <div>
+              <span class="pill">2</span>
+              <strong>Рабочий архив AIM Website</strong>
+              <p class="summary">Ссылки на сайт, QA, документы и дизайн-индекс.</p>
+            </div>
+          </article>
+          <article class="style-card" data-search-item>
+            <div>
+              <span class="pill ok">3</span>
+              <strong>Бренд-индекс в стиле OS</strong>
+              <p class="summary">Моноширинность, сетка и спокойная системная подача.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="current">
+        <div class="section-head">
+          <h2>Основные ссылки</h2>
+          <p class="section-note">Только то, что нужно открыть в первую очередь.</p>
+        </div>
+        <div class="grid">
+          <a class="card dark wide" data-search-item href="https://eppelas.github.io/aimwebsite0.5/">
+            <div class="label-row"><span class="pill ok">локально</span></div>
+            <div>
+              <h3>Текущий сайт V3</h3>
+              <p class="summary">Главная локальная версия для ревью.</p>
+            </div>
+            <span class="path">/aimwebsite0.5/</span>
+          </a>
+          <a class="card" data-search-item href="https://aimindset.org/" target="_blank" rel="noopener noreferrer">
+            <div class="label-row"><span class="pill">production</span></div>
+            <div>
+              <h3>Боевой сайт</h3>
+              <p class="summary">Публичная версия.</p>
+            </div>
+            <span class="path">aimindset.org</span>
+          </a>
+          <a class="card" data-search-item href="https://staging.aimindset.org/" target="_blank" rel="noopener noreferrer">
+            <div class="label-row"><span class="pill">staging</span></div>
+            <div>
+              <h3>Стейджинг</h3>
+              <p class="summary">Кандидат на замену/сравнение.</p>
+            </div>
+            <span class="path">staging.aimindset.org</span>
+          </a>
+          <a class="card green" data-search-item href="https://eppelas.github.io/aim-web-design-index/">
+            <div class="label-row"><span class="pill ok">дизайн</span></div>
+            <div>
+              <h3>AIM Web Design Index</h3>
+              <p class="summary">Опубликованные legacy-направления.</p>
+            </div>
+            <span class="path">/style-index/</span>
+          </a>
+          <a class="card" data-search-item href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html">
+            <div class="label-row"><span class="pill">QA</span></div>
+            <div>
+              <h3>QA-дашборд</h3>
+              <p class="summary">Последний отчет бота.</p>
+            </div>
+            <span class="path">reports/latest/dashboard.html</span>
+          </a>
+          <a class="card" data-search-item href="https://eppelas.github.io/ai-mindset-blocks/">
+            <div class="label-row"><span class="pill">блоки</span></div>
+            <div>
+              <h3>Blocks Lab</h3>
+              <p class="summary">Компоненты и секции.</p>
+            </div>
+            <span class="path">/ai-mindset-blocks/</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="section" id="review-tools">
+        <div class="section-head">
+          <h2>Инструменты</h2>
+          <p class="section-note">Сюда дозаписываем рабочие инструменты сайта: отдельно ревью-поверхности и дизайнерские генераторы/референсы.</p>
+        </div>
+        <div class="tool-registry">
+          <!-- TOOL_REGISTRY_SUMMARY_START -->
+          <div class="tool-group" data-tool-kind="review">
+            <div class="tool-group-head">
+              <h3>Review tools</h3>
+              <p class="summary">Открывать, сравнивать и проверять конкретные состояния сайта.</p>
+            </div>
+            <div class="grid tool-grid">
+              <a class="card" data-search-item href="aimwebsite0.5/payment-popup-compare.html">
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">payment</span></div>
+            <div>
+              <h3>Payment popup compare</h3>
+              <p class="summary">Сравнение версий платежного попапа: desktop/mobile, left/right variants, draggable split, result states.</p>
+            </div>
+            <div class="actions">
+              <span class="mini-button">open</span>
+              <span class="mini-button">browser</span>
+            </div>
+            <span class="path">V3 Site Repo - aimwebsite0.5/payment-popup-compare.html</span>
+          </a>
+              <a class="card" data-search-item href="https://eppelas.github.io/aimwebsite0.5/payment-page-design-lab/">
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">payment</span></div>
+            <div>
+              <h3>Payment Page Design Lab</h3>
+              <p class="summary">Review-only dark full-canvas payment page lab: 10 visual variants with the current payment popup copy, UX, states, methods, discounts, and validation preserved.</p>
+            </div>
+            <div class="actions">
+              <span class="mini-button">open</span>
+              <span class="mini-button">gallery/state switcher</span>
+            </div>
+            <span class="path">V3 Site Repo - aimwebsite0.5/payment-page-design-lab/index.html</span>
+          </a>
+              <a class="card" data-search-item href="aimwebsite0.5/case-popup-compare.html">
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">cases</span></div>
+            <div>
+              <h3>Case popup compare</h3>
+              <p class="summary">Сравнение текущего и новых вариантов попапа кейса: desktop/mobile, left/right variants, shared case auto-open.</p>
+            </div>
+            <div class="actions">
+              <span class="mini-button">open</span>
+              <span class="mini-button">browser</span>
+            </div>
+            <span class="path">V3 Site Repo - aimwebsite0.5/case-popup-compare.html</span>
+          </a>
+              <a class="card" data-search-item href="https://eppelas.github.io/aimwebsite0.5/homepage-design-lab/">
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">homepage</span></div>
+            <div>
+              <h3>Page Design Lab</h3>
+              <p class="summary">Review-only Style Gallery-like index for generated AIM page prototypes with screenshot thumbnails, site-side Anca/Sasha/other rating controls, separated homepage/payment/element lanes, and left/right compare mode as a secondary review tool.</p>
+            </div>
+            <div class="actions">
+              <span class="mini-button">open</span>
+              <span class="mini-button">screenshot gallery/compare/site ratings</span>
+            </div>
+            <span class="path">V3 Site Repo - aimwebsite0.5/homepage-design-lab/index.html</span>
+          </a>
+              <a class="card" data-search-item href="#review-tools">
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">design-feedback</span></div>
+            <div>
+              <h3>AIM Design Feedback Dashboard</h3>
+              <p class="summary">Evaluation dashboard for homepage, guided payment page, and standalone element design feedback. Stores Telegram and site-side ratings, negative memory, preferred mechanics, and generator guardrails.</p>
+            </div>
+            <div class="actions">
+              <span class="mini-button">open</span>
+              <span class="mini-button">dashboard/tabs</span>
+            </div>
+            <span class="path">design-feedback-dashboard/index.html</span>
+          </a>
+              <a class="card" data-search-item href="./">
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">navigation</span></div>
+            <div>
+              <h3>Local Preview Index</h3>
+              <p class="summary">Корневой локальный индекс всех найденных built pages, галерей, опубликованных style pages и основных preview entry points в папке AIM Website.</p>
+            </div>
+            <div class="actions">
+              <span class="mini-button">open</span>
+              <span class="mini-button">index</span>
+            </div>
+            <span class="path">local-preview/server.mjs / root route</span>
+          </a>
+              <a class="card" data-search-item href="#review-tools">
+            <div class="label-row"><span class="pill ok">local-bot</span><span class="pill">design-feedback</span></div>
+            <div>
+              <h3>Surikat Sonya Design Review Bot</h3>
+              <p class="summary">Telegram design-review bot that sends AIM design-lab screenshots to Anca and Sasha, records 0-10 ratings, feeds the design feedback registry, writes next-design handoff instructions for the page generators, and can run on Cloud Run with Vertex AI for Google Cloud billing credits.</p>
+            </div>
+            <div class="actions">
+              <span class="mini-button">open</span>
+              <span class="mini-button">telegram/rating callbacks</span>
+            </div>
+            <span class="path">Bots/Telegram Design Taste Bot - Sonya/README.md</span>
+          </a>
+            </div>
+          </div>
+          <div class="tool-group" data-tool-kind="design">
+            <div class="tool-group-head">
+              <h3>Design tools</h3>
+              <p class="summary">Использовать как источник визуального языка, генерации ассетов и дизайнерских направлений.</p>
+            </div>
+            <div class="grid tool-grid">
+              <a class="card" data-search-item href="https://ai.studio/apps/2dbe04c3-5e89-4176-b527-c28474821221" target="_blank" rel="noopener noreferrer">
+            <div class="label-row"><span class="pill ok">external</span><span class="pill">visual-system</span></div>
+            <div>
+              <h3>Morph System</h3>
+              <p class="summary">Дизайнерский AI Studio инструмент для генерации/подбора technical, ASCII, blueprint и glitch visual systems; использовать как источник визуального языка и идей для сайта.</p>
+            </div>
+            <div class="actions">
+              <span class="mini-button">open</span>
+              <span class="mini-button">design</span>
+            </div>
+            <span class="path">Google AI Studio app / screenshot reference</span>
+          </a>
+            </div>
+          </div>
+        <!-- TOOL_REGISTRY_SUMMARY_END -->
+        </div>
+        <p class="section-note">Источник: `website-ops/tool-registry.json`; синхронизация: `node local-preview/sync-tool-registry-summary.mjs`.</p>
+      </section>
+
+      <section class="section" id="rules-pipelines">
+        <div class="section-head">
+          <h2>Правила и пайплайны</h2>
+          <p class="section-note">Продуктовые правила, правила работы ботов и update-пайплайны, которые должны быть синхронизированы между сайтом, Сурикатами, QA и этой страницей.</p>
+        </div>
+        <div class="ops-layout">
+          <article class="card dark" data-search-item>
+            <div class="label-row">
+              <span class="pill ok">source</span>
+              <span class="pill">website ops</span>
+            </div>
+            <div>
+              <h3>Product Rules Registry</h3>
+              <p class="summary">
+                Источник правды для правил, которые нельзя держать только в коде или в чате.
+                Сейчас здесь зафиксированы логика скидок в платежном попапе и правила source-fidelity
+                для добавления кейсов из YouTube, заметок и других исходников.
+              </p>
+            </div>
+            <div class="actions">
+              <a class="action" href="website-ops/product-rules.md">правила</a>
+              <a class="action" href="website-ops/bot-operating-rules.md">боты</a>
+              <a class="action" href="website-ops/case-source-fidelity-reviewer.md">case reviewer</a>
+              <a class="action" href="website-ops/rules-and-pipelines.md">пайплайн</a>
+              <a class="action" href="website-ops/product-rules.json">json</a>
+              <a class="action" href="website-ops/bot-operating-rules.json">bot json</a>
+              <a class="action" href="website-ops/update-rules.md">обновления</a>
+              <a class="action" href="website-ops/ops-system-smoke-tests.md">smoke</a>
+            </div>
+            <span class="path">website-ops/product-rules.json</span>
+          </article>
+
+          <div class="ops-board">
+          <!-- PRODUCT_RULES_SUMMARY_START -->
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">payment</span></div>
+            <h3>Payment discount stacking</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Alumni discount and promo-code discount do not stack with each other. If both are valid, Alumni wins. Either one can stack with the 5% crypto/USDT payment-method discount.</li>
+              <li><strong>QA:</strong> Payment popup tests should cover alumni_only, promo_only, alumni_and_promo, alumni_and_crypto, promo_and_crypto, and alumni_promo_and_crypto.</li>
+              <li><strong>QA:</strong> Website Hub should expose this rule in Product Rules and Pipelines.</li>
+              <li><strong>Source:</strong> website-ops/product-rules.json</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">cases</span></div>
+            <h3>Case source fidelity</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> New or updated case studies must be built from the exact provided sources. YouTube fragments require clean video-frame screenshots, source-matched task and description copy, and an explicit source-fidelity review of technologies before handoff.</li>
+              <li><strong>QA:</strong> Every new or materially updated case should have a Case Source Fidelity Reviewer pass before local review handoff.</li>
+              <li><strong>QA:</strong> For YouTube-sourced cases, reviewer notes should explicitly confirm screenshots, speaker portrait, transcript/video claims, and technology list evidence.</li>
+              <li><strong>Source:</strong> website-ops/product-rules.json</li>
+            </ul>
+          </article>
+          <!-- PRODUCT_RULES_SUMMARY_END -->
+
+          <!-- BOT_OPERATING_RULES_SUMMARY_START -->
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">runtime</span><span class="pill">active</span></div>
+            <h3>Vasily Cloud Run owns Telegram delivery</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> @aim_surikat_bot is served by Cloud Run service aim-surikat-vasily in dedicated Google Cloud project aim-surikat-vasily, separate from Surikat Sonya&#039;s project. Telegram webhook delivery goes to /telegram with max_connections=1; the local launchd poller must stay disabled while the webhook is set. The old Sonya-project Vasily Cloud Run services are rollback only unless the webhook/site secrets are intentionally moved back.</li>
+              <li><strong>Check:</strong> Health endpoint https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/health must report mode=webhook, genaiProvider=vertex, vertexProjectConfigured=true, stateGcsEnabled=true, and linearConfigured=true.</li>
+              <li><strong>Check:</strong> Telegram getWebhookInfo must point to https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/telegram and pending_update_count should normally be 0.</li>
+              <li><strong>Check:</strong> Rollback is deleteWebhook, then launchctl enable/bootstrap ai.aim.surikat.bot.</li>
+              <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/cloud-run/README.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">telegram</span><span class="pill">active</span></div>
+            <h3>Vasily is QA intake, not a generic chat bot</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Vasily listens for AIM/NIMS website bugs, QA questions, link/date/content problems, CTA/form/payment issues, and direct owner commands. In group chats he stays conservative: react or stay silent unless addressed, the message is clearly bug-like, or the owner gives a semantic long audit/QA task with an explicit URL. Voice/audio/video-note messages are transcribed through Gemini/Vertex before routing so spoken owner tasks are handled like typed text.</li>
+              <li><strong>Check:</strong> Accepted names include Сурикат Василий, Сурикат, суркат, Вася, Вась, Васек, Васёк, Васька and @aim_surikat_bot.</li>
+              <li><strong>Check:</strong> Owner DMs, addressed owner messages, and owner messages with an explicit URL are classified by the LLM semantic intent router before conversational replies.</li>
+              <li><strong>Check:</strong> The semantic router decides by meaning, not task regexes: wording such as &#039;давай сделаем аудит вот этого сайта https://...&#039; is accepted as LLM task mode because it asks Vasily to perform website QA.</li>
+              <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/README.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">runtime</span><span class="pill">active</span></div>
+            <h3>Owner Telegram rule changes persist through GCS</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Owner Telegram messages that tune Vasily&#039;s behavior must change runtime state, not just generate a reply. Cloud Run hydrates mutable state from GCS before each webhook and persists it after processing, so owner runtime instructions, conversational reply style, Metrika lead DM allowlists, and remembered chat aliases survive cold starts and new revisions. After deployment health must include stateGcsEnabled=true and stateGcsPrefix=vasily/state.</li>
+              <li><strong>Check:</strong> Production enables VASILY_STATE_GCS_ENABLED with bucket aim-surikat-vasily-state and prefix vasily/state.</li>
+              <li><strong>Check:</strong> Health must report stateGcsEnabled=true, stateGcsBucketConfigured=true, and stateGcsPrefix=vasily/state after deployment.</li>
+              <li><strong>Check:</strong> Vasily writes only to its own vasily/state prefix, never to sonya/state.</li>
+              <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/runtime-options.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">llm</span><span class="pill">active</span></div>
+            <h3>Vasily uses LLM for short scoped conversation</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> After hard guards and semantic intent classification decide that an addressed/private message is a question, discussion, bot-flow critique, light conversation, or off-topic redirect, Vasily may use Vertex/Gemini to write the final short Telegram wording. This does not make him a generic ChatGPT: the reply stays inside AIM/NIMS website, QA dashboards, staging/production, links, CTA/forms/payment, bot behavior, and routing. Owner feedback like &#039;говори нормально / не по-ишному / по-человечески&#039; updates conversationalReplyStyle instead of being treated as a normal question. Broader owner instructions like &#039;запомни правило&#039; or &#039;когда я говорю QA сайта&#039; update ownerRuntimeInstructions and guide future routing/wording.</li>
+              <li><strong>Check:</strong> SURIKAT_LLM_CHAT_ENABLED controls conversational wording separately from long crawl/audit tasks and from SURIKAT_LLM_INTENT_ROUTER_ENABLED.</li>
+              <li><strong>Check:</strong> The LLM must not accept tasks, create Linear issues, claim screenshots/dashboard files, or invent QA status.</li>
+              <li><strong>Check:</strong> Owner style feedback returns rules_style_updated and persists conversationalReplyStyle through the Vasily GCS state mirror.</li>
+              <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/runtime-options.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">llm</span><span class="pill">active</span></div>
+            <h3>Owner-gated LLM site audits</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Owner requests like &#039;сходи проверь сайт, ссылки, даты и названия&#039; or &#039;давай сделаем аудит вот этого сайта https://...&#039; trigger bounded read-only website QA via Vertex/Gemini. Vasily crawls the target, same-origin pages, linked AIM Labs/sprint pages, and a bounded external-link sample, then answers in DM or the source chat.</li>
+              <li><strong>Check:</strong> SURIKAT_LLM_TASK_OWNER_ONLY stays true unless the owner explicitly opens access.</li>
+              <li><strong>Check:</strong> The LLM semantic intent router runs before conversational replies, so owner audit/QA tasks with URLs are classified by meaning and cannot be answered as casual chat just because they miss a task regex.</li>
+              <li><strong>Check:</strong> Visual QA/full pass/dashboard/screenshot requests for ai-native are task-mode requests even when the visible Telegram text hides the full URL in a text_link entity.</li>
+              <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/runtime-options.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">linear</span><span class="pill">active</span></div>
+            <h3>Linear and product-rule discipline</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Real bug reports go to Linear with Telegram source evidence and source_key dedupe. Product/payment answers must use website-ops/product-rules.json and product-rules.md, not memory or improvised chat logic.</li>
+              <li><strong>Check:</strong> If LINEAR_API_KEY is missing, save to pending queue and do not drop the report.</li>
+              <li><strong>Check:</strong> GitHub/GitHub Pages draft links are excluded surfaces unless the same issue is reproduced on staging/production.</li>
+              <li><strong>Check:</strong> Payment discount logic must match product-rules.json.</li>
+              <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/linear-routing.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">privacy</span><span class="pill">active</span></div>
+            <h3>Metrika lead DMs require an owner allowlist</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Metrika/form/payment leads may be sent to personal Telegram messages only for explicit owner-approved recipients. The allowlist and delivery map are separate: @stavenski, @Irhen_N, and @dan_named are approved usernames, but the live relay sends only to active username=chat_id targets. Normal live staging/payment delivery is active for @stavenski / 75263878 and @Irhen_N / 125291022. Owner-approved night tests may temporarily narrow delivery to owner-only stavenski=75263878, but the normal map must be restored after the test window. Successful deliveries must be traceable through lead_relay_delivered logs with masked contact and Telegram messageId. This is not a blanket permission to DM anyone. Recipient expansion remains owner-approved; payment lead notification pause/resume may also be controlled by configured notification managers, currently Anca / @stavenski and Ira / @Irhen_N, through the durable metrikaLeadDmDeliveryPaused state.</li>
+              <li><strong>Check:</strong> Use SURIKAT_METRIKA_LEAD_DM_ALLOWED_USERNAMES or owner-updated metrikaLeadDmAllowedUsernames as the source of truth.</li>
+              <li><strong>Check:</strong> The browser-facing staging service is aim-pay-lead-relay in project aim-surikat-vasily for https://staging.aimindset.org form/payment leads.</li>
+              <li><strong>Check:</strong> Use SURIKAT_METRIKA_LEAD_DM_RECIPIENTS as the concrete username=chat_id delivery map; normal active production value is stavenski=75263878,Irhen_N=125291022 unless the owner adds more confirmed DM recipients.</li>
+              <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/runtime-options.md; Site Repo - ai-mindset-website/cloud-run/telegram-lead-relay/README.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">runtime</span><span class="pill">active</span></div>
+            <h3>Sonya Cloud Run owns design-review Telegram</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> @aim_surikat_sonya_bot runs as Cloud Run webhook aim-surikat-sonya in the Sonya Google Cloud project project-f40c3e3c-0fca-49de-96d. Local polling should not run while webhook mode is active. Sonya uses Vertex AI for the Google Cloud credits path and Cloud Storage for media/state surfaces. Vasily must not be deployed into this project except as an explicit rollback.</li>
+              <li><strong>Check:</strong> Cloud Run exposes GET /health and POST /telegram protected by TELEGRAM_WEBHOOK_SECRET.</li>
+              <li><strong>Check:</strong> Use SONYA_LLM_PROVIDER=vertex with the credit-linked VERTEX_PROJECT_ID for Cloud Run.</li>
+              <li><strong>Check:</strong> Do not mix local getUpdates polling with Telegram webhook mode.</li>
+              <li><strong>Source:</strong> Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">design-feedback</span><span class="pill">active</span></div>
+            <h3>Sonya ratings become generator memory</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Sonya sends review-only homepage/payment/element screenshots, collects 0-10 owner ratings, writes the design feedback registry, and appends keep/change/avoid/promote instructions for future generators.</li>
+              <li><strong>Check:</strong> 0 is hard reject; 1-3 rejected; 4-6 weak; 7-8 promising; 9-10 strong.</li>
+              <li><strong>Check:</strong> Explicit low owner ratings override cached Sonya self-scores.</li>
+              <li><strong>Check:</strong> Bug-like design/page feedback is handed to Vasily instead of creating Linear issues directly.</li>
+              <li><strong>Source:</strong> website-ops/design-feedback-rules.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">AIM Site Agent Evaluation</span><span class="pill">qa</span><span class="pill">active</span></div>
+            <h3>AIM Site Agent Evaluation reports to Vasily</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> The black-box QA worker checks production/staging links, CTA, screenshots, blank bands, dates, and agent-readability. Vasily is the Telegram dispatcher that can summarize or route those findings.</li>
+              <li><strong>Check:</strong> QA reports are read-only and should not edit the website.</li>
+              <li><strong>Check:</strong> High-severity findings fail the QA run and should be visible in reports/latest.</li>
+              <li><strong>Check:</strong> Manual or scheduled QA does not replace human review before push/deploy.</li>
+              <li><strong>Source:</strong> AIM Site Agent Evaluation/README.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">All AIM bots</span><span class="pill">safety</span><span class="pill">active</span></div>
+            <h3>Shared bot safety and handoff rules</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Secrets stay out of tracked files; each Telegram bot has one delivery owner at a time; bots should produce evidence-backed handoffs rather than silently editing production; GitHub push/deploy still requires explicit user approval unless a documented narrow exception applies. Bot rule or architecture changes must update website-ops/bot-operating-rules.json first so the Website Hub can regenerate from that source.</li>
+              <li><strong>Check:</strong> Store bot tokens in Keychain locally or Secret Manager in Cloud Run.</li>
+              <li><strong>Check:</strong> Do not publish remote changes without the required review/push authorization path.</li>
+              <li><strong>Check:</strong> Every meaningful bot rule or architecture change must update website-ops/bot-operating-rules.json first; the Website Hub summary is regenerated from that source by local-preview/sync-bot-operating-rules-summary.mjs and the local preview auto-sync.</li>
+              <li><strong>Source:</strong> website-ops/rules-and-pipelines.md</li>
+            </ul>
+          </article>
+          <!-- BOT_OPERATING_RULES_SUMMARY_END -->
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">sync</span></div>
+              <h3>Как обновлять</h3>
+              <ul class="ops-list">
+                <li><strong>Править:</strong> сначала `website-ops/product-rules.json`, потом `product-rules.md`.</li>
+                <li><strong>Синхронизировать хаб:</strong> `node local-preview/sync-product-rules-summary.mjs`.</li>
+                <li><strong>Bot rules:</strong> сначала `website-ops/bot-operating-rules.json`, потом `bot-operating-rules.md`; sync: `node local-preview/sync-bot-operating-rules-summary.mjs`.</li>
+                <li><strong>Проверить код:</strong> payment logic живёт в `PricingPaymentPopupDatalineHeader.tsx`, кейсы в `LabW26PageV3.tsx` и `public/assets/cases/`.</li>
+                <li><strong>Проверить Суриката:</strong> README и runtime должны отвечать теми же правилами.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">daily agent</span></div>
+              <h3>Ежедневный watcher</h3>
+              <ul class="ops-list">
+                <li><strong>Automation ID:</strong> `aim-website-product-rules-sync-watch`.</li>
+                <li><strong>Расписание:</strong> каждый день в 09:00 Europe/Lisbon.</li>
+                <li><strong>Следит за:</strong> `website-ops/*`, docs Суриката, payment popup code, case content/media, QA docs/config.</li>
+                <li><strong>Если меняется правило:</strong> обновляет registry, markdown, hub summary и task canvas.</li>
+                <li><strong>Если правило тестируемое:</strong> добавляет ожидание в QA repo.</li>
+                <li><strong>Если источник неясен:</strong> помечает как needs-owner-decision вместо выдумывания.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">local</span><span class="pill">codex</span></div>
+              <h3>Локальная Codex automation `bug`</h3>
+              <ul class="ops-list">
+                <li><strong>Статус сейчас:</strong> `PAUSED`, чтобы ночью ресурс уходил в AIM Night Design Pursuit.</li>
+                <li><strong>Что это:</strong> локальный cron в Codex, который может продолжать незавершённую bug-задачу с последнего понятного состояния.</li>
+                <li><strong>Где живёт:</strong> `~/.codex/automations/bug/` вне git-репозитория.</li>
+                <li><strong>Из чего состоит:</strong> `automation.toml` хранит расписание/cwd/model/prompt, а `memory.md` хранит понятную историю прогонов.</li>
+                <li><strong>Как работает, если включить:</strong> запускается по расписанию с prompt `continue this task`, читает прошлый след в `memory.md`, поднимает текущий контекст из рабочей папки и продолжает последний незакрытый баговый поток.</li>
+                <li><strong>Что смотреть человеку:</strong> если непонятно, почему Codex что-то сам проверял или чинил, сначала открыть `~/.codex/automations/bug/memory.md`.</li>
+                <li><strong>Важно:</strong> это исполняющий worker и журнал, а не источник правды для правил сайта; source of truth остаётся в `website-ops/*.json`, `website-ops/*.md`, docs Суриката и QA repo.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">night</span><span class="pill">design</span></div>
+              <h3>AIM Night Design Pursuit</h3>
+              <ul class="ops-list">
+                <li><strong>Automation ID:</strong> `aim-night-design-pursuit`.</li>
+                <li><strong>Окно:</strong> каждый день старт в 00:05 Europe/Lisbon; может работать до 06:45.</li>
+                <li><strong>Цель:</strong> много разнообразных review-only дизайнов по трём направлениям: главная, guided payment page, отдельные элементы/попапы.</li>
+                <li><strong>Качество:</strong> AIM Design Quality Pursuit, целевой self-check `8/10+` и соответствие духу AI Mindset.</li>
+                <li><strong>Ресурсы:</strong> ночью можно закрывать Telegram, Obsidian, Pencil, Linear, лишние Terminal, stale subagents и не нужные dev-серверы.</li>
+                <li><strong>Не трогать:</strong> Codex, нужный браузер/Arc, OS/Finder, Yandex Disk/sync и активные Creative Taste Bot/code-animation процессы.</li>
+                <li><strong>Отчёт:</strong> `website-ops/night-design-pursuit-latest.md`.</li>
+              </ul>
+              <span class="path">website-ops/night-design-pursuit.md</span>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">smoke</span><span class="pill">q&a</span></div>
+              <h3>Q&A-тесты системы</h3>
+              <ul class="ops-list">
+                <li><strong>Запуск:</strong> `node website-ops/ops-system-smoke-tests.mjs`.</li>
+                <li><strong>Проверяет:</strong> latest QA report, blank-band detector, product rules, case source-fidelity rule, hub sync, Surikat docs/self-test, payment implementation, update cadences, local links.</li>
+                <li><strong>Цель:</strong> быстро понять, что QA ловит ошибки, правила не разъехались, а документация и hub доступны людям и агентам.</li>
+                <li><strong>Док:</strong> `website-ops/ops-system-smoke-tests.md`.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">cadence</span><span class="pill">agents</span></div>
+              <h3>Что обновляется само</h3>
+              <ul class="ops-list">
+                <li><strong>Product rules:</strong> каждый день 09:00 Europe/Lisbon, automation `aim-website-product-rules-sync-watch`.</li>
+                <li><strong>Case source fidelity:</strong> перед каждым новым или существенно обновлённым кейсом, reviewer `Case Source Fidelity Reviewer`.</li>
+                <li><strong>QA dashboards:</strong> manual / health, раз в 2 недели по понедельникам 07:00 UTC на четных ISO-неделях, monthly 1-го числа 08:00 UTC.</li>
+                <li><strong>DeviceCloud:</strong> manual и preflight 2-го числа 09:00 UTC; реальные сессии ждут provider secrets.</li>
+                <li><strong>Surikat:</strong> Cloud Run webhook `aim-surikat-vasily`; local LaunchAgent выключен и используется только как rollback после `deleteWebhook`.</li>
+                <li><strong>Surikat LLM chat:</strong> LLM may write only the final short reply after deterministic routing; it must not accept tasks, create Linear issues, or invent QA/dashboard status.</li>
+                <li><strong>Homepage full design:</strong> раз в неделю по понедельникам 09:40 Europe/Lisbon; automation `aim-homepage-full-design-generator` создаёт полный light-theme прототип в `homepage-design-lab/runs/full/` и читает Sonya handoff.</li>
+                <li><strong>AIM Night Design Pursuit:</strong> каждый день 00:05 Europe/Lisbon; automation `aim-night-design-pursuit` использует ночное окно 00:00–07:00 для разнообразных review-only дизайнов, может закрывать лишние приложения и читает Sonya handoff.</li>
+                <li><strong>Homepage elements:</strong> раз в неделю по пятницам 10:20 Europe/Lisbon; automation `aim-homepage-element-design-generator` создаёт один блок/попап/элемент в `homepage-design-lab/runs/elements/` и читает Sonya handoff.</li>
+                <li><strong>Codex bug automation:</strong> сейчас `PAUSED`; живёт в `~/.codex/automations/bug/`, при включении продолжает незавершённый bug-thread и пишет след в `memory.md`.</li>
+                <li><strong>Hub:</strong> после значимых изменений руками или через sync script; local preview auto-sync подтягивает Product rules, Tool registry и Bot operating rules; desktop/mobile preview обязателен.</li>
+              </ul>
+              <span class="path">website-ops/update-rules.md</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="qa">
+        <div class="section-head">
+          <h2>Сурикат и QA-агенты</h2>
+          <p class="section-note">Операционная карта: Василий принимает QA-сигналы из Telegram и докладывает людям, Соня принимает дизайн-сигналы и оценки, а автоматические workers проверяют сайт и готовят новые варианты страниц/элементов.</p>
+        </div>
+        <div class="ops-layout">
+          <article class="card dark" data-search-item>
+            <div class="label-row">
+              <span class="pill ok">active</span>
+              <span class="pill">black-box</span>
+            </div>
+            <div>
+              <h3>AIM Site Agent Evaluation</h3>
+              <p class="summary">
+                Отдельный QA-репозиторий без привязки к исходникам сайта. Агент смотрит на `aimindset.org`
+                и `staging.aimindset.org` как внешний пользователь: собирает маршруты, проверяет ссылки и CTA,
+                делает скриншоты, ищет пустые блоки, старые даты, сломанные переходы и проблемы читаемости для AI-агентов.
+              </p>
+            </div>
+            <div class="actions">
+              <a class="action" href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/README.md">README</a>
+              <a class="action" href="https://github.com/eppelas/aim-site-agent-evaluation" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a class="action" href="https://eppelas.github.io/aim-site-agent-evaluation/" target="_blank" rel="noopener noreferrer">GitHub Pages</a>
+            </div>
+            <span class="path">AIM Site Agent Evaluation/</span>
+          </article>
+
+          <div class="ops-board">
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">cadence</span></div>
+              <h3>Как часто работает</h3>
+              <ul class="ops-list">
+                <li><strong>Вручную:</strong> GitHub Actions `workflow_dispatch` для health / biweekly / monthly.</li>
+                <li><strong>Раз в 2 недели:</strong> понедельник 07:00 UTC, guard по четной ISO-неделе.</li>
+                <li><strong>Раз в месяц:</strong> 1-е число 08:00 UTC, широкий прогон экранов и скриншотов.</li>
+                <li><strong>DeviceCloud:</strong> ручной или месячный прогон, включается после секретов провайдера.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">checks</span></div>
+              <h3>Что проверяет</h3>
+              <ul class="ops-list">
+                <li><strong>Workflow:</strong> ссылки, кнопки, CTA, 404, source page и ближайший контекст ссылки.</li>
+                <li><strong>Visual:</strong> desktop / tablet / mobile, baselines, diff, пустые блоки и retry при подозрении на lazy-load.</li>
+                <li><strong>Freshness:</strong> даты лабораторий, прошедшие события, старые Luma/внешние CTA.</li>
+                <li><strong>Agent-readability:</strong> `llms.txt`, markdown mirrors, JSON-LD, semantic HTML, canonical и sitemap.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">edit</span></div>
+              <h3>Где редактировать</h3>
+              <ul class="ops-list">
+                <li><strong>Цели и сайты:</strong> `config/sites.json`.</li>
+                <li><strong>Маршруты:</strong> `config/routes.production.json`, `config/routes.staging.json`.</li>
+                <li><strong>Экраны и браузеры:</strong> `config/browser-matrix.json`.</li>
+                <li><strong>Правила и логика:</strong> `src/`, `docs/`, `TODO.md`.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill warn">blocked</span></div>
+              <h3>Что требует доступов</h3>
+              <ul class="ops-list">
+                <li><strong>Real devices:</strong> BrowserStack / LambdaTest / Sauce Labs secrets.</li>
+                <li><strong>Долгая история:</strong> R2/S3 bucket и ключи для `npm run sync:history`.</li>
+                <li><strong>Sanity-aware freshness:</strong> read token/schema, чтобы ловить устаревшие CMS-данные до публикации.</li>
+                <li><strong>AI visibility vendors:</strong> пока отложено; сначала чиним собственные agent-readable поверхности.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+        <div class="grid">
+          <a class="card dark wide surikat-feature" data-search-item data-surikat-mode-card data-surikat-mode="day" href="#surikat">
+            <div class="label-row"><span class="pill ok">главный QA-бот</span><span class="pill">Cloud Run → Telegram → Linear</span><span class="pill surikat-mode-chip" data-surikat-mode-label>day mode / intake</span></div>
+            <div>
+              <h3>Сурикат Василий</h3>
+              <p class="summary">
+                Официальный Telegram-бот QA-контура. Понимает обращения вроде «Вася», «Вась», «Васек», «Васёк» и «суркат»,
+                принимает баги в группе или личке, ставит реакцию если всё понятно, уточняет детали если данных мало
+                и отправляет задачи в Linear. Сейчас живёт на Cloud Run webhook, а локальный watcher выключен и оставлен только для rollback.
+                На нерелевантные вопросы не превращается в ChatGPT: отшучивается и возвращает разговор к сайту.
+                Его роль — быть менеджером QA-контура, докладчиком по результатам и приемником bug-like handoff от Сони.
+              </p>
+            </div>
+            <span class="surikat-hover-art" aria-hidden="true">
+              <img data-surikat-mode-image src="local-preview/site-hub-assets/surikat-mode-day.png" alt="" loading="lazy" />
+            </span>
+            <span class="path">Bots/Telegram Bug Intake Bot - Linear</span>
+          </a>
+          <a class="card dark wide" data-search-item href="#sonya">
+            <div class="label-row"><span class="pill ok">design taste bot</span><span class="pill">Telegram → ratings</span><span class="pill">Vertex / Cloud Run live</span></div>
+            <div>
+              <h3>Сурикат Соня</h3>
+              <p class="summary">
+                Ночной дизайн-сурикат AIM. Через Telegram приносит Анке и Саше review-only homepage/payment/element варианты,
+                принимает оценки `0-10` и медиа-референсы, пишет taste memory, умеет жить на Cloud Run с Vertex/GCS,
+                передает генераторам keep/change/avoid/promote инструкции, а bug-like feedback отдает Василию.
+              </p>
+            </div>
+            <span class="path">Bots/Telegram Design Taste Bot - Sonya</span>
+          </a>
+          <a class="card" data-search-item href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html">
+            <div class="label-row"><span class="pill">подключаемый QA-агент</span></div>
+            <div>
+              <h3>QA-бот сайта</h3>
+              <p class="summary">Текущий автоматический проверяющий: CTA, ссылки, скриншоты, даты и читаемость. Дальше Сурикат будет собирать его результаты и докладывать подписанным людям.</p>
+            </div>
+            <span class="path">AIM Site Agent Evaluation/reports/latest/dashboard.html</span>
+          </a>
+          <a class="card dark" data-search-item href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html">
+            <div class="label-row"><span class="pill ok">latest</span><span class="pill">local launcher</span></div>
+            <div>
+              <h3>Последний QA-дашборд</h3>
+              <p class="summary">Главный отчет по production и staging. В Finder есть один прямой launcher: `! Open AIM QA Dashboard.command` / `! 0 App - AIM QA Dashboard.app`.</p>
+            </div>
+            <span class="path">AIM Site Agent Evaluation/reports/latest/dashboard.html</span>
+          </a>
+          <a class="card" data-search-item href="website-ops/fos-landing/README.md">
+            <div class="label-row"><span class="pill ok">linked FOS</span><span class="pill">parent app</span></div>
+            <div>
+              <h3>FOS Role Adaptive</h3>
+              <p class="summary">Связанная версия `AIM Website/website-ops/fos-landing/fos-landing`: Finder application лежит в родительской папке AIM Website как `_AI Native FOS Main Role Adaptive.app`, а найденные FOS/AIN03 вариации ведутся в `website-ops/fos-landing/RELATED_VARIATIONS_INVENTORY.md`.</p>
+            </div>
+            <span class="path">website-ops/fos-landing/README.md</span>
+          </a>
+          <a class="card dark" data-search-item href="website-ops/fos-landing/fos-landing/version-catalog/experiments-dashboard.html">
+            <div class="label-row"><span class="pill ok">experiments</span><span class="pill">pricing / fonts / hero</span></div>
+            <div>
+              <h3>AIM/FOS Experiments Dashboard</h3>
+              <p class="summary">Единый индекс локальных review-страниц, где собирались тарифы v10, шрифты, hero-варианты, отзывы, alumni/proof-блоки, particles/firefly и внешние дизайн-хабы.</p>
+            </div>
+            <span class="path">website-ops/fos-landing/fos-landing/version-catalog/experiments-dashboard.html</span>
+          </a>
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation" target="_blank" rel="noopener noreferrer">
+            <div class="label-row"><span class="pill">repo</span></div>
+            <div>
+              <h3>QA-репозиторий</h3>
+              <p class="summary">Исходники бота и дашбордов.</p>
+            </div>
+            <span class="path">eppelas/aim-site-agent-evaluation</span>
+          </a>
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/12-github-actions-operations.md">
+            <div class="label-row"><span class="pill">ops</span></div>
+            <div>
+              <h3>Расписание</h3>
+              <p class="summary">Подробности запусков, если понадобятся.</p>
+            </div>
+            <span class="path">docs/12-github-actions-operations.md</span>
+          </a>
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/13-device-cloud-integration.md">
+            <div class="label-row"><span class="pill">devices</span></div>
+            <div>
+              <h3>DeviceCloud</h3>
+              <p class="summary">BrowserStack first, Sauce для enterprise, LambdaTest для дешевого ручного эксперимента.</p>
+            </div>
+            <span class="path">docs/13-device-cloud-integration.md</span>
+          </a>
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/03-visual-workflow-qa.md">
+            <div class="label-row"><span class="pill">visual</span></div>
+            <div>
+              <h3>Пустые блоки на скриншотах</h3>
+              <p class="summary">Как агент отличает реальную пустоту от недогрузившегося lazy-load блока.</p>
+            </div>
+            <span class="path">docs/03-visual-workflow-qa.md</span>
+          </a>
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/05-agent-readability.md">
+            <div class="label-row"><span class="pill">agents</span></div>
+            <div>
+              <h3>HTML vs Markdown</h3>
+              <p class="summary">Проверка, что страницы и agent-readable markdown говорят одно и то же.</p>
+            </div>
+            <span class="path">docs/05-agent-readability.md</span>
+          </a>
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/TODO.md">
+            <div class="label-row"><span class="pill">todo</span></div>
+            <div>
+              <h3>Открытые задачи</h3>
+              <p class="summary">Что уже self-checked, что заблокировано доступами, какие site fixes еще ждут правок.</p>
+            </div>
+            <span class="path">AIM Site Agent Evaluation/TODO.md</span>
+          </a>
+        </div>
+
+        <div class="dark-band" id="sonya" data-search-item>
+          <div class="section-head">
+            <h2>Как работает Сурикат Соня</h2>
+            <p class="section-note">Это не QA-диспетчер и не live deployer, а Telegram taste-memory бот для AIM design labs: она собирает варианты, разговаривает коротко, просит оценки, возвращает сигнал генераторам и передает Василию только багоподобные сигналы.</p>
+          </div>
+          <div class="ops-board">
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">telegram</span></div>
+              <h3>Review delivery</h3>
+              <ul class="ops-list">
+                <li><strong>Где живет:</strong> отдельный Telegram-бот `@aim_surikat_sonya_bot`.</li>
+                <li><strong>Хозяева:</strong> Анка `@stavenski` и Саша `@alex_named`; numeric id сохраняется после `/start`.</li>
+                <li><strong>Что отправляет:</strong> review-only design-lab screenshots с кнопками `0-10` и ссылкой на GitHub Pages/local preview, если она есть.</li>
+                <li><strong>Что можно писать:</strong> `/review`, просьбы вроде «пришли дизайны», оценки, медиа-референсы и дизайн-фидбек.</li>
+                <li><strong>Safety gate:</strong> scheduled delivery остается approval/catalog-based; прямые owner-команды «все/больше/неоцененное» могут расширять выдачу по inventory без live deploy.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">semantic road</span></div>
+              <h3>Речь и смысл</h3>
+              <ul class="ops-list">
+                <li><strong>Hard routes:</strong> `/start`, `/scan`, `/review`, callbacks и rating replies остаются детерминированными.</li>
+                <li><strong>Обычный текст:</strong> идет через Semantic Road: короткое `привет` получает короткий ответ, дизайн-фидбек сохраняется, баг уходит Василию.</li>
+                <li><strong>Cloud path:</strong> `SONYA_LLM_PROVIDER=vertex` ведет Semantic Road и scoring через Vertex AI, чтобы использовать Google Cloud billing credits.</li>
+                <li><strong>Связь с Василием:</strong> если отзыв похож на баг сайта или сломанную страницу, Соня пишет handoff в очередь Василия вместо прямого Linear-шума.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">memory</span></div>
+              <h3>Что меняется после оценки</h3>
+              <ul class="ops-list">
+                <li><strong>Registry:</strong> каждая оценка пишет `design-feedback-dashboard/data/design-feedback-registry.json`.</li>
+                <li><strong>Generator handoff:</strong> `website-ops/design-generator-feedback-handoff.jsonl` получает next-design brief: что сохранить, поменять, запретить или развить.</li>
+                <li><strong>Design Lab:</strong> homepage, payment и element generators читают этот handoff перед следующими runs и создают новые review-only страницы, блоки и элементы.</li>
+                <li><strong>Vasily handoff:</strong> bug-like feedback по странице/дизайну пишет событие в `Bots/Telegram Bug Intake Bot - Linear/data/sonya-design-handoff.jsonl`.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">cloud</span></div>
+              <h3>Google Cloud режим</h3>
+              <ul class="ops-list">
+                <li><strong>Entrypoint:</strong> `npm run serve` поднимает Cloud Run-compatible server: `GET /health`, `POST /telegram`, protected `POST /review-queue`.</li>
+                <li><strong>Media:</strong> `SONYA_GCS_BUCKET` складывает входящие фото/аудио/видео в Cloud Storage; большие файлы для Vertex идут как `gs://...`.</li>
+                <li><strong>Runtime Veo:</strong> временный owner-only режим генерирует короткие клипы через Vertex AI с TTL, дневными лимитами и GCS ledger; пока без `ffmpeg` свежие клипы уходят как `sendVideo`, не как настоящий круг.</li>
+                <li><strong>Architecture:</strong> `website-ops/sonya-cloud-run-architecture.md`.</li>
+                <li><strong>Deploy notes:</strong> `Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md`.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+
+        <div class="dark-band" id="surikat" data-search-item>
+          <div class="section-head">
+            <h2>Как работает Сурикат</h2>
+            <p class="section-note">Это не отдельный ChatGPT в чате, а тревожный диспетчер QA-контура: он принимает сигналы, решает что является багом, и связывает людей, Linear и автоматические проверки.</p>
+          </div>
+          <div class="ops-board">
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">telegram</span></div>
+              <h3>Прием сообщений</h3>
+              <ul class="ops-list">
+                <li><strong>Где живет:</strong> группа сайта и личка `@aim_surikat_bot`.</li>
+                <li><strong>Как обращаться:</strong> `Сурикат Василий`, `Сурикат`, `суркат`, `Вася`, `Вась`, `Васек`, `Васёк`, `Васька`.</li>
+                <li><strong>Что ловит:</strong> баги, сбои, тормоза, странное поведение, неправильные ссылки, сломанные блоки, проблемы CTA и форм.</li>
+                <li><strong>Как отвечает:</strong> если все понятно, ставит `👀`; если мало данных, просит страницу/ссылку, устройство/браузер или скрин.</li>
+                <li><strong>Локальный аудит:</strong> все новые входящие update, которые Сурикат реально увидел, пишутся в `data/audit-log.jsonl`.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">linear</span></div>
+              <h3>Маршрут в Linear</h3>
+              <ul class="ops-list">
+                <li><strong>Проект:</strong> `AIM Website`.</li>
+                <li><strong>Статус:</strong> `Backlog`.</li>
+                <li><strong>Лейбл:</strong> `Баг`.</li>
+                <li><strong>Приоритет:</strong> пока расставляется эвристикой из `evaluation-track.md`; дальше можно докрутить на реальных примерах.</li>
+                <li><strong>Если Linear недоступен:</strong> отчет сохраняется локально в очередь и будет отправлен после настройки ключа.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">edit</span></div>
+              <h3>Где править Суриката</h3>
+              <ul class="ops-list">
+                <li><strong>Поведение и речь:</strong> `Bots/Telegram Bug Intake Bot - Linear/src/telegram-bug-intake.mjs`.</li>
+                <li><strong>Опции окружения:</strong> `.env.example`, `runtime-options.md`.</li>
+                <li><strong>Cloud Run:</strong> `Dockerfile`, `cloud-run/README.md`, `cloud-run/env.production.yaml`.</li>
+                <li><strong>Локальный rollback:</strong> LaunchAgent `~/Library/LaunchAgents/ai.aim.surikat.bot.plist` запускает `scripts/run-local-watcher.zsh`, но должен быть выключен, пока Telegram webhook смотрит в Cloud Run.</li>
+                <li><strong>Рабочий каталог:</strong> `Bots/Telegram Bug Intake Bot - Linear/`.</li>
+                <li><strong>Доступ к сообщениям группы:</strong> `group-setup.md`.</li>
+                <li><strong>Priority/Linear:</strong> `evaluation-track.md`, `linear-routing.md`.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill warn">secrets</span></div>
+              <h3>Токены и доступы</h3>
+              <ul class="ops-list">
+                <li><strong>Telegram token:</strong> не хранится на сайте и не пишется в репозиторий; если что, токен у Ани.</li>
+                <li><strong>Локально:</strong> rollback watcher читает Telegram token из macOS Keychain service `aim_surikat_bot_token`, account `aim_surikat_bot`.</li>
+                <li><strong>Cloud Run:</strong> использует Secret Manager `vasily-telegram-bot-token`, `vasily-linear-api-key`, `vasily-telegram-webhook-secret`.</li>
+                <li><strong>Linear:</strong> нужен отдельный `LINEAR_API_KEY`; без него Сурикат отвечает в Telegram, но складывает баги в локальную очередь.</li>
+                <li><strong>Команды управления:</strong> принимает только от Анки / `@stavenski`; остальных вежливо не слушается.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">manager</span></div>
+              <h3>Связка с QA-ботом сайта</h3>
+              <ul class="ops-list">
+                <li><strong>Сурикат:</strong> диспетчер, голос в Telegram, маршрутизация в Linear, дайджесты людям.</li>
+                <li><strong>AIM Site Agent Evaluation:</strong> worker, который запускает black-box проверки, генерирует `reports/latest/report.json` и dashboard.</li>
+                <li><strong>Следующий шаг:</strong> команда вроде `Васек, проверь сайт` может запускать GitHub Action, а Сурикат потом будет читать результат и докладывать high/medium findings.</li>
+                <li><strong>Безопасный минимум:</strong> пока держим обе системы раздельно: Сурикат принимает человеческие баги, QA-бот регулярно проверяет сайт.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">github</span></div>
+              <h3>GitHub и Actions</h3>
+              <ul class="ops-list">
+                <li><strong>QA repo:</strong> `https://github.com/eppelas/aim-site-agent-evaluation`.</li>
+                <li><strong>QA Actions:</strong> `site-qa.yml`, `device-cloud.yml`, `ci.yml`.</li>
+                <li><strong>QA Pages:</strong> `https://eppelas.github.io/aim-site-agent-evaluation/`.</li>
+                <li><strong>Surikat runtime:</strong> основной runtime теперь Cloud Run service `aim-surikat-vasily`; workflow scaffold `.github/workflows/telegram-bug-intake.yml` остаётся legacy/fallback, не production delivery.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+
+        <div class="dark-band">
+          <div class="section-head">
+            <h2>Если run failed</h2>
+            <p class="section-note">Failure сейчас означает, что найдены high findings или сломался сам прогон. Сначала открываем run status в дашборде.</p>
+          </div>
+          <div class="ops-board">
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">read</span></div>
+              <h3>Где смотреть причину</h3>
+              <ul class="ops-list">
+                <li><strong>Dashboard:</strong> `reports/latest/dashboard.html` показывает общий статус.</li>
+                <li><strong>Production:</strong> `dashboard.production.html` отделяет боевой сайт от staging.</li>
+                <li><strong>Staging:</strong> `dashboard.staging.html` показывает только кандидат на переезд.</li>
+                <li><strong>Evidence:</strong> у broken/stale links должна быть source page, anchor text и ближайшая секция.</li>
+              </ul>
+            </article>
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">rerun</span></div>
+              <h3>Как перезапустить локально</h3>
+              <div class="code-lines">
+                <span class="code-line">cd "AIM Site Agent Evaluation"</span>
+                <span class="code-line">npm run qa -- --site all --max-crawl-pages 80</span>
+                <span class="code-line">npm run qa:biweekly</span>
+                <span class="code-line">npm run qa:monthly</span>
+                <span class="code-line">npm run dashboard</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="legacy">
+        <div class="section-head">
+          <h2>Дизайн-индекс</h2>
+          <p class="section-note">Оставляем только главный вход в legacy-дизайны. Подробную галерею здесь не дублируем.</p>
+        </div>
+        <article class="card green wide index-card" id="design-archive" data-search-item>
+          <div>
+            <div class="label-row"><span class="pill ok">главный архив</span></div>
+            <div>
+              <h3>Опубликованный дизайн-индекс</h3>
+              <p class="summary">Единый вход в опубликованные визуальные направления. Справа можно листать прошлые варианты прямо здесь, не уходя со страницы.</p>
+            </div>
+            <div class="actions">
+              <a class="action" href="https://eppelas.github.io/aim-web-design-index/">открыть индекс</a>
+              <a class="action" href="https://github.com/eppelas/aim-web-design-index" target="_blank" rel="noopener noreferrer">GitHub-репозиторий</a>
+            </div>
+            <span class="path">/style-index/</span>
+          </div>
+          <div class="archive-browser" aria-label="Скриншоты прошлых дизайн-вариантов AIM Website">
+            <button class="card-media archive-preview" id="archive-preview-button" type="button" data-src="local-preview/site-hub-screenshots/design-index-desktop.png" data-title="Опубликованный дизайн-индекс" data-caption="Локальный скриншот /style-index/ с карточками опубликованных legacy-направлений.">
+              <img id="archive-preview-image" src="local-preview/site-hub-screenshots/design-index-desktop.png" alt="Скриншот опубликованного дизайн-индекса AIM" loading="lazy" />
+            </button>
+            <div class="archive-thumbs">
+              <button class="archive-thumb" type="button" aria-selected="true" data-gallery-src="local-preview/site-hub-screenshots/design-index-desktop.png" data-gallery-title="Опубликованный дизайн-индекс" data-gallery-caption="Локальный скриншот /style-index/ с карточками опубликованных legacy-направлений.">
+                <img src="local-preview/site-hub-screenshots/design-index-desktop.png" alt="Миниатюра дизайн-индекса AIM" loading="lazy" />
+              </button>
+              <button class="archive-thumb" type="button" aria-selected="false" data-gallery-src="local-preview/site-hub-screenshots/legacy-style-29-kampong.png" data-gallery-title="Style 29 — kampong organic type" data-gallery-caption="Один из прошлых опубликованных вариантов дизайна AIM Website.">
+                <img src="local-preview/site-hub-screenshots/legacy-style-29-kampong.png" alt="Миниатюра Style 29 kampong organic type" loading="lazy" />
+              </button>
+              <button class="archive-thumb" type="button" aria-selected="false" data-gallery-src="local-preview/site-hub-screenshots/legacy-style-36-data-arch.png" data-gallery-title="Style 36 — data arch" data-gallery-caption="Архивный вариант с data-architecture направлением.">
+                <img src="local-preview/site-hub-screenshots/legacy-style-36-data-arch.png" alt="Миниатюра Style 36 data arch" loading="lazy" />
+              </button>
+              <button class="archive-thumb" type="button" aria-selected="false" data-gallery-src="local-preview/site-hub-screenshots/legacy-style-43-modular.png" data-gallery-title="Style 43 — modular" data-gallery-caption="Архивный модульный вариант интерфейса AIM Website.">
+                <img src="local-preview/site-hub-screenshots/legacy-style-43-modular.png" alt="Миниатюра Style 43 modular" loading="lazy" />
+              </button>
+              <button class="archive-thumb" type="button" aria-selected="false" data-gallery-src="local-preview/site-hub-screenshots/legacy-style-54-grid-column.png" data-gallery-title="Style 54 — grid with column" data-gallery-caption="Архивный grid/column вариант визуального направления.">
+                <img src="local-preview/site-hub-screenshots/legacy-style-54-grid-column.png" alt="Миниатюра Style 54 grid with column" loading="lazy" />
+              </button>
+              <button class="archive-thumb" type="button" aria-selected="false" data-gallery-src="local-preview/site-hub-screenshots/legacy-style-57-voxel.png" data-gallery-title="Style 57 — voxel" data-gallery-caption="Архивный voxel-вариант для AIM Website.">
+                <img src="local-preview/site-hub-screenshots/legacy-style-57-voxel.png" alt="Миниатюра Style 57 voxel" loading="lazy" />
+              </button>
+              <button class="archive-thumb" type="button" aria-selected="false" data-gallery-src="local-preview/site-hub-screenshots/legacy-style-221-noir-wire.png" data-gallery-title="Style 221 — noir wire" data-gallery-caption="Архивный темный wire/noir вариант визуального языка.">
+                <img src="local-preview/site-hub-screenshots/legacy-style-221-noir-wire.png" alt="Миниатюра Style 221 noir wire" loading="lazy" />
+              </button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+    </main>
+
+    <dialog id="lightbox">
+      <div class="dialog-head">
+        <div>
+          <p class="kicker" id="dialog-caption">Скриншот</p>
+          <h3 id="dialog-title">Превью</h3>
+        </div>
+        <button class="mini-button" id="close-dialog" type="button">закрыть</button>
+      </div>
+      <div class="dialog-body">
+        <img id="dialog-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" />
+      </div>
+    </dialog>
+
+    <script>
+      const dialog = document.querySelector('#lightbox');
+      const dialogImage = document.querySelector('#dialog-image');
+      const dialogTitle = document.querySelector('#dialog-title');
+      const dialogCaption = document.querySelector('#dialog-caption');
+
+      document.querySelectorAll('[data-src]').forEach((button) => {
+        button.addEventListener('click', () => {
+          dialogImage.src = button.dataset.src;
+          dialogImage.alt = button.dataset.title || 'Превью скриншота';
+          dialogTitle.textContent = button.dataset.title || 'Скриншот';
+          dialogCaption.textContent = button.dataset.caption || 'Скриншот';
+          dialog.showModal();
+        });
+      });
+
+      document.querySelector('#close-dialog').addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+
+      const archivePreviewButton = document.querySelector('#archive-preview-button');
+      const archivePreviewImage = document.querySelector('#archive-preview-image');
+
+      document.querySelectorAll('[data-gallery-src]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const source = button.dataset.gallerySrc;
+          const title = button.dataset.galleryTitle || 'Скриншот дизайна';
+          const caption = button.dataset.galleryCaption || 'Архивный скриншот AIM Website.';
+
+          document.querySelectorAll('[data-gallery-src]').forEach((item) => {
+            item.setAttribute('aria-selected', item === button ? 'true' : 'false');
+          });
+
+          archivePreviewButton.dataset.src = source;
+          archivePreviewButton.dataset.title = title;
+          archivePreviewButton.dataset.caption = caption;
+          archivePreviewImage.src = source;
+          archivePreviewImage.alt = title;
+        });
+      });
+
+      const surikatModes = {
+        day: {
+          label: 'day mode / intake',
+          image: 'local-preview/site-hub-assets/surikat-mode-day.png',
+          alt: 'Сурикат Василий в дневном режиме: мягкий приемщик багов и агентов.',
+        },
+        night: {
+          label: 'dark mode / серый кардинал',
+          image: 'local-preview/site-hub-assets/surikat-mode-night.png',
+          alt: 'Сурикат Василий в ночном режиме: темный диспетчер QA-агентов.',
+        },
+      };
+
+      function getCurrentSurikatMode(now = new Date()) {
+        const hour = now.getHours();
+        return hour >= 8 && hour < 22 ? 'day' : 'night';
+      }
+
+      function applyCurrentSurikatMode() {
+        const mode = getCurrentSurikatMode();
+        const modeData = surikatModes[mode];
+
+        document.querySelectorAll('[data-surikat-mode-card]').forEach((card) => {
+          card.dataset.surikatMode = mode;
+
+          card.querySelectorAll('[data-surikat-mode-label]').forEach((label) => {
+            label.textContent = modeData.label;
+          });
+
+          card.querySelectorAll('[data-surikat-mode-image]').forEach((image) => {
+            image.src = modeData.image;
+            image.alt = modeData.alt;
+          });
+        });
+      }
+
+      applyCurrentSurikatMode();
+    </script>
+  </body>
+</html>

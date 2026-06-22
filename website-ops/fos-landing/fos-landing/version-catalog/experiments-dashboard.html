@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIM/FOS Experiments Dashboard</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --bg: #efeee9;
+      --panel: #fbfaf6;
+      --panel-strong: #ffffff;
+      --ink: #171511;
+      --muted: #706b62;
+      --quiet: rgba(23, 21, 17, 0.56);
+      --line: rgba(23, 21, 17, 0.12);
+      --line-strong: rgba(23, 21, 17, 0.22);
+      --accent: #0f766e;
+      --accent-soft: rgba(15, 118, 110, 0.1);
+      --red: #b42318;
+      --red-soft: rgba(180, 35, 24, 0.09);
+      --amber: #8a5a00;
+      --amber-soft: rgba(138, 90, 0, 0.1);
+      --shadow: 0 18px 50px rgba(23, 21, 17, 0.12);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(90deg, rgba(23, 21, 17, 0.035) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(23, 21, 17, 0.03) 1px, transparent 1px),
+        var(--bg);
+      background-size: 32px 32px;
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .shell {
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(320px, 390px) minmax(0, 1fr);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sidebar {
+      min-width: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr auto;
+      border-right: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .brand {
+      padding: 22px 18px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 28px;
+      line-height: 1.03;
+      letter-spacing: 0;
+    }
+
+    .summary {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.42;
+    }
+
+    .search-row {
+      display: grid;
+      gap: 10px;
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .search {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    .search:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-soft);
+    }
+
+    .counter {
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .counter b {
+      color: var(--ink);
+    }
+
+    .category-strip {
+      display: flex;
+      gap: 7px;
+      overflow: auto;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      scrollbar-width: thin;
+    }
+
+    .category-chip {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 10px;
+      font-size: 12px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .category-chip:hover {
+      border-color: var(--line-strong);
+      color: var(--ink);
+      background: rgba(23, 21, 17, 0.04);
+    }
+
+    .category-chip.is-active {
+      border-color: rgba(15, 118, 110, 0.36);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 750;
+    }
+
+    .experiment-list {
+      min-height: 0;
+      overflow: auto;
+      padding: 8px 10px 12px;
+      scrollbar-width: thin;
+    }
+
+    .group {
+      display: grid;
+      gap: 5px;
+      padding-top: 10px;
+    }
+
+    .group[hidden],
+    .experiment-button[hidden] {
+      display: none;
+    }
+
+    .group-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 7px 8px 5px;
+      color: var(--quiet);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .group-title span:last-child {
+      font-family: var(--mono);
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .experiment-button {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink);
+      padding: 12px 10px;
+      display: grid;
+      gap: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .experiment-button:hover {
+      background: rgba(23, 21, 17, 0.045);
+    }
+
+    .experiment-button.is-active {
+      border-color: rgba(15, 118, 110, 0.3);
+      background: var(--accent-soft);
+    }
+
+    .experiment-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .experiment-name {
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.22;
+    }
+
+    .experiment-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .experiment-path {
+      color: rgba(23, 21, 17, 0.46);
+      font: 11px var(--mono);
+      overflow-wrap: anywhere;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 10px;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .badge--local {
+      color: var(--accent);
+      border-color: rgba(15, 118, 110, 0.32);
+      background: var(--accent-soft);
+    }
+
+    .badge--external {
+      color: var(--amber);
+      border-color: rgba(138, 90, 0, 0.26);
+      background: var(--amber-soft);
+    }
+
+    .sidebar-foot {
+      border-top: 1px solid var(--line);
+      padding: 12px 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .stage {
+      min-width: 0;
+      min-height: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      background: #d9d7cf;
+    }
+
+    .stage-header {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(251, 250, 246, 0.94);
+      backdrop-filter: blur(16px);
+    }
+
+    .stage-title {
+      font-size: 18px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .stage-meta {
+      min-width: 0;
+      margin-top: 7px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .stage-meta code {
+      font-family: var(--mono);
+      overflow-wrap: anywhere;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .open-link,
+    .copy-link {
+      flex: 0 0 auto;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      padding: 10px 12px;
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .open-link {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .copy-link {
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .open-link:hover,
+    .copy-link:hover {
+      transform: translateY(-1px);
+    }
+
+    .frame-wrap {
+      min-height: 0;
+      padding: 18px;
+      position: relative;
+    }
+
+    .frame-shell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
+
+    .loader {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(90deg, rgba(23, 21, 17, 0.045) 0 1px, transparent 1px 18px),
+        #f6f5ef;
+      color: var(--muted);
+      font-size: 12px;
+      transition: opacity 160ms ease;
+    }
+
+    .loader.is-hidden {
+      opacity: 0;
+    }
+
+    .empty-state {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 40px;
+    }
+
+    @media (max-width: 920px) {
+      body {
+        overflow: auto;
+      }
+
+      .shell {
+        min-height: 100vh;
+        max-height: none;
+        height: auto;
+        overflow: visible;
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        height: 46vh;
+        max-height: 46vh;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand {
+        padding: 18px 16px 13px;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      .summary {
+        font-size: 12px;
+      }
+
+      .search-row,
+      .category-strip,
+      .sidebar-foot {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .stage {
+        min-height: 74vh;
+        height: auto;
+        overflow: visible;
+      }
+
+      .stage-header {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .action-row {
+        justify-content: flex-start;
+      }
+
+      .frame-wrap {
+        min-height: 72vh;
+        padding: 10px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .sidebar {
+        height: 50vh;
+        max-height: 50vh;
+      }
+
+      .brand {
+        padding-top: 15px;
+      }
+
+      h1 {
+        font-size: 21px;
+      }
+
+      .stage-title {
+        font-size: 16px;
+      }
+
+      .open-link,
+      .copy-link {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="eyebrow">review dashboard</span>
+        <h1>AIM/FOS эксперименты</h1>
+        <p class="summary">Единый индекс локальных страниц, где проверялись тарифы, шрифты, hero, отзывы, proof-блоки и визуальные механики сайта.</p>
+      </div>
+      <div class="search-row">
+        <input class="search" id="search" type="search" placeholder="Поиск экспериментов..." autocomplete="off" />
+        <div class="counter">
+          <span><b id="visibleCount">0</b> / <span id="totalCount">0</span> страниц</span>
+          <span id="activePort">локально</span>
+        </div>
+      </div>
+      <nav class="category-strip" id="categoryStrip" aria-label="Категории экспериментов"></nav>
+      <div class="experiment-list" id="experimentList" aria-label="Список экспериментов"></div>
+      <div class="sidebar-foot">Выберите пункт слева. Страница откроется справа, а ссылка синхронизируется в адресе dashboard.</div>
+    </aside>
+    <main class="stage">
+      <header class="stage-header">
+        <div>
+          <h2 class="stage-title" id="stageTitle"></h2>
+          <div class="stage-meta" id="stageMeta"></div>
+        </div>
+        <div class="action-row">
+          <button class="copy-link" type="button" id="copyLink">Скопировать ссылку</button>
+          <a class="open-link" id="openLink" target="_blank" rel="noreferrer">Открыть отдельно</a>
+        </div>
+      </header>
+      <div class="frame-wrap">
+        <div class="frame-shell" id="frameShell">
+          <iframe id="previewFrame" title="Selected AIM/FOS experiment"></iframe>
+          <div class="loader" id="loader">Загрузка preview</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const categories = [
+      'Все',
+      'Системное',
+      'Главная сборка',
+      'Тарифы',
+      'Типографика',
+      'Hero',
+      'Отзывы',
+      'Proof',
+      'Визуальные эффекты',
+      'Внешние хабы',
+    ]
+
+    const experiments = [
+      {
+        id: 'version-catalog',
+        category: 'Системное',
+        title: 'Каталог версий FOS',
+        note: 'Базовый индекс всех собранных веток и текущих сборок лендинга.',
+        url: './index.html',
+        source: 'version-catalog/index.html',
+        tags: ['versions', 'catalog', 'branches', 'index'],
+        origin: 'local',
+      },
+      {
+        id: 'role-adaptive-current',
+        category: 'Главная сборка',
+        title: 'Role Adaptive: текущий particle',
+        note: 'Основная review-страница sprint landing с role selector и red particle layer.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/particle.html',
+        source: 'builds/Blank Structure Role Adaptive/particle.html',
+        tags: ['current', 'role adaptive', 'particle', 'sprint'],
+        origin: 'local',
+      },
+      {
+        id: 'pricing-dark-v10',
+        category: 'Тарифы',
+        title: 'Тарифы v10: тёмная версия',
+        note: 'Тёмная pricing-секция с крупной индивидуальной карточкой, командной карточкой и CTA.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/pricing-block-variants-dark.html#pricing-v10',
+        source: 'pricing-block-variants-dark.html#pricing-v10',
+        tags: ['pricing', 'dark', 'v10', 'tariffs', 'payment'],
+        origin: 'local',
+      },
+      {
+        id: 'pricing-light-v10',
+        category: 'Тарифы',
+        title: 'Тарифы v10: светлая версия',
+        note: 'Светлая версия того же pricing-блока для сравнения плотности, веса и CTA.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/pricing-block-variants.html#pricing-v10',
+        source: 'pricing-block-variants.html#pricing-v10',
+        tags: ['pricing', 'light', 'v10', 'tariffs', 'payment'],
+        origin: 'local',
+      },
+      {
+        id: 'typography-system',
+        category: 'Типографика',
+        title: 'Типографическая система',
+        note: 'Лаборатория display/body стеков и пар шрифтов для лендинга.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/typography-system-lab.html',
+        source: 'typography-system-lab.html',
+        tags: ['fonts', 'typography', 'display', 'body', 'golos', 'tektur'],
+        origin: 'local',
+      },
+      {
+        id: 'particle-font-testimonials',
+        category: 'Типографика',
+        title: 'Particle font lab: отзывы',
+        note: 'Отдельная font/particle лаборатория на локальном сервере :4189, открытая сразу в блоке отзывов.',
+        url: 'http://127.0.0.1:4189/version-catalog/builds/Blank%20Structure%20Role%20Adaptive/particle-font-lab.html#testimonials',
+        source: ':4189 particle-font-lab.html#testimonials',
+        tags: ['fonts', 'particle', 'testimonials', '4189'],
+        origin: 'external',
+      },
+      {
+        id: 'hero-layouts',
+        category: 'Hero',
+        title: 'Hero: варианты раскладки',
+        note: 'Страница вариантов первого экрана, включая light-paper направление и шрифтовые проверки.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/hero-layout-variants.html#light-paper',
+        source: 'hero-layout-variants.html#light-paper',
+        tags: ['hero', 'first screen', 'layout', 'light paper'],
+        origin: 'local',
+      },
+      {
+        id: 'homepage-design-lab',
+        category: 'Hero',
+        title: 'Homepage design lab',
+        note: 'Большой V3 lab с полноэкранными homepage-направлениями и отдельными hero-экспериментами.',
+        url: 'http://127.0.0.1:5123/preview/v3-site-repo-aimwebsite0-5-homepage-design-lab/',
+        source: ':5123 homepage-design-lab',
+        tags: ['homepage', 'hero', 'v3', 'design lab'],
+        origin: 'external',
+      },
+      {
+        id: 'testimonial-layouts',
+        category: 'Отзывы',
+        title: 'Отзывы: варианты layout',
+        note: 'Review-страница с альтернативами quote/meta раскладки для testimonial-секции.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/testimonial-layout-variants.html',
+        source: 'testimonial-layout-variants.html',
+        tags: ['testimonials', 'quotes', 'layout', 'review'],
+        origin: 'local',
+      },
+      {
+        id: 'particle-testimonials',
+        category: 'Отзывы',
+        title: 'Отзывы в текущей сборке',
+        note: 'Основная particle-страница, открытая сразу на блоке отзывов.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/particle.html#testimonials',
+        source: 'particle.html#testimonials',
+        tags: ['testimonials', 'current', 'particle'],
+        origin: 'local',
+      },
+      {
+        id: 'alumni-logo-variants',
+        category: 'Proof',
+        title: 'Alumni logos: варианты',
+        note: 'Проверка полосы логотипов выпускников и компаний на контраст, вес и ритм.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/alumni-logo-variants.html',
+        source: 'alumni-logo-variants.html',
+        tags: ['alumni', 'logos', 'proof', 'companies'],
+        origin: 'local',
+      },
+      {
+        id: 'alumni-mobile-proof',
+        category: 'Proof',
+        title: 'Proof на мобильном',
+        note: 'Варианты mobile credibility для alumni/proof-блока.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/alumni-mobile-credibility-variants.html',
+        source: 'alumni-mobile-credibility-variants.html',
+        tags: ['alumni', 'mobile', 'proof', 'credibility'],
+        origin: 'local',
+      },
+      {
+        id: 'agent-company-preview',
+        category: 'Proof',
+        title: 'Agent company inline preview',
+        note: 'Отдельный preview для company/proof механики внутри role-adaptive сборки.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/agent-company-inline-preview.html',
+        source: 'agent-company-inline-preview.html',
+        tags: ['agent company', 'proof', 'inline', 'companies'],
+        origin: 'local',
+      },
+      {
+        id: 'particle-visual',
+        category: 'Визуальные эффекты',
+        title: 'Particle visual baseline',
+        note: 'Текущая canvas/WebGL-сборка с red particles, section states и интерактивным слоем.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/particle.html',
+        source: 'particle.html',
+        tags: ['particle', 'canvas', 'webgl', 'red particles'],
+        origin: 'local',
+      },
+      {
+        id: 'firefly-visual',
+        category: 'Визуальные эффекты',
+        title: 'Firefly mesh',
+        note: 'Scroll-driven mesh/сферическая визуальная версия blank structure.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/firefly.html',
+        source: 'firefly.html',
+        tags: ['firefly', 'mesh', 'visual', 'spheres'],
+        origin: 'local',
+      },
+      {
+        id: 'pastel-firefly-original',
+        category: 'Визуальные эффекты',
+        title: 'Pastel firefly source',
+        note: 'Встроенный донорский firefly-референс, сохранённый рядом с текущей сборкой.',
+        url: './builds/Blank%20Structure%20Role%20Adaptive/_embed/pastel-firefly-original.html',
+        source: '_embed/pastel-firefly-original.html',
+        tags: ['firefly', 'reference', 'source', 'embed'],
+        origin: 'local',
+      },
+      {
+        id: 'design-feedback',
+        category: 'Внешние хабы',
+        title: 'Design feedback dashboard',
+        note: 'Оценки и память по визуальным направлениям сайта.',
+        url: 'http://127.0.0.1:5123/preview/design-feedback-dashboard/',
+        source: ':5123 design-feedback-dashboard',
+        tags: ['feedback', 'ratings', 'memory', 'design'],
+        origin: 'external',
+      },
+      {
+        id: 'style-index',
+        category: 'Внешние хабы',
+        title: 'AIM Website Design Index',
+        note: 'Общий style index с дизайн-галереями и ссылками на review-поверхности.',
+        url: 'http://127.0.0.1:5123/style-index/',
+        source: ':5123 style-index',
+        tags: ['style index', 'gallery', 'hub', 'design'],
+        origin: 'external',
+      },
+    ]
+
+    const search = document.getElementById('search')
+    const categoryStrip = document.getElementById('categoryStrip')
+    const list = document.getElementById('experimentList')
+    const stageTitle = document.getElementById('stageTitle')
+    const stageMeta = document.getElementById('stageMeta')
+    const openLink = document.getElementById('openLink')
+    const copyLink = document.getElementById('copyLink')
+    const frame = document.getElementById('previewFrame')
+    const loader = document.getElementById('loader')
+    const visibleCount = document.getElementById('visibleCount')
+    const totalCount = document.getElementById('totalCount')
+    const activePort = document.getElementById('activePort')
+
+    let activeCategory = 'Все'
+    let activeId = new URLSearchParams(window.location.search).get('item') || window.location.hash.replace('#', '') || experiments[0].id
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }[char]))
+    }
+
+    function resolveLocalUrl(value) {
+      if (!value.startsWith('http://127.0.0.1:')) return value
+      const currentHost = window.location.hostname
+      if (currentHost === '127.0.0.1' || currentHost === 'localhost' || currentHost === '') return value
+      const next = new URL(value)
+      next.hostname = currentHost
+      return next.href
+    }
+
+    function itemHaystack(item) {
+      return [
+        item.title,
+        item.note,
+        item.source,
+        item.category,
+        item.tags.join(' '),
+      ].join(' ').toLowerCase()
+    }
+
+    function itemMatches(item) {
+      const query = search.value.trim().toLowerCase()
+      const categoryOk = activeCategory === 'Все' || item.category === activeCategory
+      const queryOk = !query || itemHaystack(item).includes(query)
+      return categoryOk && queryOk
+    }
+
+    function renderCategories() {
+      categoryStrip.innerHTML = categories.map((category) => (
+        '<button class="category-chip" type="button" data-category="' + escapeHtml(category) + '">' +
+          escapeHtml(category) +
+        '</button>'
+      )).join('')
+
+      categoryStrip.querySelectorAll('.category-chip').forEach((button) => {
+        button.addEventListener('click', () => {
+          activeCategory = button.dataset.category
+          renderCategories()
+          renderList()
+        })
+      })
+
+      categoryStrip.querySelectorAll('.category-chip').forEach((button) => {
+        button.classList.toggle('is-active', button.dataset.category === activeCategory)
+      })
+    }
+
+    function renderList() {
+      const groups = categories.filter((category) => category !== 'Все')
+      list.innerHTML = groups.map((category) => {
+        const groupItems = experiments.filter((item) => item.category === category)
+        return (
+          '<section class="group" data-group="' + escapeHtml(category) + '">' +
+            '<div class="group-title"><span>' + escapeHtml(category) + '</span><span>' + groupItems.length + '</span></div>' +
+            groupItems.map((item) => (
+              '<button class="experiment-button" type="button" data-id="' + escapeHtml(item.id) + '">' +
+                '<span class="experiment-row">' +
+                  '<span class="experiment-name">' + escapeHtml(item.title) + '</span>' +
+                  '<span class="badge badge--' + escapeHtml(item.origin) + '">' + (item.origin === 'external' ? 'server' : 'local') + '</span>' +
+                '</span>' +
+                '<span class="experiment-note">' + escapeHtml(item.note) + '</span>' +
+                '<span class="experiment-path">' + escapeHtml(item.source) + '</span>' +
+              '</button>'
+            )).join('') +
+          '</section>'
+        )
+      }).join('')
+
+      list.querySelectorAll('.experiment-button').forEach((button) => {
+        button.addEventListener('click', () => selectItem(button.dataset.id))
+      })
+
+      applyFilters()
+    }
+
+    function applyFilters() {
+      let count = 0
+      list.querySelectorAll('.group').forEach((group) => {
+        let groupCount = 0
+        group.querySelectorAll('.experiment-button').forEach((button) => {
+          const item = experiments.find((candidate) => candidate.id === button.dataset.id)
+          const show = itemMatches(item)
+          button.hidden = !show
+          if (show) {
+            groupCount += 1
+            count += 1
+          }
+          button.classList.toggle('is-active', item && item.id === activeId)
+        })
+        group.hidden = groupCount === 0
+      })
+      visibleCount.textContent = String(count)
+      totalCount.textContent = String(experiments.length)
+    }
+
+    function selectItem(id) {
+      const item = experiments.find((candidate) => candidate.id === id) || experiments[0]
+      activeId = item.id
+      const resolvedUrl = resolveLocalUrl(item.url)
+      history.replaceState(null, '', '?item=' + encodeURIComponent(item.id))
+      stageTitle.textContent = item.title
+      stageMeta.innerHTML =
+        '<span>' + escapeHtml(item.note) + '</span>' +
+        '<span><code>' + escapeHtml(item.source) + '</code></span>' +
+        '<span>' + escapeHtml(item.category) + '</span>'
+      openLink.href = resolvedUrl
+      copyLink.dataset.copyUrl = resolvedUrl
+      activePort.textContent = item.origin === 'external' ? 'server link' : 'relative link'
+      loader.classList.remove('is-hidden')
+      frame.title = item.title
+      frame.src = 'about:blank'
+      requestAnimationFrame(() => {
+        if (activeId === item.id) frame.src = resolvedUrl
+      })
+      applyFilters()
+    }
+
+    frame.addEventListener('load', () => {
+      window.setTimeout(() => loader.classList.add('is-hidden'), 180)
+    })
+
+    search.addEventListener('input', applyFilters)
+
+    copyLink.addEventListener('click', async () => {
+      const url = copyLink.dataset.copyUrl || openLink.href
+      try {
+        await navigator.clipboard.writeText(url)
+        copyLink.textContent = 'Ссылка скопирована'
+        window.setTimeout(() => {
+          copyLink.textContent = 'Скопировать ссылку'
+        }, 1200)
+      } catch {
+        window.prompt('Ссылка', url)
+      }
+    })
+
+    renderCategories()
+    renderList()
+    selectItem(activeId)
+  </script>
+</body>
+</html>

@@ -1,0 +1,1902 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Mindset payment popup compare</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        color-scheme: light;
+        --chrome: 74px;
+        --divider: #111;
+        --paper: #f8f8f6;
+        --ink: #111;
+        --split: 50%;
+        --mobile-width: 390px;
+        --mobile-height: 844px;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #f4f4f4;
+        color: var(--ink);
+        font-family: Inter, Arial, sans-serif;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .compare {
+        display: grid;
+        grid-template-columns: minmax(260px, var(--split)) 8px minmax(260px, 1fr);
+        gap: 0;
+        width: 100vw;
+        height: 100vh;
+        background: var(--divider);
+      }
+
+      .pane {
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+        background: var(--paper);
+      }
+
+      .splitter {
+        position: relative;
+        z-index: 100;
+        width: 8px;
+        cursor: col-resize;
+        background: #111;
+        touch-action: none;
+      }
+
+      .splitter::before {
+        content: "";
+        position: absolute;
+        inset: 0 -10px;
+      }
+
+      .splitter::after {
+        content: "drag";
+        position: absolute;
+        top: calc(var(--chrome) + 10px);
+        left: 50%;
+        transform: translateX(-50%) rotate(90deg);
+        transform-origin: center;
+        padding: 3px 5px;
+        background: #111;
+        color: #fff;
+        font: 800 9px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        opacity: 0;
+        transition: opacity 150ms ease;
+        pointer-events: none;
+      }
+
+      .splitter:hover::after,
+      body.is-resizing .splitter::after {
+        opacity: 0.72;
+      }
+
+      body.is-resizing {
+        cursor: col-resize;
+        user-select: none;
+      }
+
+      .toolbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 80;
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr) 34px;
+        gap: 6px;
+        align-items: center;
+        height: var(--chrome);
+        padding: 6px;
+        background: rgba(248, 248, 246, 0.94);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+        backdrop-filter: blur(10px);
+      }
+
+      .toolbar-center {
+        display: grid;
+        grid-template-rows: 26px 29px;
+        gap: 4px;
+        min-width: 0;
+      }
+
+      .pane-device-switch {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        min-width: 0;
+      }
+
+      .device-button {
+        height: 26px;
+        min-width: 0;
+        border: 1px solid #111;
+        border-radius: 0;
+        background: #fff;
+        color: #111;
+        cursor: pointer;
+        font: 800 10px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .device-button[aria-pressed="true"],
+      .device-button:hover {
+        background: #111;
+        color: #fff;
+      }
+
+      .nav-button,
+      .tab-button {
+        border: 1px solid #111;
+        border-radius: 0;
+        background: #fff;
+        color: #111;
+        cursor: pointer;
+      }
+
+      .nav-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 62px;
+        padding: 0;
+        font: 800 20px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .variant-tabs {
+        display: flex;
+        gap: 4px;
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .variant-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab-button {
+        flex: 0 0 122px;
+        height: 29px;
+        overflow: hidden;
+        padding: 0 8px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font: 800 10px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .tab-button[aria-pressed="true"],
+      .nav-button:hover,
+      .tab-button:hover {
+        background: #111;
+        color: #fff;
+      }
+
+      .stage {
+        position: absolute;
+        inset: var(--chrome) 0 0;
+        overflow: hidden;
+        background: var(--paper);
+      }
+
+      .variant-layer {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .variant-layer.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .live-frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: var(--paper);
+      }
+
+      .pane[data-device="mobile"] .variant-layer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: auto;
+        padding: 24px;
+      }
+
+      .pane[data-device="mobile"] .live-frame {
+        position: relative;
+        left: auto;
+        top: auto;
+        width: min(var(--mobile-width), calc(100% - 24px));
+        height: min(var(--mobile-height), calc(100% - 24px));
+        border: 1px solid rgba(0, 0, 0, 0.18);
+        background: var(--paper);
+        box-shadow: 0 24px 78px rgba(0, 0, 0, 0.18);
+      }
+
+      .pane[data-device="mobile"] .image-reference {
+        display: none;
+      }
+
+      .image-reference {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          linear-gradient(rgba(248, 248, 246, 0.84), rgba(248, 248, 246, 0.84)),
+          radial-gradient(circle at 50% 45%, rgba(141, 198, 63, 0.14), transparent 36%),
+          #f8f8f6;
+      }
+
+      .image-reference img {
+        display: block;
+        width: 500px;
+        max-width: calc(100% - 64px);
+        max-height: calc(100% - 64px);
+        object-fit: contain;
+        border: 1px solid rgba(0, 0, 0, 0.18);
+        box-shadow: 0 26px 80px rgba(0, 0, 0, 0.14);
+      }
+
+      .hint {
+        position: fixed;
+        left: 50%;
+        bottom: 10px;
+        z-index: 90;
+        transform: translateX(-50%);
+        padding: 5px 8px;
+        background: #000;
+        color: #fff;
+        font: 700 10px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        opacity: 0.72;
+        pointer-events: none;
+      }
+
+      .mode-switch {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 120;
+        display: flex;
+        gap: 6px;
+        padding: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.18);
+        background: rgba(248, 248, 246, 0.86);
+        backdrop-filter: blur(10px);
+      }
+
+      .mode-switch a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 92px;
+        height: 30px;
+        border: 1px solid #111;
+        color: #111;
+        background: #fff;
+        font: 800 10px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.08em;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      body.final-mode .mode-switch a[data-mode="final"],
+      body.gallery-mode .mode-switch a[data-mode="gallery"],
+      body.archive-mode .mode-switch a[data-mode="archive"],
+      body.compare-mode .mode-switch a[data-mode="compare"],
+      .mode-switch a:hover {
+        background: #111;
+        color: #fff;
+      }
+
+      .gallery {
+        display: none;
+      }
+
+      body.gallery-mode,
+      body.final-mode,
+      body.archive-mode {
+        overflow: auto;
+      }
+
+      body.gallery-mode .compare,
+      body.gallery-mode .hint,
+      body.final-mode .compare,
+      body.final-mode .hint,
+      body.archive-mode .compare,
+      body.archive-mode .hint {
+        display: none;
+      }
+
+      body.gallery-mode .gallery,
+      body.final-mode .gallery,
+      body.archive-mode .gallery {
+        display: block;
+        min-height: 100vh;
+        padding: 58px 18px 28px;
+        background: #f8f8f6;
+      }
+
+      .gallery-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 18px;
+        max-width: 1540px;
+        margin: 0 auto 18px;
+        padding-right: 220px;
+      }
+
+      .gallery-title {
+        margin: 0;
+        font: 900 28px/0.95 Inter, Arial, sans-serif;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .gallery-note {
+        max-width: 480px;
+        margin: 0;
+        color: rgba(0, 0, 0, 0.48);
+        font: 800 10px/1.5 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+        gap: 14px;
+        max-width: 1540px;
+        margin: 0 auto;
+      }
+
+      .gallery-card {
+        min-width: 0;
+        border: 1px solid rgba(0, 0, 0, 0.22);
+        background: #fff;
+      }
+
+      .gallery-card.is-featured {
+        grid-column: 1 / -1;
+      }
+
+      .gallery-card-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 38px;
+        padding: 0 12px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+        font: 900 11px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .gallery-card-title span:last-child {
+        color: rgba(0, 0, 0, 0.42);
+        font-size: 9px;
+      }
+
+      .gallery-frame-wrap {
+        height: 660px;
+        background: #f8f8f6;
+      }
+
+      .gallery-frame {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #f8f8f6;
+      }
+
+      .gallery-preview-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 390px);
+        gap: 12px;
+        padding: 12px;
+        background: #f8f8f6;
+      }
+
+      .gallery-preview {
+        min-width: 0;
+        border: 1px solid rgba(0, 0, 0, 0.16);
+        background: #f8f8f6;
+      }
+
+      .gallery-preview-label {
+        height: 30px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+        color: rgba(0, 0, 0, 0.48);
+        font: 900 9px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .gallery-preview .gallery-frame-wrap {
+        height: 630px;
+      }
+
+      .gallery-preview.is-mobile .gallery-frame-wrap {
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+        padding: 14px;
+      }
+
+      .gallery-preview.is-mobile .gallery-frame {
+        width: min(390px, 100%);
+        height: 100%;
+        border: 1px solid rgba(0, 0, 0, 0.18);
+        box-shadow: 0 18px 54px rgba(0, 0, 0, 0.16);
+      }
+
+      .phone-carousel {
+        display: none;
+      }
+
+      @media (max-width: 900px) {
+        :root {
+          --chrome: 74px;
+        }
+
+        .compare {
+          grid-template-columns: 1fr;
+          grid-template-rows: 1fr 8px 1fr;
+        }
+
+        .splitter {
+          width: 100%;
+          height: 8px;
+          cursor: row-resize;
+        }
+
+        .hint {
+          display: none;
+        }
+
+        .gallery-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .gallery-card.is-featured {
+          grid-column: auto;
+        }
+
+        .gallery-preview-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        :root {
+          --chrome: 0px;
+        }
+
+        html,
+        body {
+          background: #f8f8f6;
+          overscroll-behavior: none;
+        }
+
+        body.phone-mode {
+          overflow: hidden;
+        }
+
+        body.phone-mode .compare,
+        body.phone-mode .hint,
+        body.phone-mode .gallery,
+        body.phone-mode .mode-switch {
+          display: none;
+        }
+
+        body.gallery-mode,
+        body.final-mode,
+        body.archive-mode {
+          overflow: auto;
+        }
+
+        body.gallery-mode .mode-switch,
+        body.final-mode .mode-switch,
+        body.archive-mode .mode-switch {
+          display: flex;
+          left: 8px;
+          right: 8px;
+        }
+
+        body.gallery-mode .mode-switch a,
+        body.final-mode .mode-switch a,
+        body.archive-mode .mode-switch a {
+          flex: 1;
+          min-width: 0;
+        }
+
+        body.gallery-mode .gallery,
+        body.final-mode .gallery,
+        body.archive-mode .gallery {
+          padding: 56px 8px 18px;
+        }
+
+        .gallery-header {
+          display: block;
+          padding-right: 0;
+        }
+
+        .gallery-title {
+          font-size: 22px;
+        }
+
+        .gallery-note {
+          margin-top: 10px;
+        }
+
+        .gallery-grid {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .gallery-frame-wrap {
+          height: 760px;
+        }
+
+        .gallery-preview .gallery-frame-wrap {
+          height: 720px;
+        }
+
+        .gallery-preview.is-mobile .gallery-frame-wrap {
+          height: 680px;
+          padding: 10px;
+        }
+
+        body.phone-mode .phone-carousel {
+          position: fixed;
+          inset: 0;
+          display: block;
+          overflow: hidden;
+          background: #f8f8f6;
+          touch-action: pan-y;
+        }
+
+        .phone-frame {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          border: 0;
+          background: #f8f8f6;
+        }
+
+        .phone-pill {
+          position: fixed;
+          left: 50%;
+          bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+          z-index: 40;
+          transform: translateX(-50%);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          max-width: calc(100vw - 20px);
+          padding: 6px 9px;
+          border: 1px solid rgba(0, 0, 0, 0.14);
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.72);
+          color: rgba(0, 0, 0, 0.58);
+          font: 800 9px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          backdrop-filter: blur(12px);
+          pointer-events: none;
+        }
+
+        .phone-dots {
+          display: flex;
+          gap: 5px;
+        }
+
+        .phone-dot {
+          width: 5px;
+          height: 5px;
+          border-radius: 999px;
+          background: rgba(0, 0, 0, 0.22);
+        }
+
+        .phone-dot[aria-current="true"] {
+          width: 15px;
+          background: #111;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="mode-switch" aria-label="Режим просмотра payment popup">
+      <a href="payment-popup-compare.html?view=gallery" data-mode="gallery">gallery</a>
+      <a href="payment-popup-compare.html?view=final" data-mode="final">final 4</a>
+      <a href="payment-popup-compare.html?view=archive" data-mode="archive">archive</a>
+      <a href="payment-popup-compare.html" data-mode="compare">compare</a>
+    </nav>
+    <main class="gallery" aria-label="Payment flow popup gallery">
+      <header class="gallery-header">
+        <h1 class="gallery-title">Payment Popup Gallery</h1>
+        <p class="gallery-note">Новые варианты самих popup: переход к оплате без повторной кнопки и успешная оплата с переходом в Telegram.</p>
+      </header>
+      <section class="gallery-grid" aria-label="Галерея payment flow popup"></section>
+    </main>
+    <main class="compare" aria-label="Payment popup comparison">
+      <section class="pane" data-pane="left" aria-label="Левый вариант payment popup">
+        <div class="toolbar">
+          <button class="nav-button" type="button" data-action="prev" aria-label="Предыдущий левый вариант">‹</button>
+          <div class="toolbar-center">
+            <div class="pane-device-switch" aria-label="Левое устройство">
+              <button class="device-button" type="button" data-device="desktop" aria-pressed="true">desktop</button>
+              <button class="device-button" type="button" data-device="mobile" aria-pressed="false">mobile</button>
+            </div>
+            <div class="variant-tabs" aria-label="Левые варианты"></div>
+          </div>
+          <button class="nav-button" type="button" data-action="next" aria-label="Следующий левый вариант">›</button>
+        </div>
+        <div class="stage"></div>
+      </section>
+
+      <div class="splitter" role="separator" aria-orientation="vertical" aria-label="Изменить ширину сравнения" tabindex="0"></div>
+
+      <section class="pane" data-pane="right" aria-label="Правый вариант payment popup">
+        <div class="toolbar">
+          <button class="nav-button" type="button" data-action="prev" aria-label="Предыдущий правый вариант">‹</button>
+          <div class="toolbar-center">
+            <div class="pane-device-switch" aria-label="Правое устройство">
+              <button class="device-button" type="button" data-device="desktop" aria-pressed="true">desktop</button>
+              <button class="device-button" type="button" data-device="mobile" aria-pressed="false">mobile</button>
+            </div>
+            <div class="variant-tabs" aria-label="Правые варианты"></div>
+          </div>
+          <button class="nav-button" type="button" data-action="next" aria-label="Следующий правый вариант">›</button>
+        </div>
+        <div class="stage"></div>
+      </section>
+    </main>
+    <section class="phone-carousel" aria-label="Мобильные версии payment popup">
+      <iframe class="phone-frame" title="Мобильная версия оплаты"></iframe>
+      <div class="phone-pill" aria-live="polite">
+        <span class="phone-label"></span>
+        <span class="phone-dots"></span>
+      </div>
+    </section>
+    <div class="hint">A/D left · ←/→ right</div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const requestedView = params.get("view");
+      const viewMode = requestedView === "gallery" || requestedView === "archive" || requestedView === "final" ? requestedView : "compare";
+      const conceptVariants = [
+        { id: "concept-gateway-strip", label: "redirect 01", type: "concept", concept: "gateway-strip", stage: "redirect", mobile: true },
+        { id: "concept-route-pulse", label: "redirect 02", type: "concept", concept: "route-pulse", stage: "redirect", mobile: true },
+        { id: "concept-session-ticket", label: "redirect 03", type: "concept", concept: "session-ticket", stage: "redirect", mobile: true },
+        { id: "concept-terminal-transfer", label: "redirect 04", type: "concept", concept: "terminal-transfer", stage: "redirect", mobile: true },
+        { id: "concept-scan-gate", label: "redirect 05", type: "concept", concept: "scan-gate", stage: "redirect", mobile: true },
+        { id: "concept-provider-lane", label: "redirect 06", type: "concept", concept: "provider-lane", stage: "redirect", mobile: true },
+        { id: "concept-access-pass", label: "success 01", type: "concept", concept: "access-pass", stage: "success", mobile: true },
+        { id: "concept-lab-ticket", label: "success 02", type: "concept", concept: "lab-ticket", stage: "success", mobile: true },
+        { id: "concept-validated-stamp", label: "success 03", type: "concept", concept: "validated-stamp", stage: "success", mobile: true },
+        { id: "concept-bot-handoff", label: "success 04", type: "concept", concept: "bot-handoff", stage: "success", mobile: true },
+        { id: "concept-receipt-route", label: "success 05", type: "concept", concept: "receipt-route", stage: "success", mobile: true },
+        { id: "concept-minimal-access", label: "success 06", type: "concept", concept: "minimal-access", stage: "success", mobile: true },
+      ];
+      const allVariants = [
+        ...conceptVariants,
+        { id: "v3", label: "v3 dataline", type: "live", src: "/?payment=v3#pricing" },
+        { id: "v5", label: "v5 structured", type: "live", src: "/?payment=v5#pricing" },
+        { id: "v6", label: "v6 header", type: "live", src: "/?payment=v6#pricing" },
+        { id: "v7", label: "v7 compact", type: "live", src: "/?payment=v7#pricing", mobile: true },
+        { id: "v7-main-form", label: "01 form", type: "live", src: "/?payment=v7&paymentPopup=form&paymentPlan=advanced#pricing", mobile: true },
+        { id: "v7-main-redirect", label: "02 redirect", type: "live", src: "/?payment=v7&paymentStatus=redirecting&paymentStatusLayout=console&paymentStatusVisual=terminal#pricing", mobile: true },
+        { id: "v7-main-unpaid", label: "03 unpaid", type: "live", src: "/?payment=v7&paymentStatus=failed&paymentStatusLayout=recovery&paymentStatusVisual=ascii-retry#pricing", mobile: true },
+        { id: "v7-main-paid-handoff", label: "04 paid handoff", type: "live", src: "/?payment=v7&paymentStatus=paid&paymentStatusLayout=handoff&paymentStatusVisual=ascii-handoff#pricing", mobile: true },
+        { id: "v7-mobile-current", label: "v7 mob current", type: "live", src: "/?payment=v7&paymentMobile=current&paymentPlan=premium&paymentMethod=usdt#pricing", mobile: true },
+        { id: "v7-mobile-wide", label: "v7 mob wide", type: "live", src: "/?payment=v7&paymentMobile=wide&paymentPlan=premium&paymentMethod=usdt#pricing", mobile: true },
+        { id: "v7-mobile-dense", label: "v7 mob dense", type: "live", src: "/?payment=v7&paymentMobile=dense&paymentPlan=premium&paymentMethod=usdt#pricing", mobile: true },
+        { id: "v7-paid-pass", label: "paid pass", type: "live", src: "/?payment=v7&paymentStatus=paid&paymentStatusLayout=pass#pricing", mobile: true },
+        { id: "v7-failed-recovery", label: "failed recovery", type: "live", src: "/?payment=v7&paymentStatus=failed&paymentStatusLayout=recovery#pricing", mobile: true },
+        { id: "v7-failed-retry-ascii", label: "error retry ascii", type: "live", src: "/?payment=v7&paymentStatus=failed&paymentStatusLayout=recovery&paymentStatusVisual=ascii-retry#pricing", mobile: true },
+        { id: "v7-bot-handoff-ascii", label: "bot handoff ascii", type: "live", src: "/?payment=v7&paymentStatus=join&paymentStatusLayout=handoff&paymentStatusVisual=ascii-handoff#pricing", mobile: true },
+        { id: "v7-bot-handoff", label: "bot handoff", type: "live", src: "/?payment=v7&paymentStatus=join&paymentStatusLayout=handoff&paymentStatusVisual=signal#pricing", mobile: true },
+        { id: "v7-bot-receipt", label: "bot receipt", type: "live", src: "/?payment=v7&paymentStatus=join&paymentStatusLayout=receipt&paymentStatusVisual=terminal#pricing", mobile: true },
+        { id: "v7-redirect-route", label: "redirect route", type: "live", src: "/?payment=v7&paymentStatus=redirecting&paymentStatusLayout=route#pricing", mobile: true },
+        { id: "v7-redirect-hybrid", label: "redirect hybrid", type: "live", src: "/?payment=v7&paymentStatus=redirecting&paymentStatusLayout=hybrid#pricing", mobile: true },
+        { id: "v7-redirect-geo", label: "redirect geo", type: "live", src: "/?payment=v7&paymentStatus=redirecting&paymentStatusLayout=hybrid-geo#pricing", mobile: true },
+        { id: "v7-redirect-split", label: "redirect split", type: "live", src: "/?payment=v7&paymentStatus=redirecting&paymentStatusLayout=split&paymentStatusVisual=mesh#pricing", mobile: true },
+        { id: "v7-redirect-console", label: "redirect console", type: "live", src: "/?payment=v7&paymentStatus=redirecting&paymentStatusLayout=console&paymentStatusVisual=terminal#pricing", mobile: true },
+        { id: "github-dark", label: "github dark", type: "live", src: "/?payment=dark#pricing", mobile: true },
+        { id: "v2-light", label: "v2 light", type: "live", src: "/?payment=v2#pricing" },
+        {
+          id: "ref-4light",
+          label: "4light webp",
+          type: "image",
+          src: "/assets/payment-popups/4light-v2-aim-os-desktop-01-payment-selection-500x642.webp",
+        },
+      ];
+
+      const state = {
+        left: 0,
+        right: 1,
+        split: 50,
+        leftDevice: "desktop",
+        rightDevice: "desktop",
+      };
+      const activeGalleryVariantIds = [
+        "v7-bot-handoff-ascii",
+        "v7-failed-retry-ascii",
+        "v7-redirect-console",
+        "v7-bot-handoff",
+        "v7-failed-recovery",
+        "v7-redirect-route",
+        "v7-paid-pass",
+        "concept-gateway-strip",
+        "concept-terminal-transfer",
+        "concept-minimal-access",
+        "concept-access-pass",
+        "concept-lab-ticket",
+        "concept-receipt-route",
+      ];
+      const finalGalleryVariantIds = [
+        "v7-main-form",
+        "v7-main-redirect",
+        "v7-main-unpaid",
+        "v7-main-paid-handoff",
+      ];
+      const archivedGalleryVariantIds = [
+        "v7-redirect-geo",
+        "v7-redirect-hybrid",
+        "concept-route-pulse",
+        "concept-session-ticket",
+        "concept-scan-gate",
+        "concept-provider-lane",
+        "concept-validated-stamp",
+        "concept-bot-handoff",
+      ];
+      const galleryVariantIds = viewMode === "archive"
+        ? archivedGalleryVariantIds
+        : viewMode === "final"
+          ? finalGalleryVariantIds
+          : activeGalleryVariantIds;
+      const phoneVariants = activeGalleryVariantIds.slice(0, 6);
+      const orderedVariantIds = [...finalGalleryVariantIds, ...activeGalleryVariantIds, ...archivedGalleryVariantIds];
+      const galleryVariantIdSet = new Set(orderedVariantIds);
+      const variantById = new Map(allVariants.map((variant) => [variant.id, variant]));
+      const variants = [
+        ...orderedVariantIds.map((id) => variantById.get(id)).filter(Boolean),
+        ...allVariants.filter((variant) => !galleryVariantIdSet.has(variant.id)),
+      ];
+      const phoneState = {
+        index: 0,
+        startX: 0,
+        startY: 0,
+        deltaX: 0,
+        isDragging: false,
+        lastSrc: "",
+      };
+      const isPhoneMode = viewMode === "compare" && (window.matchMedia("(max-width: 640px)").matches || params.get("phoneMode") === "1");
+
+      const getVariantIndex = (id, fallback) => {
+        const index = variants.findIndex((variant) => variant.id === id);
+        return index >= 0 ? index : fallback;
+      };
+
+      state.left = getVariantIndex(params.get("left"), state.left);
+      state.right = getVariantIndex(params.get("right"), state.right);
+      const fallbackDevice = params.get("device") === "mobile" ? "mobile" : "desktop";
+      state.leftDevice = params.get("leftDevice") === "mobile" ? "mobile" : fallbackDevice;
+      state.rightDevice = params.get("rightDevice") === "mobile" ? "mobile" : fallbackDevice;
+      state.split = params.has("split") && Number.isFinite(Number(params.get("split")))
+        ? Math.min(78, Math.max(22, Number(params.get("split"))))
+        : state.split;
+      phoneState.index = Math.max(0, phoneVariants.indexOf(params.get("phone") || params.get("left") || phoneVariants[0]));
+      if (!Number.isFinite(phoneState.index) || phoneState.index < 0) phoneState.index = 0;
+
+      const getPaneDevice = (paneKey) => state[`${paneKey}Device`];
+
+      const getAvailableVariantIndexes = (paneKey) => variants
+        .map((variant, index) => ({ variant, index }))
+        .filter(({ variant }) => getPaneDevice(paneKey) === "desktop" || variant.mobile)
+        .map(({ index }) => index);
+
+      const normalizePaneVariantForDevice = (paneKey) => {
+        const available = getAvailableVariantIndexes(paneKey);
+        if (available.includes(state[paneKey])) return;
+        state[paneKey] = getPaneDevice(paneKey) === "mobile"
+          ? getVariantIndex(paneKey === "left" ? "v7" : "github-dark", available[0])
+          : available[0];
+      };
+
+      const updateUrl = () => {
+        const nextParams = new URLSearchParams(window.location.search);
+        nextParams.set("left", variants[state.left].id);
+        nextParams.set("right", variants[state.right].id);
+        nextParams.set("split", String(Math.round(state.split)));
+        nextParams.set("leftDevice", state.leftDevice);
+        nextParams.set("rightDevice", state.rightDevice);
+        nextParams.delete("device");
+        window.history.replaceState(null, "", `${window.location.pathname}?${nextParams.toString()}`);
+      };
+
+      const updatePhoneUrl = () => {
+        const nextParams = new URLSearchParams(window.location.search);
+        nextParams.set("phone", variants[getVariantIndex(phoneVariants[phoneState.index], 0)].id);
+        nextParams.set("phoneMode", "1");
+        nextParams.delete("device");
+        window.history.replaceState(null, "", `${window.location.pathname}?${nextParams.toString()}`);
+      };
+
+      const setSplit = (value, shouldUpdateUrl = true) => {
+        state.split = Math.min(78, Math.max(22, value));
+        document.documentElement.style.setProperty("--split", `${state.split}%`);
+        if (shouldUpdateUrl) updateUrl();
+      };
+
+      const conceptData = {
+        "gateway-strip": {
+          mode: "redirect",
+          overline: "переход к оплате",
+          title: "Открываем оплату",
+          body: "Сейчас откроется защищённая страница платежного партнёра. Это может занять несколько секунд.",
+          tag: "автоматически",
+          layout: `
+            <div class="route-strip" aria-hidden="true">
+              <span>AIM</span><i></i><span>оплата</span><i></i><span>банк</span>
+              <b></b>
+            </div>
+            <div class="micro-log">
+              <span>создаём сессию</span>
+              <span>получаем ссылку</span>
+              <span>открываем страницу</span>
+            </div>
+          `,
+        },
+        "route-pulse": {
+          mode: "redirect",
+          overline: "защищённая оплата",
+          title: "Почти готово",
+          body: "Платёжная страница готовится. Оставьте это окно открытым, мы переведём вас автоматически.",
+          tag: "подождите",
+          layout: `
+            <div class="route-board" aria-hidden="true">
+              <div class="route-node active"><span>01</span><strong>запрос принят</strong></div>
+              <div class="route-node active"><span>02</span><strong>сессия создана</strong></div>
+              <div class="route-node"><span>03</span><strong>открываем оплату</strong></div>
+            </div>
+          `,
+        },
+        "session-ticket": {
+          mode: "redirect",
+          overline: "платёжная сессия",
+          title: "Готовим переход",
+          body: "Мы уже отправили запрос платёжному партнёру. Следующая страница откроется сама.",
+          tag: "без клика",
+          layout: `
+            <div class="session-ticket" aria-hidden="true">
+              <div><span>статус</span><strong>создаём</strong></div>
+              <div><span>переход</span><strong>запущен</strong></div>
+              <div><span>дальше</span><strong>страница оплаты</strong></div>
+            </div>
+          `,
+        },
+        "terminal-transfer": {
+          mode: "redirect dark",
+          overline: "payment transfer",
+          title: "Запускаем оплату",
+          body: "Создаём сессию и открываем платёжную страницу. Ничего дополнительно нажимать не нужно.",
+          tag: "processing",
+          layout: `
+            <div class="terminal-box" aria-hidden="true">
+              <span>&gt; payment.session.create</span>
+              <span>&gt; provider.route.resolve</span>
+              <span class="ok">&gt; opening checkout...</span>
+            </div>
+          `,
+        },
+        "scan-gate": {
+          mode: "redirect",
+          overline: "переход к оплате",
+          title: "Оплата откроется",
+          body: "Платёжный партнёр подготавливает страницу. Обычно это занимает пару секунд.",
+          tag: "ожидаем",
+          layout: `
+            <div class="scan-gate" aria-hidden="true">
+              <span></span>
+              <b></b>
+            </div>
+          `,
+        },
+        "provider-lane": {
+          mode: "redirect",
+          overline: "платёжный партнёр",
+          title: "Открываем страницу",
+          body: "Запрос принят. Сейчас вы перейдёте на защищённую страницу оплаты.",
+          tag: "открываем",
+          layout: `
+            <div class="lane-map" aria-hidden="true">
+              <div><span>AIM</span><span>сессия</span><span>оплата</span></div>
+              <b></b>
+            </div>
+          `,
+        },
+        "access-pass": {
+          mode: "success pass",
+          overline: "доступ к Telegram",
+          title: "Доступ открыт",
+          body: "Откройте Telegram-бота для доступа к группе лаборатории.",
+          tag: "готово",
+          cta: "Открыть Telegram",
+          layout: `
+            <div class="access-pass" aria-hidden="true">
+              <div class="pass-head">доступ готов</div>
+              <div class="pass-body">
+                <span>AI MINDSET</span>
+                <strong>MAIN LAB</strong>
+                <small>группа лаборатории</small>
+              </div>
+              <div class="pass-code">PASS AIM-X26</div>
+            </div>
+          `,
+        },
+        "lab-ticket": {
+          mode: "success ticket",
+          overline: "группа лаборатории",
+          title: "Пропуск готов",
+          body: "Оплата подтверждена. Следующий шаг — открыть Telegram-бота.",
+          tag: "доступ",
+          cta: "Открыть Telegram",
+          layout: `
+            <div class="lab-ticket" aria-hidden="true">
+              <aside>ADMIT<br>ONE</aside>
+              <main><span>MAIN LAB</span><strong>ACCESS</strong><small>telegram invite ready</small></main>
+            </div>
+          `,
+        },
+        "validated-stamp": {
+          mode: "success stamp",
+          overline: "оплата подтверждена",
+          title: "Доступ готов",
+          body: "Перейдите в Telegram-бота, чтобы получить доступ к группе лаборатории.",
+          tag: "готово",
+          cta: "Открыть Telegram",
+          layout: `
+            <div class="stamp-card" aria-hidden="true">
+              <span>VALIDATED</span>
+              <b>ACCESS OPEN</b>
+            </div>
+          `,
+        },
+        "bot-handoff": {
+          mode: "success route",
+          overline: "следующий шаг",
+          title: "Откройте Telegram",
+          body: "Бот подключит вас к группе лаборатории и покажет дальнейшие шаги.",
+          tag: "telegram",
+          cta: "Открыть Telegram",
+          layout: `
+            <div class="handoff-route" aria-hidden="true">
+              <div class="done">paid</div><i></i><div class="active">bot</div><i></i><div>group</div>
+            </div>
+          `,
+        },
+        "receipt-route": {
+          mode: "success receipt",
+          overline: "оплата получена",
+          title: "Оплата прошла",
+          body: "Теперь откройте Telegram-бота для доступа к группе лаборатории.",
+          tag: "подтверждено",
+          cta: "Открыть Telegram",
+          layout: `
+            <div class="receipt-route" aria-hidden="true">
+              <div><span>статус</span><strong>оплачено</strong></div>
+              <div><span>доступ</span><strong>готов</strong></div>
+              <div><span>дальше</span><strong>telegram</strong></div>
+            </div>
+          `,
+        },
+        "minimal-access": {
+          mode: "success minimal",
+          overline: "оплата прошла",
+          title: "Присоединяйтесь к группе",
+          body: "Перейдите в наш Telegram-бот для получения доступа к группе.",
+          tag: "следующий шаг",
+          cta: "перейти",
+          status: "оплата подтверждена<br>доступ через бота",
+          layout: `
+            <div class="minimal-open" aria-hidden="true">AIM LAB</div>
+          `,
+        },
+      };
+
+      const getConceptMarkup = (variant) => {
+        const concept = conceptData[variant.concept];
+        const isSuccess = concept.mode.includes("success");
+        const isDark = concept.mode.includes("dark");
+        return `<!doctype html>
+          <html lang="ru">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <style>
+                * { box-sizing: border-box; }
+                html, body { width: 100%; min-height: 100%; margin: 0; }
+                body {
+                  display: grid;
+                  place-items: center;
+                  min-height: 100vh;
+                  overflow: hidden;
+                  background:
+                    linear-gradient(rgba(248,248,246,.88), rgba(248,248,246,.88)),
+                    repeating-linear-gradient(90deg, rgba(0,0,0,.04) 0 1px, transparent 1px 54px),
+                    #f8f8f6;
+                  color: #111;
+                  font-family: Inter, Arial, sans-serif;
+                }
+                body::before {
+                  content: "AI MINDSET W26";
+                  position: fixed;
+                  left: 8%;
+                  top: 19%;
+                  color: rgba(0,0,0,.08);
+                  font: 950 112px/.86 Inter, Arial, sans-serif;
+                  letter-spacing: 0;
+                  white-space: pre;
+                }
+                .modal {
+                  position: relative;
+                  width: min(440px, calc(100vw - 34px));
+                  min-height: 0;
+                  display: grid;
+                  grid-template-rows: auto auto auto;
+                  gap: 18px;
+                  padding: 24px;
+                  border: 1.5px solid #111;
+                  border-radius: 3px;
+                  background: ${isDark ? "#111" : "#fff"};
+                  color: ${isDark ? "#f8f8f6" : "#111"};
+                  box-shadow: 0 38px 100px rgba(0,0,0,.16);
+                }
+                .modal::after {
+                  content: "${concept.tag}";
+                  position: absolute;
+                  right: 22px;
+                  top: 22px;
+                  padding: 7px 9px;
+                  border: 1px solid ${isDark ? "rgba(255,255,255,.28)" : "rgba(0,0,0,.2)"};
+                  color: ${isDark ? "rgba(248,248,246,.58)" : "rgba(0,0,0,.42)"};
+                  font: 900 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .15em;
+                  text-transform: uppercase;
+                }
+                .overline {
+                  max-width: calc(100% - 148px);
+                  color: ${isSuccess ? "#5f9f20" : isDark ? "rgba(248,248,246,.5)" : "rgba(0,0,0,.42)"};
+                  font: 950 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .26em;
+                  text-transform: uppercase;
+                }
+                h1 {
+                  max-width: 360px;
+                  margin: 16px 0 0;
+                  font: 950 42px/.9 Inter, Arial, sans-serif;
+                  letter-spacing: 0;
+                  text-transform: uppercase;
+                }
+                .body {
+                  max-width: 340px;
+                  margin: 18px 0 0;
+                  color: ${isDark ? "rgba(248,248,246,.66)" : "rgba(0,0,0,.62)"};
+                  font: 500 16px/1.5 Inter, Arial, sans-serif;
+                }
+                .visual {
+                  align-self: center;
+                }
+                .footer {
+                  display: flex;
+                  align-items: end;
+                  justify-content: space-between;
+                  gap: 14px;
+                  border-top: 1px solid ${isDark ? "rgba(255,255,255,.18)" : "rgba(0,0,0,.14)"};
+                  padding-top: 18px;
+                }
+                .status-line {
+                  color: ${isDark ? "rgba(248,248,246,.46)" : "rgba(0,0,0,.42)"};
+                  font: 900 10px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .17em;
+                  text-transform: uppercase;
+                }
+                .cta {
+                  display: ${concept.cta ? "inline-flex" : "none"};
+                  min-width: 178px;
+                  height: 48px;
+                  align-items: center;
+                  justify-content: center;
+                  border: 1px solid #111;
+                  background: #8ad036;
+                  color: #111;
+                  font: 950 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .14em;
+                  text-decoration: none;
+                  text-transform: lowercase;
+                }
+                .route-strip {
+                  position: relative;
+                  display: grid;
+                  grid-template-columns: auto 1fr auto 1fr auto;
+                  align-items: center;
+                  gap: 12px;
+                  min-height: 74px;
+                  border: 1px solid currentColor;
+                  padding: 0 18px;
+                  overflow: hidden;
+                  font: 950 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .17em;
+                  text-transform: uppercase;
+                }
+                .route-strip i, .lane-map b {
+                  height: 2px;
+                  background: currentColor;
+                  opacity: .26;
+                }
+                .route-strip b {
+                  position: absolute;
+                  left: -28%;
+                  top: 0;
+                  bottom: 0;
+                  width: 26%;
+                  background: rgba(138,208,54,.7);
+                  animation: travel 1.55s linear infinite;
+                }
+                .micro-log {
+                  display: grid;
+                  grid-template-columns: repeat(3, 1fr);
+                  border: 1px solid rgba(0,0,0,.14);
+                  border-top: 0;
+                }
+                .micro-log span, .receipt-route div, .session-ticket div {
+                  min-height: 54px;
+                  padding: 14px;
+                  border-right: 1px solid rgba(0,0,0,.12);
+                  color: rgba(0,0,0,.46);
+                  font: 900 9px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .14em;
+                  text-transform: uppercase;
+                }
+                .micro-log span:last-child, .receipt-route div:last-child, .session-ticket div:last-child { border-right: 0; }
+                .route-board { display: grid; gap: 8px; }
+                .route-node {
+                  display: grid;
+                  grid-template-columns: 54px 1fr;
+                  min-height: 48px;
+                  border: 1px solid currentColor;
+                  background: ${isDark ? "#181818" : "#fff"};
+                  overflow: hidden;
+                }
+                .route-node span {
+                  display: grid;
+                  place-items: center;
+                  border-right: 1px solid currentColor;
+                  font: 950 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+                }
+                .route-node strong {
+                  display: flex;
+                  align-items: center;
+                  padding: 0 18px;
+                  font: 950 15px/1 Inter, Arial, sans-serif;
+                  letter-spacing: .02em;
+                }
+                .route-node.active strong::after {
+                  content: "";
+                  width: 8px;
+                  height: 8px;
+                  margin-left: auto;
+                  background: #8ad036;
+                  animation: blink .8s steps(2) infinite;
+                }
+                .session-ticket {
+                  position: relative;
+                  display: grid;
+                  border: 1px solid currentColor;
+                  background: linear-gradient(90deg, transparent calc(100% - 28px), rgba(0,0,0,.04) 0);
+                }
+                .session-ticket::after, .lab-ticket::after {
+                  content: "";
+                  position: absolute;
+                  top: 0;
+                  bottom: 0;
+                  right: 28px;
+                  border-left: 1px dashed rgba(0,0,0,.42);
+                }
+                .session-ticket span, .receipt-route span {
+                  display: block;
+                  color: rgba(0,0,0,.38);
+                  margin-bottom: 8px;
+                }
+                .session-ticket strong, .receipt-route strong {
+                  color: #111;
+                  font-size: 15px;
+                  letter-spacing: .16em;
+                }
+                .terminal-box {
+                  display: grid;
+                  gap: 10px;
+                  min-height: 138px;
+                  align-content: end;
+                  border: 1px solid rgba(248,248,246,.24);
+                  background:
+                    repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 24px),
+                    #050505;
+                  padding: 18px;
+                  color: rgba(248,248,246,.64);
+                  font: 900 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .08em;
+                  text-transform: uppercase;
+                }
+                .terminal-box .ok { color: #8ad036; }
+                .scan-gate {
+                  position: relative;
+                  height: 168px;
+                  border: 1px solid currentColor;
+                  background:
+                    linear-gradient(90deg, transparent 49%, rgba(0,0,0,.16) 49% 51%, transparent 51%),
+                    repeating-linear-gradient(90deg, rgba(0,0,0,.14) 0 2px, transparent 2px 18px);
+                  overflow: hidden;
+                }
+                .scan-gate span {
+                  position: absolute;
+                  top: 0;
+                  bottom: 0;
+                  width: 24%;
+                  background: rgba(138,208,54,.58);
+                  animation: travel 1.7s linear infinite;
+                }
+                .scan-gate b {
+                  position: absolute;
+                  inset: 38px 92px;
+                  border: 1px solid currentColor;
+                  border-bottom-width: 12px;
+                }
+                .lane-map {
+                  position: relative;
+                  min-height: 118px;
+                  display: grid;
+                  align-content: center;
+                  border: 1px solid currentColor;
+                  padding: 24px;
+                  overflow: hidden;
+                }
+                .lane-map div {
+                  display: grid;
+                  grid-template-columns: repeat(3, 1fr);
+                  position: relative;
+                  z-index: 2;
+                  color: rgba(0,0,0,.62);
+                  font: 950 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .16em;
+                  text-transform: uppercase;
+                }
+                .lane-map b {
+                  position: absolute;
+                  left: -20%;
+                  top: 50%;
+                  width: 30%;
+                  height: 34px;
+                  margin-top: -17px;
+                  opacity: 1;
+                  background: #8ad036;
+                  animation: travel 1.35s linear infinite;
+                }
+                .pass-head {
+                  padding: 13px 16px;
+                  background: #8ad036;
+                  border-bottom: 1.5px solid #111;
+                  font: 950 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .18em;
+                }
+                .pass-body {
+                  min-height: 112px;
+                  display: grid;
+                  align-content: center;
+                  padding: 22px;
+                }
+                .pass-body span, .pass-body small, .pass-code {
+                  color: rgba(0,0,0,.46);
+                  font: 950 10px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .17em;
+                  text-transform: uppercase;
+                }
+                .pass-body strong {
+                  margin: 10px 0;
+                  font: 950 38px/.86 Inter, Arial, sans-serif;
+                  letter-spacing: 0;
+                }
+                .pass-code {
+                  padding: 14px 16px;
+                  border-top: 1px dashed rgba(0,0,0,.36);
+                }
+                .lab-ticket {
+                  position: relative;
+                  display: grid;
+                  grid-template-columns: 96px 1fr;
+                  min-height: 150px;
+                  border: 1.5px solid #111;
+                  background: #fff;
+                }
+                .lab-ticket aside {
+                  display: grid;
+                  place-items: center;
+                  border-right: 1.5px solid #111;
+                  background: #8ad036;
+                  font: 950 18px/.9 Inter, Arial, sans-serif;
+                  text-align: center;
+                  text-transform: uppercase;
+                }
+                .lab-ticket main {
+                  display: grid;
+                  align-content: center;
+                  padding: 22px;
+                }
+                .lab-ticket span, .lab-ticket small {
+                  color: rgba(0,0,0,.48);
+                  font: 950 10px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .16em;
+                  text-transform: uppercase;
+                }
+                .lab-ticket strong {
+                  margin: 9px 0;
+                  font: 950 38px/.82 Inter, Arial, sans-serif;
+                  text-transform: uppercase;
+                }
+                .stamp-card {
+                  position: relative;
+                  min-height: 148px;
+                  border: 1px solid #111;
+                  background: repeating-linear-gradient(-45deg, rgba(0,0,0,.04) 0 1px, transparent 1px 13px);
+                  display: grid;
+                  place-items: center;
+                  overflow: hidden;
+                }
+                .stamp-card span {
+                  transform: rotate(-11deg);
+                  border: 4px solid #8ad036;
+                  color: #5f9f20;
+                  padding: 15px 20px;
+                  font: 950 29px/.8 Inter, Arial, sans-serif;
+                  letter-spacing: .04em;
+                  text-transform: uppercase;
+                }
+                .stamp-card b {
+                  position: absolute;
+                  left: 18px;
+                  bottom: 18px;
+                  font: 950 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .18em;
+                  color: rgba(0,0,0,.48);
+                }
+                .handoff-route {
+                  display: grid;
+                  grid-template-columns: 1fr 38px 1fr 38px 1fr;
+                  align-items: center;
+                  min-height: 98px;
+                }
+                .handoff-route div {
+                  display: grid;
+                  place-items: center;
+                  height: 70px;
+                  border: 1.5px solid #111;
+                  color: rgba(0,0,0,.42);
+                  font: 950 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+                  letter-spacing: .16em;
+                  text-transform: uppercase;
+                }
+                .handoff-route .done { background: #111; color: #fff; }
+                .handoff-route .active { background: #8ad036; color: #111; }
+                .handoff-route i {
+                  height: 1.5px;
+                  background: #111;
+                }
+                .receipt-route {
+                  display: grid;
+                  border: 1px solid #111;
+                  background: #fff;
+                }
+                .minimal-open {
+                  border-block: 1.5px solid #111;
+                  padding: 8px 0 14px;
+                  font: 950 82px/.78 Inter, Arial, sans-serif;
+                  letter-spacing: 0;
+                  text-transform: uppercase;
+                }
+                @keyframes travel {
+                  from { transform: translateX(0); }
+                  to { transform: translateX(520%); }
+                }
+                @keyframes blink {
+                  0%, 45% { opacity: 1; }
+                  46%, 100% { opacity: .2; }
+                }
+                @media (max-width: 560px) {
+                  body { overflow: auto; min-height: 100dvh; padding: 10px; }
+                  body::before { left: 18px; top: 46px; font-size: 54px; }
+                  .modal {
+                    width: min(100%, 360px);
+                    min-height: 0;
+                    padding: 18px;
+                    gap: 18px;
+                  }
+                  .modal::after { right: 16px; top: 16px; max-width: 120px; }
+                  .overline { max-width: calc(100% - 132px); }
+                  h1 { font-size: 34px; }
+                  .body { font-size: 15px; }
+                  .footer { align-items: stretch; flex-direction: column; }
+                  .cta { width: 100%; }
+                  .micro-log { grid-template-columns: 1fr; }
+                  .micro-log span { border-right: 0; border-bottom: 1px solid rgba(0,0,0,.12); }
+                  .route-strip { grid-template-columns: 1fr; height: auto; gap: 8px; padding: 16px; }
+                  .route-strip i { display: none; }
+                  .route-board { gap: 6px; }
+                  .route-node strong { font-size: 15px; }
+                  .handoff-route { grid-template-columns: 1fr; gap: 8px; }
+                  .handoff-route i { height: 18px; width: 1.5px; justify-self: center; }
+                  .lab-ticket { grid-template-columns: 72px 1fr; }
+                  .lab-ticket strong { font-size: 40px; }
+                  .pass-body strong { font-size: 38px; }
+                  .stamp-card span { font-size: 28px; }
+                  .minimal-open { font-size: 76px; }
+                }
+              </style>
+            </head>
+            <body>
+              <section class="modal" aria-label="${variant.label}">
+                <header>
+                  <div class="overline">${concept.overline}</div>
+                  <h1>${concept.title}</h1>
+                  <p class="body">${concept.body}</p>
+                </header>
+                <div class="visual">${concept.layout}</div>
+                <footer class="footer">
+                  <div class="status-line">${concept.status || (isSuccess ? "оплата подтверждена<br>доступ через Telegram" : "переход запущен<br>ничего нажимать не нужно")}</div>
+                  <a class="cta" href="#">${concept.cta || ""}</a>
+                </footer>
+              </section>
+            </body>
+          </html>`;
+      };
+
+      const getPreviewSrc = (src) => {
+        try {
+          const url = new URL(src, window.location.origin);
+          if (url.searchParams.has("payment") || url.searchParams.has("paymentStatus")) {
+            url.searchParams.set("paymentVariantPreview", "1");
+          }
+          return `${url.pathname}${url.search}${url.hash}`;
+        } catch {
+          return src;
+        }
+      };
+
+      const configureVariantFrame = (frame, variant) => {
+        frame.title = variant.label;
+        frame.dataset.variantType = variant.type;
+        if (variant.type === "concept") {
+          frame.srcdoc = getConceptMarkup(variant);
+          return;
+        }
+        frame.src = getPreviewSrc(variant.src);
+        frame.addEventListener("load", () => schedulePopupOpen(frame));
+      };
+
+      const openPricingPopup = (iframe) => {
+        if (iframe.dataset.variantType === "concept") return true;
+        try {
+          const doc = iframe.contentDocument;
+          if (!doc) return false;
+          const cookieButton = Array.from(doc.querySelectorAll("button")).find((item) =>
+            item.textContent?.toLowerCase().includes("понятно"),
+          );
+          cookieButton?.click();
+          const bodyText = doc.body.innerText;
+          if (
+            bodyText.includes("ОПЛАТА ЗАКАЗА")
+            || bodyText.includes("ОПЛАТА ПОЛУЧЕНА")
+            || bodyText.includes("ОПЛАТА НЕ ПРОШЛА")
+            || bodyText.includes("ОТКРОЙТЕ БОТА")
+            || bodyText.includes("ПЕРЕХОД К ОПЛАТЕ")
+          ) return !cookieButton;
+
+          doc.querySelector("#pricing")?.scrollIntoView({ block: "center" });
+          const planParam = new URL(iframe.contentWindow.location.href).searchParams.get("paymentPlan");
+          const pricingButtons = Array.from(doc.querySelectorAll("#pricing button")).filter((item) =>
+            item.textContent?.includes("/присоединиться"),
+          );
+          const planIndex = planParam === "premium" ? 2 : planParam === "advanced" ? 1 : 0;
+          const button = pricingButtons[planIndex] || pricingButtons[0];
+          if (!button) return false;
+          button.click();
+          return true;
+        } catch {
+          return false;
+        }
+      };
+
+      const schedulePopupOpen = (iframe) => {
+        installPhoneSwipeBridge(iframe);
+        let attempts = 0;
+        const timer = window.setInterval(() => {
+          attempts += 1;
+          const isPopupOpen = openPricingPopup(iframe);
+          if ((isPopupOpen && attempts > 10) || attempts > 30) {
+            window.clearInterval(timer);
+          }
+        }, 350);
+      };
+
+      const installPhoneSwipeBridge = (iframe) => {
+        if (!iframe.classList.contains("phone-frame")) return;
+        try {
+          const doc = iframe.contentDocument;
+          if (!doc || doc.__aimPaymentSwipeBridge) return;
+          doc.__aimPaymentSwipeBridge = true;
+          let startX = 0;
+          let startY = 0;
+          let deltaX = 0;
+          let isTracking = false;
+
+          doc.addEventListener("pointerdown", (event) => {
+            isTracking = true;
+            startX = event.clientX;
+            startY = event.clientY;
+            deltaX = 0;
+          }, { passive: true });
+
+          doc.addEventListener("pointermove", (event) => {
+            if (!isTracking) return;
+            const nextDeltaX = event.clientX - startX;
+            const deltaY = event.clientY - startY;
+            if (Math.abs(deltaY) > Math.abs(nextDeltaX) * 1.25) return;
+            deltaX = nextDeltaX;
+          }, { passive: true });
+
+          const finish = () => {
+            if (!isTracking) return;
+            isTracking = false;
+            if (Math.abs(deltaX) > 54) {
+              movePhone(deltaX < 0 ? 1 : -1);
+            }
+          };
+
+          doc.addEventListener("pointerup", finish, { passive: true });
+          doc.addEventListener("pointercancel", finish, { passive: true });
+        } catch {}
+      };
+
+      const setPhoneVariant = (index, shouldUpdateUrl = true) => {
+        phoneState.index = (index + phoneVariants.length) % phoneVariants.length;
+        const variant = variants[getVariantIndex(phoneVariants[phoneState.index], 0)];
+        document.querySelector(".phone-label").textContent = variant.label;
+        document.querySelectorAll(".phone-dot").forEach((dot, dotIndex) => {
+          dot.setAttribute("aria-current", dotIndex === phoneState.index ? "true" : "false");
+        });
+        const frame = document.querySelector(".phone-frame");
+        frame.title = variant.label;
+        const previewSrc = getPreviewSrc(variant.src);
+        if (phoneState.lastSrc !== previewSrc) {
+          phoneState.lastSrc = previewSrc;
+          frame.src = previewSrc;
+        } else {
+          schedulePopupOpen(frame);
+        }
+        if (shouldUpdateUrl) updatePhoneUrl();
+      };
+
+      const movePhone = (direction) => {
+        setPhoneVariant(phoneState.index + direction);
+      };
+
+      const buildPhoneCarousel = () => {
+        const carousel = document.querySelector(".phone-carousel");
+        const dots = carousel.querySelector(".phone-dots");
+        phoneVariants.forEach((variantId) => {
+          const dot = document.createElement("span");
+          dot.className = "phone-dot";
+          dot.setAttribute("aria-hidden", "true");
+          dots.append(dot);
+        });
+        carousel.querySelector(".phone-frame").addEventListener("load", (event) => schedulePopupOpen(event.currentTarget));
+
+        carousel.addEventListener("pointerdown", (event) => {
+          phoneState.isDragging = true;
+          phoneState.startX = event.clientX;
+          phoneState.startY = event.clientY;
+          phoneState.deltaX = 0;
+        });
+
+        carousel.addEventListener("pointermove", (event) => {
+          if (!phoneState.isDragging) return;
+          const deltaX = event.clientX - phoneState.startX;
+          const deltaY = event.clientY - phoneState.startY;
+          if (Math.abs(deltaY) > Math.abs(deltaX) * 1.2) return;
+          phoneState.deltaX = deltaX;
+        });
+
+        const finishSwipe = () => {
+          if (!phoneState.isDragging) return;
+          phoneState.isDragging = false;
+          if (Math.abs(phoneState.deltaX) > 46) {
+            movePhone(phoneState.deltaX < 0 ? 1 : -1);
+            return;
+          }
+          setPhoneVariant(phoneState.index);
+        };
+
+        carousel.addEventListener("pointerup", finishSwipe);
+        carousel.addEventListener("pointercancel", finishSwipe);
+        setPhoneVariant(phoneState.index, false);
+      };
+
+      const buildGallery = () => {
+        const grid = document.querySelector(".gallery-grid");
+        if (viewMode === "archive") {
+          document.querySelector(".gallery-title").textContent = "Payment Popup Archive";
+          document.querySelector(".gallery-note").textContent = "Старые popup-варианты вынесены отдельно: они не рендерятся и не грузятся в основной gallery.";
+        } else if (viewMode === "final") {
+          document.querySelector(".gallery-title").textContent = "Payment Popup Final 4";
+          document.querySelector(".gallery-note").textContent = "Основной v7 flow для main: форма заказа, переход к оплате, неоплачено, оплачено/handoff. Desktop и mobile должны держать один размерный ритм.";
+        }
+        galleryVariantIds.forEach((variantId, index) => {
+          const variant = variants[getVariantIndex(variantId, 0)];
+          const showInlineMobile = index < 6 && variant.mobile;
+          const card = document.createElement("article");
+          card.className = "gallery-card";
+          if (showInlineMobile) card.classList.add("is-featured");
+
+          const title = document.createElement("div");
+          title.className = "gallery-card-title";
+          const label = document.createElement("span");
+          label.textContent = variant.label;
+          const device = document.createElement("span");
+          device.textContent = showInlineMobile ? "desktop / mobile" : variant.mobile ? "desktop + phone link" : "desktop";
+          title.append(label, device);
+
+          if (showInlineMobile) {
+            const previewGrid = document.createElement("div");
+            previewGrid.className = "gallery-preview-grid";
+
+            [
+              ["desktop", "gallery-preview is-desktop"],
+              ["mobile 390px", "gallery-preview is-mobile"],
+            ].forEach(([previewLabel, previewClass]) => {
+              const preview = document.createElement("div");
+              preview.className = previewClass;
+              const previewTitle = document.createElement("div");
+              previewTitle.className = "gallery-preview-label";
+              previewTitle.textContent = previewLabel;
+              const frameWrap = document.createElement("div");
+              frameWrap.className = "gallery-frame-wrap";
+              const frame = document.createElement("iframe");
+              frame.className = "gallery-frame";
+              configureVariantFrame(frame, variant);
+              frameWrap.append(frame);
+              preview.append(previewTitle, frameWrap);
+              previewGrid.append(preview);
+            });
+
+            card.append(title, previewGrid);
+          } else {
+            const frameWrap = document.createElement("div");
+            frameWrap.className = "gallery-frame-wrap";
+            const frame = document.createElement("iframe");
+            frame.className = "gallery-frame";
+            configureVariantFrame(frame, variant);
+            frameWrap.append(frame);
+            card.append(title, frameWrap);
+          }
+
+          grid.append(card);
+        });
+      };
+
+      const setActivePaneVariant = (paneKey, index) => {
+        const pane = document.querySelector(`[data-pane="${paneKey}"]`);
+        const variant = variants[index];
+        state[paneKey] = index;
+
+        pane.querySelectorAll(".variant-layer").forEach((layer) => {
+          layer.classList.toggle("active", layer.dataset.variant === variant.id);
+        });
+
+        pane.querySelectorAll(".tab-button").forEach((button) => {
+          button.setAttribute("aria-pressed", button.dataset.variant === variant.id ? "true" : "false");
+        });
+
+        const activeFrame = pane.querySelector(`.variant-layer[data-variant="${variant.id}"] iframe`);
+        if (activeFrame) schedulePopupOpen(activeFrame);
+        updateUrl();
+      };
+
+      const movePane = (paneKey, direction) => {
+        const available = getAvailableVariantIndexes(paneKey);
+        const currentAvailableIndex = available.indexOf(state[paneKey]);
+        const nextIndex = available[(currentAvailableIndex + direction + available.length) % available.length];
+        setActivePaneVariant(paneKey, nextIndex);
+      };
+
+      const syncPaneDeviceControls = (pane) => {
+        const paneKey = pane.dataset.pane;
+        pane.dataset.device = getPaneDevice(paneKey);
+        pane.querySelectorAll(".device-button").forEach((button) => {
+          button.setAttribute("aria-pressed", button.dataset.device === getPaneDevice(paneKey) ? "true" : "false");
+        });
+      };
+
+      const renderPaneTabs = (pane) => {
+        const paneKey = pane.dataset.pane;
+        const tabs = pane.querySelector(".variant-tabs");
+        tabs.textContent = "";
+
+        getAvailableVariantIndexes(paneKey).forEach((index) => {
+          const variant = variants[index];
+          const tab = document.createElement("button");
+          tab.className = "tab-button";
+          tab.type = "button";
+          tab.dataset.variant = variant.id;
+          tab.textContent = variant.label;
+          tab.setAttribute("aria-pressed", state[paneKey] === index ? "true" : "false");
+          tab.addEventListener("click", () => setActivePaneVariant(paneKey, index));
+          tabs.append(tab);
+        });
+      };
+
+      const setPaneDevice = (paneKey, device) => {
+        const pane = document.querySelector(`[data-pane="${paneKey}"]`);
+        state[`${paneKey}Device`] = device;
+        normalizePaneVariantForDevice(paneKey);
+        syncPaneDeviceControls(pane);
+        renderPaneTabs(pane);
+        setActivePaneVariant(paneKey, state[paneKey]);
+      };
+
+      const buildPane = (pane) => {
+        const paneKey = pane.dataset.pane;
+        const stage = pane.querySelector(".stage");
+
+        variants.forEach((variant, index) => {
+          const layer = document.createElement("div");
+          layer.className = `variant-layer ${variant.type === "image" ? "image-reference" : ""}`;
+          layer.dataset.variant = variant.id;
+
+          if (variant.type === "image") {
+            const image = document.createElement("img");
+            image.src = variant.src;
+            image.alt = variant.label;
+            layer.append(image);
+          } else {
+            const iframe = document.createElement("iframe");
+            iframe.className = "live-frame";
+            configureVariantFrame(iframe, variant);
+            layer.append(iframe);
+          }
+
+          stage.append(layer);
+        });
+
+        pane.querySelector('[data-action="prev"]').addEventListener("click", () => movePane(paneKey, -1));
+        pane.querySelector('[data-action="next"]').addEventListener("click", () => movePane(paneKey, 1));
+        pane.querySelectorAll(".device-button").forEach((button) => {
+          button.addEventListener("click", () => setPaneDevice(paneKey, button.dataset.device));
+        });
+        syncPaneDeviceControls(pane);
+        renderPaneTabs(pane);
+      };
+
+      document.body.classList.add(`${viewMode}-mode`);
+      if (viewMode === "gallery" || viewMode === "archive" || viewMode === "final") {
+        buildGallery();
+      } else {
+        buildPhoneCarousel();
+      }
+      if (isPhoneMode) {
+        document.body.classList.add("phone-mode");
+        setPhoneVariant(phoneState.index, false);
+      } else if (viewMode === "compare") {
+        normalizePaneVariantForDevice("left");
+        normalizePaneVariantForDevice("right");
+        document.querySelectorAll(".pane").forEach(buildPane);
+        document.querySelectorAll(".pane").forEach((pane) => setActivePaneVariant(pane.dataset.pane, state[pane.dataset.pane]));
+        setSplit(state.split, false);
+      }
+
+      const splitter = document.querySelector(".splitter");
+      let isResizing = false;
+
+      const updateSplitFromPointer = (clientX) => {
+        const rect = document.querySelector(".compare").getBoundingClientRect();
+        setSplit(((clientX - rect.left) / rect.width) * 100);
+      };
+
+      splitter.addEventListener("pointerdown", (event) => {
+        isResizing = true;
+        document.body.classList.add("is-resizing");
+        splitter.setPointerCapture(event.pointerId);
+        updateSplitFromPointer(event.clientX);
+      });
+
+      splitter.addEventListener("pointermove", (event) => {
+        if (!isResizing) return;
+        updateSplitFromPointer(event.clientX);
+      });
+
+      const stopResize = (event) => {
+        if (!isResizing) return;
+        isResizing = false;
+        document.body.classList.remove("is-resizing");
+        try {
+          splitter.releasePointerCapture(event.pointerId);
+        } catch {}
+        updateUrl();
+      };
+
+      splitter.addEventListener("pointerup", stopResize);
+      splitter.addEventListener("pointercancel", stopResize);
+      splitter.addEventListener("dblclick", () => setSplit(50));
+
+      splitter.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          setSplit(state.split - (event.shiftKey ? 10 : 2));
+        }
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          setSplit(state.split + (event.shiftKey ? 10 : 2));
+        }
+        if (event.key === "Home") setSplit(22);
+        if (event.key === "End") setSplit(78);
+        if (event.key === "Enter" || event.key === " ") setSplit(50);
+      });
+
+      window.addEventListener("keydown", (event) => {
+        if (event.target?.matches?.("input, textarea")) return;
+        if (event.target?.classList?.contains("splitter")) return;
+        if (event.key === "a" || event.key === "A") movePane("left", -1);
+        if (event.key === "d" || event.key === "D") movePane("left", 1);
+        if (event.key === "ArrowLeft") movePane("right", -1);
+        if (event.key === "ArrowRight") movePane("right", 1);
+      });
+    </script>
+  </body>
+</html>

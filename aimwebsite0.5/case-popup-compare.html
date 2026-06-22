@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Mindset case popup compare</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        color-scheme: light;
+        --chrome: 74px;
+        --divider: #111;
+        --paper: #f8f8f6;
+        --ink: #111;
+        --split: 50%;
+        --mobile-width: 390px;
+        --mobile-height: 844px;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #f4f4f4;
+        color: var(--ink);
+        font-family: Inter, Arial, sans-serif;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .compare {
+        display: grid;
+        grid-template-columns: minmax(260px, var(--split)) 8px minmax(260px, 1fr);
+        width: 100vw;
+        height: 100vh;
+        background: var(--divider);
+      }
+
+      .pane {
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+        background: var(--paper);
+      }
+
+      .splitter {
+        position: relative;
+        z-index: 100;
+        width: 8px;
+        cursor: col-resize;
+        background: #111;
+        touch-action: none;
+      }
+
+      .splitter::before {
+        content: "";
+        position: absolute;
+        inset: 0 -10px;
+      }
+
+      .splitter::after {
+        content: "drag";
+        position: absolute;
+        top: calc(var(--chrome) + 10px);
+        left: 50%;
+        transform: translateX(-50%) rotate(90deg);
+        transform-origin: center;
+        padding: 3px 5px;
+        background: #111;
+        color: #fff;
+        font: 800 9px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        opacity: 0;
+        transition: opacity 150ms ease;
+        pointer-events: none;
+      }
+
+      .splitter:hover::after,
+      body.is-resizing .splitter::after {
+        opacity: 0.72;
+      }
+
+      body.is-resizing {
+        cursor: col-resize;
+        user-select: none;
+      }
+
+      .toolbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 80;
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr) 34px;
+        gap: 6px;
+        align-items: center;
+        height: var(--chrome);
+        padding: 6px;
+        background: rgba(248, 248, 246, 0.94);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+        backdrop-filter: blur(10px);
+      }
+
+      .toolbar-center {
+        display: grid;
+        grid-template-rows: 26px 29px;
+        gap: 4px;
+        min-width: 0;
+      }
+
+      .pane-device-switch {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        min-width: 0;
+      }
+
+      .device-button,
+      .nav-button,
+      .tab-button {
+        border: 1px solid #111;
+        border-radius: 0;
+        background: #fff;
+        color: #111;
+        cursor: pointer;
+      }
+
+      .device-button {
+        height: 26px;
+        min-width: 0;
+        font: 800 10px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .device-button[aria-pressed="true"],
+      .device-button:hover,
+      .tab-button[aria-pressed="true"],
+      .tab-button:hover {
+        background: #111;
+        color: #fff;
+      }
+
+      .nav-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 62px;
+        padding: 0;
+        font: 800 20px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .variant-tabs {
+        display: flex;
+        gap: 4px;
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .variant-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab-button {
+        flex: 0 0 138px;
+        height: 29px;
+        overflow: hidden;
+        padding: 0 8px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font: 800 10px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .stage {
+        position: absolute;
+        inset: var(--chrome) 0 0;
+        overflow: hidden;
+        background: #efefed;
+      }
+
+      .variant-layer {
+        position: absolute;
+        inset: 0;
+        display: none;
+        overflow: hidden;
+      }
+
+      .variant-layer.active {
+        display: block;
+      }
+
+      .live-frame {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #f8f8f6;
+      }
+
+      .pane[data-device="mobile"] .variant-layer {
+        display: none;
+        place-items: center;
+        padding: 18px;
+      }
+
+      .pane[data-device="mobile"] .variant-layer.active {
+        display: grid;
+      }
+
+      .pane[data-device="mobile"] .live-frame {
+        width: min(var(--mobile-width), 100%);
+        height: min(var(--mobile-height), 100%);
+        border: 1px solid rgba(0, 0, 0, 0.22);
+        box-shadow: 0 16px 54px rgba(0, 0, 0, 0.16);
+      }
+
+      .hint {
+        position: fixed;
+        left: 50%;
+        bottom: 14px;
+        z-index: 140;
+        transform: translateX(-50%);
+        background: rgba(17, 17, 17, 0.78);
+        color: #fff;
+        padding: 7px 10px;
+        font: 800 11px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        pointer-events: none;
+      }
+
+      @media (max-width: 760px) {
+        :root {
+          --chrome: 112px;
+        }
+
+        .compare {
+          grid-template-columns: 1fr;
+          grid-template-rows: 1fr 1fr;
+        }
+
+        .splitter {
+          display: none;
+        }
+
+        .toolbar {
+          height: var(--chrome);
+        }
+
+        .nav-button {
+          height: 100px;
+        }
+
+        .hint {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="compare" aria-label="Case popup comparison">
+      <section class="pane" data-pane="left" aria-label="Левый вариант case popup">
+        <div class="toolbar">
+          <button class="nav-button" type="button" data-action="prev" aria-label="Предыдущий левый вариант">‹</button>
+          <div class="toolbar-center">
+            <div class="pane-device-switch" aria-label="Левое устройство">
+              <button class="device-button" type="button" data-device="desktop" aria-pressed="true">desktop</button>
+              <button class="device-button" type="button" data-device="mobile" aria-pressed="false">mobile</button>
+            </div>
+            <div class="variant-tabs" aria-label="Левые варианты"></div>
+          </div>
+          <button class="nav-button" type="button" data-action="next" aria-label="Следующий левый вариант">›</button>
+        </div>
+        <div class="stage"></div>
+      </section>
+
+      <div class="splitter" role="separator" aria-orientation="vertical" aria-label="Изменить ширину сравнения" tabindex="0"></div>
+
+      <section class="pane" data-pane="right" aria-label="Правый вариант case popup">
+        <div class="toolbar">
+          <button class="nav-button" type="button" data-action="prev" aria-label="Предыдущий правый вариант">‹</button>
+          <div class="toolbar-center">
+            <div class="pane-device-switch" aria-label="Правое устройство">
+              <button class="device-button" type="button" data-device="desktop" aria-pressed="true">desktop</button>
+              <button class="device-button" type="button" data-device="mobile" aria-pressed="false">mobile</button>
+            </div>
+            <div class="variant-tabs" aria-label="Правые варианты"></div>
+          </div>
+          <button class="nav-button" type="button" data-action="next" aria-label="Следующий правый вариант">›</button>
+        </div>
+        <div class="stage"></div>
+      </section>
+    </main>
+    <div class="hint">A/D left · ←/→ right · drag divider</div>
+
+    <script>
+      const variants = [
+        { id: "current", label: "current case", src: "/?casePopup=current&case=0#cases", mobile: true },
+        { id: "v7-structured", label: "v7 structured", src: "/?casePopup=v7-structured&case=0#cases", mobile: true },
+        { id: "v7-compact", label: "v7 focus split", src: "/?casePopup=v7-compact&case=0#cases", mobile: true },
+        { id: "v7-multi-dots", label: "arrows + dots", src: "/?casePopup=v7-multi-dots&case=0#cases", mobile: true },
+      ];
+
+      const state = {
+        left: 0,
+        right: 1,
+        split: 50,
+        leftDevice: "desktop",
+        rightDevice: "desktop",
+      };
+
+      const getVariantIndex = (id, fallback) => {
+        const index = variants.findIndex((variant) => variant.id === id);
+        return index >= 0 ? index : fallback;
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      state.left = getVariantIndex(params.get("left"), state.left);
+      state.right = getVariantIndex(params.get("right"), state.right);
+      const fallbackDevice = params.get("device") === "mobile" ? "mobile" : "desktop";
+      state.leftDevice = params.get("leftDevice") === "mobile" ? "mobile" : fallbackDevice;
+      state.rightDevice = params.get("rightDevice") === "mobile" ? "mobile" : fallbackDevice;
+      state.split = params.has("split") && Number.isFinite(Number(params.get("split")))
+        ? Math.min(78, Math.max(22, Number(params.get("split"))))
+        : state.split;
+
+      const getPaneDevice = (paneKey) => state[`${paneKey}Device`];
+      const getAvailableVariantIndexes = (paneKey) => variants
+        .map((variant, index) => ({ variant, index }))
+        .filter(({ variant }) => getPaneDevice(paneKey) === "desktop" || variant.mobile)
+        .map(({ index }) => index);
+
+      const updateUrl = () => {
+        const nextParams = new URLSearchParams(window.location.search);
+        nextParams.set("left", variants[state.left].id);
+        nextParams.set("right", variants[state.right].id);
+        nextParams.set("split", String(Math.round(state.split)));
+        nextParams.set("leftDevice", state.leftDevice);
+        nextParams.set("rightDevice", state.rightDevice);
+        nextParams.delete("device");
+        window.history.replaceState(null, "", `${window.location.pathname}?${nextParams.toString()}`);
+      };
+
+      const setSplit = (value, shouldUpdateUrl = true) => {
+        state.split = Math.min(78, Math.max(22, value));
+        document.documentElement.style.setProperty("--split", `${state.split}%`);
+        if (shouldUpdateUrl) updateUrl();
+      };
+
+      const keepCasePopupOpen = (iframe) => {
+        try {
+          const doc = iframe.contentDocument;
+          if (!doc) return false;
+          const cookieButton = Array.from(doc.querySelectorAll("button")).find((item) =>
+            item.textContent?.toLowerCase().includes("понятно"),
+          );
+          cookieButton?.click();
+          return doc.body.innerText.includes("TEAM OPERATION SYSTEM") || doc.body.innerText.includes("задача");
+        } catch {
+          return false;
+        }
+      };
+
+      const scheduleCaseOpen = (iframe) => {
+        let attempts = 0;
+        const timer = window.setInterval(() => {
+          attempts += 1;
+          const isOpen = keepCasePopupOpen(iframe);
+          if ((isOpen && attempts > 5) || attempts > 30) {
+            window.clearInterval(timer);
+          }
+        }, 350);
+      };
+
+      const setActivePaneVariant = (paneKey, index) => {
+        const pane = document.querySelector(`[data-pane="${paneKey}"]`);
+        const variant = variants[index];
+        state[paneKey] = index;
+
+        pane.querySelectorAll(".variant-layer").forEach((layer) => {
+          layer.classList.toggle("active", layer.dataset.variant === variant.id);
+        });
+
+        pane.querySelectorAll(".tab-button").forEach((button) => {
+          button.setAttribute("aria-pressed", button.dataset.variant === variant.id ? "true" : "false");
+        });
+
+        const activeFrame = pane.querySelector(`.variant-layer[data-variant="${variant.id}"] iframe`);
+        if (activeFrame) scheduleCaseOpen(activeFrame);
+        updateUrl();
+      };
+
+      const movePane = (paneKey, direction) => {
+        const available = getAvailableVariantIndexes(paneKey);
+        const currentAvailableIndex = available.indexOf(state[paneKey]);
+        const nextIndex = available[(currentAvailableIndex + direction + available.length) % available.length];
+        setActivePaneVariant(paneKey, nextIndex);
+      };
+
+      const syncPaneDeviceControls = (pane) => {
+        const paneKey = pane.dataset.pane;
+        pane.dataset.device = getPaneDevice(paneKey);
+        pane.querySelectorAll(".device-button").forEach((button) => {
+          button.setAttribute("aria-pressed", button.dataset.device === getPaneDevice(paneKey) ? "true" : "false");
+        });
+      };
+
+      const renderPaneTabs = (pane) => {
+        const paneKey = pane.dataset.pane;
+        const tabs = pane.querySelector(".variant-tabs");
+        tabs.textContent = "";
+
+        getAvailableVariantIndexes(paneKey).forEach((index) => {
+          const variant = variants[index];
+          const tab = document.createElement("button");
+          tab.className = "tab-button";
+          tab.type = "button";
+          tab.dataset.variant = variant.id;
+          tab.textContent = variant.label;
+          tab.setAttribute("aria-pressed", state[paneKey] === index ? "true" : "false");
+          tab.addEventListener("click", () => setActivePaneVariant(paneKey, index));
+          tabs.append(tab);
+        });
+      };
+
+      const setPaneDevice = (paneKey, device) => {
+        const pane = document.querySelector(`[data-pane="${paneKey}"]`);
+        state[`${paneKey}Device`] = device;
+        syncPaneDeviceControls(pane);
+        renderPaneTabs(pane);
+        setActivePaneVariant(paneKey, state[paneKey]);
+      };
+
+      const buildPane = (pane) => {
+        const paneKey = pane.dataset.pane;
+        const stage = pane.querySelector(".stage");
+
+        variants.forEach((variant) => {
+          const layer = document.createElement("div");
+          layer.className = "variant-layer";
+          layer.dataset.variant = variant.id;
+
+          const iframe = document.createElement("iframe");
+          iframe.className = "live-frame";
+          iframe.src = variant.src;
+          iframe.title = variant.label;
+          iframe.addEventListener("load", () => scheduleCaseOpen(iframe));
+          layer.append(iframe);
+          stage.append(layer);
+        });
+
+        pane.querySelector('[data-action="prev"]').addEventListener("click", () => movePane(paneKey, -1));
+        pane.querySelector('[data-action="next"]').addEventListener("click", () => movePane(paneKey, 1));
+        pane.querySelectorAll(".device-button").forEach((button) => {
+          button.addEventListener("click", () => setPaneDevice(paneKey, button.dataset.device));
+        });
+        syncPaneDeviceControls(pane);
+        renderPaneTabs(pane);
+      };
+
+      document.querySelectorAll(".pane").forEach(buildPane);
+      document.querySelectorAll(".pane").forEach((pane) => setActivePaneVariant(pane.dataset.pane, state[pane.dataset.pane]));
+      setSplit(state.split, false);
+
+      const splitter = document.querySelector(".splitter");
+      let isResizing = false;
+
+      const updateSplitFromPointer = (clientX) => {
+        const rect = document.querySelector(".compare").getBoundingClientRect();
+        setSplit(((clientX - rect.left) / rect.width) * 100);
+      };
+
+      splitter.addEventListener("pointerdown", (event) => {
+        isResizing = true;
+        document.body.classList.add("is-resizing");
+        splitter.setPointerCapture(event.pointerId);
+        updateSplitFromPointer(event.clientX);
+      });
+
+      splitter.addEventListener("pointermove", (event) => {
+        if (!isResizing) return;
+        updateSplitFromPointer(event.clientX);
+      });
+
+      const stopResize = (event) => {
+        if (!isResizing) return;
+        isResizing = false;
+        document.body.classList.remove("is-resizing");
+        try {
+          splitter.releasePointerCapture(event.pointerId);
+        } catch {}
+        updateUrl();
+      };
+
+      splitter.addEventListener("pointerup", stopResize);
+      splitter.addEventListener("pointercancel", stopResize);
+      splitter.addEventListener("dblclick", () => setSplit(50));
+
+      splitter.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          setSplit(state.split - (event.shiftKey ? 10 : 2));
+        }
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          setSplit(state.split + (event.shiftKey ? 10 : 2));
+        }
+        if (event.key === "Home") setSplit(22);
+        if (event.key === "End") setSplit(78);
+        if (event.key === "Enter" || event.key === " ") setSplit(50);
+      });
+
+      window.addEventListener("keydown", (event) => {
+        if (event.target?.matches?.("input, textarea")) return;
+        if (event.target?.classList?.contains("splitter")) return;
+        if (event.key === "a" || event.key === "A") movePane("left", -1);
+        if (event.key === "d" || event.key === "D") movePane("left", 1);
+        if (event.key === "ArrowLeft") movePane("right", -1);
+        if (event.key === "ArrowRight") movePane("right", 1);
+      });
+    </script>
+  </body>
+</html>
