@@ -1,14 +1,14 @@
 # AIM Site Hub
 
-Static GitHub Pages candidate for the AIM Site Hub.
+Static GitHub Pages export for the AIM Site Hub.
 
 Source workspace: local `AIM Website`
 Source page: `aim-site-hub.html`
 
-## Publish target
+## Published
 
-Planned repo: `eppelas/aim-site-hub`
-Planned Pages URL: `https://eppelas.github.io/aim-site-hub/`
+Repo: `https://github.com/eppelas/aim-site-hub`
+Pages URL: `https://eppelas.github.io/aim-site-hub/`
 
 ## Notes
 
