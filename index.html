@@ -1550,6 +1550,7 @@
               <a class="action" href="https://eppelas.github.io/aim-web-design-index/">дизайн-индекс</a>
               <a class="action" href="https://eppelas.github.io/aim-site-hub/" target="_blank" rel="noopener noreferrer">hub pages</a>
               <a class="action" href="https://github.com/eppelas/aim-site-hub" target="_blank" rel="noopener noreferrer">repo</a>
+              <a class="action" href="#sanity-cms">CMS</a>
               <a class="action" href="#rules-pipelines">правила</a>
             </div>
           </div>
@@ -1827,6 +1828,14 @@
             </div>
             <span class="path">reports/latest/dashboard.html</span>
           </a>
+          <a class="card green" data-search-item href="#sanity-cms">
+            <div class="label-row"><span class="pill ok">CMS</span><span class="pill">Sanity</span></div>
+            <div>
+              <h3>Sanity и лабы из MD</h3>
+              <p class="summary">Как завести лабу через Studio или Markdown, обновить общий контент, связать product_code с оплатой и проверить staging.</p>
+            </div>
+            <span class="path">#sanity-cms / website-ops/sanity-cms-lab-pipeline.md</span>
+          </a>
           <a class="card" data-search-item href="https://eppelas.github.io/ai-mindset-blocks/">
             <div class="label-row"><span class="pill">блоки</span></div>
             <div>
@@ -1835,6 +1844,111 @@
             </div>
             <span class="path">/ai-mindset-blocks/</span>
           </a>
+        </div>
+      </section>
+
+      <section class="section" id="sanity-cms">
+        <div class="section-head">
+          <h2>Sanity CMS</h2>
+          <p class="section-note">Контентный контур AIM Website: Sanity хранит лабы и общие сущности, Astro собирает страницы, product_code связывает тарифы с оплатой, а publish уводит изменения на staging/new.</p>
+        </div>
+        <div class="ops-layout">
+          <article class="card dark" data-search-item>
+            <div class="label-row">
+              <span class="pill ok">source</span>
+              <span class="pill">Sanity</span>
+              <span class="pill">Astro</span>
+            </div>
+            <div>
+              <h3>Контент -> сайт -> оплата</h3>
+              <p class="summary">
+                Sanity Studio управляет лабами и общими сущностями. Astro читает Sanity на build-time без CDN,
+                чтобы сразу видеть свежий publish. Тарифы хранят только product_code, а цены приходят рантаймом
+                из платежного контура Дана через `/api/payment/*`.
+              </p>
+            </div>
+            <div class="actions">
+              <a class="action" href="website-ops/sanity-cms-lab-pipeline.md">pipeline</a>
+              <a class="action" href="website-ops/bot-operating-rules.md">Vasily rules</a>
+              <a class="action" href="https://staging.aimindset.org/" target="_blank" rel="noopener noreferrer">staging</a>
+              <a class="action" href="https://new.aimindset.org/" target="_blank" rel="noopener noreferrer">new</a>
+            </div>
+            <span class="path">Sanity project ms4mgrt9 · dataset production · Astro SSG</span>
+          </article>
+
+          <div class="ops-board">
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">Studio</span><span class="pill">shared content</span></div>
+              <h3>Что обновлять в Studio</h3>
+              <ul class="ops-list">
+                <li><strong>Лабы:</strong> документы `lab` с блоками hero, description, pricing, program и reference-блоками.</li>
+                <li><strong>Общие сущности:</strong> speakers, cases, reviews, faq, quotes, philosophy, closing phrases.</li>
+                <li><strong>common_content.md:</strong> скачивается кнопкой `Экспорт общего контента` и содержит точные reference-ID для агента.</li>
+                <li><strong>External-лабы:</strong> редактируются только в Studio; MD-пайплайн работает для internal-лаб.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">MD import</span><span class="pill">agent-ready</span></div>
+              <h3>Лаба через Markdown</h3>
+              <ul class="ops-list">
+                <li><strong>Шаблон:</strong> `create-lab-from-md.md` содержит frontmatter, блоки и чеклист самопроверки.</li>
+                <li><strong>Идентичность:</strong> `slug` во frontmatter задаёт URL и документ; имя файла не решает.</li>
+                <li><strong>References:</strong> копировать только точные ID из fresh `common_content.md`.</li>
+                <li><strong>Studio upload:</strong> `Создать лабу из MD` для новой лабы, `Обновить из MD` внутри существующей.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">API</span><span class="pill">local</span></div>
+              <h3>Как подключаться</h3>
+              <div class="code-lines">
+                <span class="code-line">cd "Site Repo - ai-mindset-website"</span>
+                <span class="code-line">npm run dev          # Astro, http://localhost:4331</span>
+                <span class="code-line">cd studio && npm run dev  # Sanity Studio, http://localhost:3343</span>
+                <span class="code-line">npm create sanity@latest -- --project ms4mgrt9 --dataset production --template clean  # clean scratch Studio</span>
+                <span class="code-line">npm run export-lab &lt;slug&gt; / npm run import-lab content/labs/&lt;slug&gt;.md</span>
+              </div>
+              <ul class="ops-list">
+                <li><strong>Env:</strong> `SANITY_PROJECT_ID`, `SANITY_DATASET`, `SANITY_API_VERSION`, `SANITY_API_TOKEN` для write/import.</li>
+                <li><strong>Sanity CLI:</strong> clean bootstrap запускать только в scratch-папке; основной Studio уже живёт в `Site Repo - ai-mindset-website/studio`.</li>
+                <li><strong>Freshness:</strong> сайт читает Sanity с `useCdn: false`, чтобы rebuild не ловил устаревший CDN.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">payment</span><span class="pill">NocoDB</span></div>
+              <h3>Как связать оплату</h3>
+              <ul class="ops-list">
+                <li><strong>product_code:</strong> код тарифа из каталога Дана; агент не строит его из slug.</li>
+                <li><strong>Sanity:</strong> хранит productCode у каждого pricing plan, но не хранит финальную цену.</li>
+                <li><strong>Runtime:</strong> карточки и попап дергают `site-discount-check` через `/api/payment/*`.</li>
+                <li><strong>Fallback:</strong> если код не резолвится, карточка показывает `цена уточняется`; для продажи код нужно подтвердить в NocoDB.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">deploy</span><span class="pill">staging</span></div>
+              <h3>Что происходит после publish</h3>
+              <ul class="ops-list">
+                <li><strong>Webhook:</strong> Sanity publish отправляет `repository_dispatch: sanity-content-update`.</li>
+                <li><strong>Build:</strong> GitHub Actions запускает Astro build для staging и new.</li>
+                <li><strong>Review:</strong> проверять `staging.aimindset.org/labs/&lt;slug&gt;` после rebuild.</li>
+                <li><strong>QA:</strong> Vasily и QA-боты работают по documented site/CTA/form/payment rules, не по памяти чата.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">agents</span><span class="pill">vibe coding</span></div>
+              <h3>Как брать контент для страниц</h3>
+              <ul class="ops-list">
+                <li><strong>Use:</strong> fresh `common_content.md`, Studio export, CLI `export-lab`, Sanity API или tracked docs.</li>
+                <li><strong>Do not use:</strong> старый common-content файл, скриншот без проверки или неэкспортированную память чата как финальную истину.</li>
+                <li><strong>Preserve:</strong> slugs, dates, reference IDs, product codes, CTA labels and payment links.</li>
+                <li><strong>Handoff:</strong> после изменений дать desktop и LAN/mobile preview для проверки.</li>
+              </ul>
+            </article>
+          </div>
         </div>
       </section>
 
