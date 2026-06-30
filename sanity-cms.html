@@ -107,6 +107,22 @@
         cursor: pointer;
       }
 
+      .button-icon {
+        width: 15px;
+        height: 15px;
+        display: inline-grid;
+        place-items: center;
+        flex: 0 0 15px;
+        margin-right: 7px;
+      }
+
+      .button-icon svg,
+      .mini-icon svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
       .button:hover,
       .button:focus-visible,
       .tab:hover,
@@ -313,6 +329,10 @@
         height: 27px;
       }
 
+      .sprite {
+        display: none;
+      }
+
       .tag {
         display: inline-flex;
         align-items: center;
@@ -436,6 +456,52 @@
         overflow-wrap: anywhere;
       }
 
+      .resource-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .resource-row {
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        border: 1px solid var(--hair);
+        border-radius: 14px;
+        background: rgba(255, 250, 240, 0.035);
+      }
+
+      .mini-icon {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(255, 250, 240, 0.16);
+        border-radius: 12px;
+        background: rgba(255, 250, 240, 0.055);
+        color: var(--blue);
+      }
+
+      .resource-row h4 {
+        margin: 0 0 3px;
+        font-size: 15px;
+        line-height: 1.25;
+      }
+
+      .resource-row p {
+        color: rgba(255, 250, 240, 0.62);
+        font-size: 12px;
+      }
+
+      .resource-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
       @media (max-width: 980px) {
         .top,
         .section-head {
@@ -491,10 +557,48 @@
         .pipeline-visual {
           min-height: 250px;
         }
+
+        .resource-row {
+          grid-template-columns: 34px minmax(0, 1fr);
+          align-items: start;
+        }
+
+        .mini-icon {
+          width: 34px;
+          height: 34px;
+        }
+
+        .resource-actions {
+          grid-column: 2;
+          justify-content: flex-start;
+        }
       }
     </style>
   </head>
   <body>
+    <svg class="sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-download" viewBox="0 0 24 24">
+        <path d="M12 3v11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        <path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24">
+        <path d="M8 8h10v12H8z" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M5 16H4V4h10v1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-open" viewBox="0 0 24 24">
+        <path d="M7 7h10v10H7z" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M12 5h7v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        <path d="m11 13 8-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-file" viewBox="0 0 24 24">
+        <path d="M6 3h8l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M14 3v5h4M9 13h6M9 17h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-code" viewBox="0 0 24 24">
+        <path d="m9 8-4 4 4 4M15 8l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+    </svg>
     <header class="top">
       <a class="brand" href="index.html">
         <span class="brand-mark">AIM</span>
@@ -503,7 +607,8 @@
       <nav class="top-links" aria-label="Быстрые переходы">
         <a class="button" href="index.html">Главная</a>
         <a class="button primary" href="sanity-cms.html">Sanity CMS</a>
-        <a class="button" href="website-ops/sanity-cms-lab-pipeline.md">Подробный MD-док</a>
+        <a class="button" href="website-ops/sanity-cms-lab-pipeline.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-open"></use></svg></span>Открыть MD-док</a>
+        <a class="button" href="website-ops/sanity-cms-lab-pipeline.md" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать MD</a>
       </nav>
     </header>
 
@@ -515,6 +620,7 @@
         <a class="tab" href="#workflow">Процесс</a>
         <a class="tab" href="#rules">Правила</a>
         <a class="tab" href="#api">API и CLI</a>
+        <a class="tab" href="#sources">Источники</a>
       </nav>
 
       <section class="hero">
@@ -527,7 +633,7 @@
             даты, <code>product_code</code> и публикацию на staging/new.
           </p>
           <div class="actions" style="margin-top: 24px">
-            <button class="button primary" type="button" data-copy-text="https://eppelas.github.io/aim-site-hub/sanity-cms.html">Скопировать ссылку</button>
+            <button class="button primary" type="button" data-copy-text="https://eppelas.github.io/aim-site-hub/sanity-cms.html"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Скопировать ссылку</button>
             <a class="button" href="#downloads">Что скачать</a>
             <a class="button" href="#workflow">Как работает</a>
           </div>
@@ -606,9 +712,9 @@
               <div class="need-item"><b>!</b><span>Для каждой новой лабы всё равно нужны <code>create-lab-from-md.md</code>, свежий <code>common_content.md</code>, brief и <code>product_code</code>.</span></div>
             </div>
             <div class="actions">
-              <a class="button primary" href="website-ops/create-aim-lab-md-skill-pack.zip" download>Скачать пакет скилла .zip</a>
-              <a class="button" href="website-ops/create-aim-lab-md-skill.md" download>Скачать только SKILL.md</a>
-              <button class="button" type="button" data-copy-url="website-ops/create-aim-lab-md-skill.md">Копировать текст скилла</button>
+              <a class="button primary" href="website-ops/create-aim-lab-md-skill-pack.zip" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать пакет скилла .zip</a>
+              <a class="button" href="website-ops/create-aim-lab-md-skill.md" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать только SKILL.md</a>
+              <button class="button" type="button" data-copy-url="website-ops/create-aim-lab-md-skill.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать текст скилла</button>
             </div>
           </article>
 
@@ -634,8 +740,8 @@
               <div class="need-item"><b>!</b><span>Не заменяет <code>common_content.md</code>, шаблон, даты, спикеров, тарифы и коды из NocoDB.</span></div>
             </div>
             <div class="actions">
-              <a class="button primary" href="website-ops/create-aim-lab-md-prompt.md" download>Скачать промпт .md</a>
-              <button class="button" type="button" data-copy-url="website-ops/create-aim-lab-md-prompt.md">Копировать промпт</button>
+              <a class="button primary" href="website-ops/create-aim-lab-md-prompt.md" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать промпт .md</a>
+              <button class="button" type="button" data-copy-url="website-ops/create-aim-lab-md-prompt.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать промпт</button>
             </div>
           </article>
         </div>
@@ -659,8 +765,9 @@
               payment runtime и границы Vasily/QA.
             </p>
             <div class="actions">
-              <a class="button primary" href="website-ops/sanity-cms-lab-pipeline.md">Открыть MD-док</a>
-              <button class="button" type="button" data-copy-text="https://eppelas.github.io/aim-site-hub/sanity-cms.html">Копировать ссылку разработчику</button>
+              <a class="button primary" href="website-ops/sanity-cms-lab-pipeline.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-open"></use></svg></span>Открыть MD-док</a>
+              <a class="button" href="website-ops/sanity-cms-lab-pipeline.md" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать MD-док</a>
+              <button class="button" type="button" data-copy-text="https://eppelas.github.io/aim-site-hub/sanity-cms.html"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать ссылку разработчику</button>
             </div>
           </article>
         </div>
@@ -766,7 +873,7 @@ npm run dev
 cd studio && npm run dev
 npm create sanity@latest -- --project ms4mgrt9 --dataset production --template clean
 npm run export-lab <slug>
-npm run import-lab content/labs/<slug>.md'>Копировать команды</button>
+npm run import-lab content/labs/<slug>.md'><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать команды</button>
             </div>
             <div class="code-lines">
               <span class="code-line">cd "Site Repo - ai-mindset-website"</span>
@@ -791,7 +898,7 @@ npm run import-lab content/labs/<slug>.md'>Копировать команды</
         </div>
       </section>
 
-      <section>
+      <section id="sources">
         <div class="section-head">
           <div>
             <p class="eyebrow">источники</p>
@@ -802,20 +909,91 @@ npm run import-lab content/labs/<slug>.md'>Копировать команды</
         <div class="two-col">
           <article class="panel">
             <h3>Публичные документы</h3>
-            <ul>
-              <li><a href="website-ops/sanity-cms-lab-pipeline.md">Подробный Sanity pipeline doc</a></li>
-              <li><a href="website-ops/create-aim-lab-md-skill.md">Текст <code>SKILL.md</code></a></li>
-              <li><a href="website-ops/create-aim-lab-md-prompt.md">Промпт для разовой задачи</a></li>
-            </ul>
+            <div class="resource-list">
+              <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-file"></use></svg></span>
+                <div>
+                  <h4>Подробный Sanity-док</h4>
+                  <p>Карта Studio, Markdown import, Git import, API, staging/new и оплаты.</p>
+                </div>
+                <div class="resource-actions">
+                  <a class="button" href="website-ops/sanity-cms-lab-pipeline.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-open"></use></svg></span>Открыть</a>
+                  <a class="button" href="website-ops/sanity-cms-lab-pipeline.md" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать</a>
+                </div>
+              </div>
+              <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-code"></use></svg></span>
+                <div>
+                  <h4>Текст <code>SKILL.md</code></h4>
+                  <p>Одиночный файл скилла; полный пакет всё равно лучше брать zip-архивом выше.</p>
+                </div>
+                <div class="resource-actions">
+                  <a class="button" href="website-ops/create-aim-lab-md-skill.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-open"></use></svg></span>Открыть</a>
+                  <a class="button" href="website-ops/create-aim-lab-md-skill.md" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать</a>
+                  <button class="button" type="button" data-copy-url="website-ops/create-aim-lab-md-skill.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать</button>
+                </div>
+              </div>
+              <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-file"></use></svg></span>
+                <div>
+                  <h4>Промпт для разовой задачи</h4>
+                  <p>Текст для агента без установки скилла; не включает шаблон, экспорт и данные лабы.</p>
+                </div>
+                <div class="resource-actions">
+                  <a class="button" href="website-ops/create-aim-lab-md-prompt.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-open"></use></svg></span>Открыть</a>
+                  <a class="button" href="website-ops/create-aim-lab-md-prompt.md" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать</a>
+                  <button class="button" type="button" data-copy-url="website-ops/create-aim-lab-md-prompt.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать</button>
+                </div>
+              </div>
+            </div>
           </article>
           <article class="panel">
             <h3>Исходники в AIM Website repo</h3>
-            <ul>
-              <li><code>docs/guides/create-lab-from-md.md</code></li>
-              <li><code>studio/lib/commonContentMd.mjs</code></li>
-              <li><code>studio/components/CreateLabFromMdButton.tsx</code></li>
-              <li><code>scripts/import-lab.mjs</code> и <code>scripts/export-lab.mjs</code></li>
-            </ul>
+            <p class="muted" style="margin-top: 8px">
+              Эти файлы живут в рабочем repo сайта, а не в public hub. Поэтому здесь безопасное действие — скопировать путь.
+            </p>
+            <div class="resource-list">
+              <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-file"></use></svg></span>
+                <div>
+                  <h4><code>create-lab-from-md.md</code></h4>
+                  <p><code>docs/guides/create-lab-from-md.md</code></p>
+                </div>
+                <div class="resource-actions">
+                  <button class="button" type="button" data-copy-text="docs/guides/create-lab-from-md.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать путь</button>
+                </div>
+              </div>
+              <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-code"></use></svg></span>
+                <div>
+                  <h4><code>commonContentMd.mjs</code></h4>
+                  <p><code>studio/lib/commonContentMd.mjs</code></p>
+                </div>
+                <div class="resource-actions">
+                  <button class="button" type="button" data-copy-text="studio/lib/commonContentMd.mjs"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать путь</button>
+                </div>
+              </div>
+              <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-code"></use></svg></span>
+                <div>
+                  <h4><code>CreateLabFromMdButton.tsx</code></h4>
+                  <p><code>studio/components/CreateLabFromMdButton.tsx</code></p>
+                </div>
+                <div class="resource-actions">
+                  <button class="button" type="button" data-copy-text="studio/components/CreateLabFromMdButton.tsx"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать путь</button>
+                </div>
+              </div>
+              <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-code"></use></svg></span>
+                <div>
+                  <h4>Скрипты import/export</h4>
+                  <p><code>scripts/import-lab.mjs</code> и <code>scripts/export-lab.mjs</code></p>
+                </div>
+                <div class="resource-actions">
+                  <button class="button" type="button" data-copy-text="scripts/import-lab.mjs&#10;scripts/export-lab.mjs"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать пути</button>
+                </div>
+              </div>
+            </div>
           </article>
         </div>
       </section>
@@ -851,7 +1029,7 @@ npm run import-lab content/labs/<slug>.md'>Копировать команды</
 
       document.querySelectorAll('[data-copy-text], [data-copy-url]').forEach((button) => {
         button.addEventListener('click', async () => {
-          const originalText = button.textContent;
+          const originalHtml = button.innerHTML;
           try {
             const text = await textForButton(button);
             await copyText(text);
@@ -861,7 +1039,7 @@ npm run import-lab content/labs/<slug>.md'>Копировать команды</
             copyStatus.textContent = 'Не удалось скопировать';
           } finally {
             window.setTimeout(() => {
-              button.textContent = originalText;
+              button.innerHTML = originalHtml;
             }, 1400);
           }
         });

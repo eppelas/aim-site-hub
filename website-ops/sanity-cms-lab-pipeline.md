@@ -1,25 +1,46 @@
-# Sanity CMS And Lab Markdown Pipeline
+# Sanity CMS и импорт лабораторий из Markdown
 
-This is the operating map for AIM Website content work: how Sanity, Astro,
-Markdown lab imports, payment codes, staging, and QA handoffs fit together.
+> Если вы открыли этот файл напрямую: основная читаемая страница с кнопками
+> скачивания и копирования находится здесь:
+> [Sanity CMS для лабораторий](../sanity-cms.html).
 
-## What Sanity Does
+## Быстрые действия
 
-Sanity CMS is the content source for the AIM Website. Editors use Sanity Studio
-to maintain labs, shared speakers, cases, reviews, FAQ items, quotes, philosophy
-pillars, navigation, footer, and legal pages.
+- ⬇ [Скачать полный пакет скилла `.zip`](create-aim-lab-md-skill-pack.zip) —
+  `SKILL.md`, настройка агента и reference-документы вместе.
+- ⬇ [Скачать только `SKILL.md`](create-aim-lab-md-skill.md) — удобно для
+  просмотра, но для установки скилла лучше брать полный пакет.
+- ⬇ [Скачать промпт `.md`](create-aim-lab-md-prompt.md) — разовый промпт для
+  агента, если скилл не установлен.
+- ↗ [Открыть страницу Sanity CMS](../sanity-cms.html) — там есть кнопки
+  `Копировать текст скилла`, `Копировать промпт` и ссылка для разработчика.
 
-Current Studio config:
+Промпта самого по себе недостаточно. Для создания новой лаборатории к нему
+нужно приложить `create-lab-from-md.md`, свежий `common_content.md`, brief или
+ссылку на прошлую лабу, а также `product_code` каждого тарифа из каталога
+Дана / NocoDB.
+
+Это рабочая карта для контента AIM Website: как связаны Sanity, Astro, импорт
+лабораторий из Markdown, платежные коды, staging и QA-передача.
+
+## Что делает Sanity
+
+Sanity CMS — источник контента AIM Website. Редакторы работают в Sanity Studio
+и поддерживают лаборатории, общих спикеров, кейсы, отзывы, FAQ, цитаты,
+philosophy-блоки, навигацию, футер и юридические страницы.
+
+Текущая конфигурация Studio:
 
 - project: `ms4mgrt9`;
 - dataset: `production`;
-- local Studio port: `3343`;
-- source: `Site Repo - ai-mindset-website/studio/sanity.config.ts`.
+- локальный порт Studio: `3343`;
+- источник: `Site Repo - ai-mindset-website/studio/sanity.config.ts`.
 
-## Sanity CLI And Clean Studio Access
+## Sanity CLI и чистая Studio
 
-The main repo already contains the AIM Studio in
-`Site Repo - ai-mindset-website/studio`. Prefer that Studio for normal work:
+Основной repo уже содержит AIM Studio в
+`Site Repo - ai-mindset-website/studio`. Для обычной работы используйте именно
+эту Studio:
 
 ```bash
 cd "Site Repo - ai-mindset-website/studio"
@@ -27,9 +48,9 @@ npm install
 npm run dev
 ```
 
-If the existing Studio is unavailable, or an agent needs a clean Sanity client
-surface for inspection, create a separate scratch Studio connected to the same
-project:
+Если существующая Studio недоступна или агенту нужна чистая Sanity-поверхность
+для инспекции, создайте отдельную scratch Studio, подключенную к тому же
+проекту:
 
 ```bash
 mkdir -p ~/tmp/aim-sanity-clean
@@ -37,157 +58,160 @@ cd ~/tmp/aim-sanity-clean
 npm create sanity@latest -- --project ms4mgrt9 --dataset production --template clean
 ```
 
-Use this only in a scratch folder. The command creates a new Studio scaffold; it
-is not a migration command and should not be run inside the active AIM Website
-repo unless the task is explicitly to replace or regenerate Studio files.
+Используйте это только в scratch-папке. Команда создает новый scaffold Studio;
+это не миграционная команда, и ее нельзя запускать внутри активного AIM Website
+repo, если задача явно не состоит в замене или регенерации Studio-файлов.
 
-The shared entities used by lab reference blocks are exported through the Studio
-navbar button `Экспорт общего контента`. The exported file is
-`common_content.md`; it is generated from published Sanity entities only and is
-the only allowed source for reference identifiers in lab Markdown files.
+Общие сущности для reference-блоков лабораторий экспортируются через кнопку
+Studio `Экспорт общего контента`. Экспортированный файл называется
+`common_content.md`; он создается только из опубликованных Sanity-сущностей и
+является единственным допустимым источником reference-ID в lab Markdown.
 
-## What Astro Does
+## Что делает Astro
 
-Astro 5 builds the static site from Sanity data. Lab pages are rendered at
-`/labs/[slug]`; the homepage is rendered at `/`.
+Astro 5 собирает статический сайт из данных Sanity. Страницы лабораторий
+рендерятся по адресу `/labs/[slug]`; главная страница — по `/`.
 
-The Sanity read client in `src/lib/sanity.ts` uses `useCdn: false`. This is
-intentional: Sanity publish can trigger a rebuild immediately, while the Sanity
-CDN can lag by 30-60 seconds. Direct reads make staging/new rebuilds pick up
-fresh content.
+Sanity read client в `src/lib/sanity.ts` использует `useCdn: false`. Это
+намеренно: Sanity publish может сразу запускать rebuild, а Sanity CDN иногда
+отстает на 30-60 секунд. Прямое чтение помогает staging/new rebuild брать
+свежий контент.
 
-No separate `Astra` service is documented in the current AIM Website repo. The
-content/build layer in the checked source is `Astro`.
+Отдельный сервис `Astra` в текущем AIM Website repo не задокументирован.
+Контентно-сборочный слой в проверенном исходнике — это `Astro`.
 
-## Lab Creation Paths
+## Способы создать лабораторию
 
-There are three supported ways to create or update lab content.
+Есть три поддерживаемых способа создать или обновить контент лаборатории.
 
-### 1. Studio Manual Editing
+### 1. Ручное редактирование в Studio
 
-Use this for direct editorial work and shared entities:
+Используется для прямой редакторской работы и общих сущностей:
 
-1. Open Studio locally or hosted.
-2. Edit the `Лаборатория` document or shared entities directly.
-3. Publish.
-4. Sanity webhook triggers rebuilds for staging and new.
+1. Открыть Studio локально или в hosted-варианте.
+2. Отредактировать документ `Лаборатория` или shared entities напрямую.
+3. Нажать publish.
+4. Sanity webhook запустит rebuild для staging и new.
 
-Shared entities such as speakers, cases, reviews, FAQ, quotes, philosophy, and
-closing phrases are managed in Studio, not invented in lab Markdown files.
+Общие сущности вроде speakers, cases, reviews, FAQ, quotes, philosophy и
+closing phrases управляются в Studio. Их нельзя придумывать внутри lab
+Markdown.
 
-### 2. Markdown Upload In Studio
+### 2. Markdown upload в Studio
 
-Use this when a lab page should be assembled by an agent or editor in one
-portable file.
+Используется, когда страницу лаборатории нужно собрать агентом или редактором в
+одном переносимом файле.
 
-1. In Studio, click `Экспорт общего контента` and download a fresh
+1. В Studio нажать `Экспорт общего контента` и скачать свежий
    `common_content.md`.
-2. Give the agent:
+2. Передать агенту:
    - `create-lab-from-md.md`;
-   - the fresh `common_content.md`;
-   - either a previous lab/source page or the raw lab brief.
-3. The agent fills a complete lab Markdown file.
-4. In Studio, click `Создать лабу из MD` for a new lab, or open an existing lab
-   and use `Обновить из MD`.
-5. Review in Studio, then publish.
+   - свежий `common_content.md`;
+   - прошлую лабу / source page или сырой brief лабы.
+3. Агент заполняет полный lab Markdown.
+4. В Studio нажать `Создать лабу из MD` для новой лабы или открыть существующую
+   и нажать `Обновить из MD`.
+5. Проверить результат в Studio, затем publish.
 
-Slug rules:
+Правила slug:
 
-- frontmatter `slug` is the lab identity and URL segment;
-- filename does not control identity;
-- duplicate slugs are blocked in Studio, including draft documents.
+- frontmatter `slug` задает идентичность лабы и URL-сегмент;
+- имя файла не задает идентичность;
+- duplicate slugs блокируются в Studio, включая draft-документы.
 
-Reference rules:
+Правила reference:
 
-- reference-block IDs must match `common_content.md` exactly;
-- if an entity is missing, create it in Studio and export `common_content.md`
-  again;
-- empty reference blocks mean "all entities" and should be used only when that
-  behavior is intentional.
+- ID в reference-блоках должны точь-в-точь совпадать с `common_content.md`;
+- если сущности нет, ее нужно создать в Studio и заново экспортировать
+  `common_content.md`;
+- пустой reference-блок означает "все сущности" и используется только когда
+  такое поведение действительно нужно.
 
-### 3. Git Markdown Import
+### 3. Git Markdown import
 
-Use this for repo-based content operations.
+Используется для repo-based контентных операций.
 
-1. Put the lab file under `content/labs/<slug>.md`.
-2. Push to `main`.
-3. `.github/workflows/import-labs.yml` runs `npm run import-lab` for changed lab
-   files.
-4. `scripts/import-lab.mjs` imports the parsed lab into Sanity.
+1. Положить lab-файл в `content/labs/<slug>.md`.
+2. Запушить в `main`.
+3. `.github/workflows/import-labs.yml` запускает `npm run import-lab` для
+   измененных lab-файлов.
+4. `scripts/import-lab.mjs` импортирует распарсенную лабу в Sanity.
 
-CLI import requires:
+CLI import требует:
 
 - `SANITY_PROJECT_ID`;
 - `SANITY_API_TOKEN`;
 - optional `SANITY_DATASET`, default `production`;
 - optional `SANITY_API_VERSION`, default `2026-03-29`.
 
-CLI import fails on missing references by default. Studio import allows missing
-references as warnings, because the editor can still inspect the result before
-publishing.
+CLI import по умолчанию падает на отсутствующих references. Studio import
+разрешает missing references как warnings, потому что редактор может проверить
+результат до публикации.
 
-## Payment Connection
+## Связь с оплатой
 
-Sanity stores the product code for each pricing plan in
-`pricingBlock.plans[].productCode`. It does not store the source of truth for
-prices.
+Sanity хранит product code каждого pricing plan в
+`pricingBlock.plans[].productCode`. Sanity не является source of truth для цен.
 
-The product code must come from Dan's NocoDB catalog. The lab page slug is not
-authority for payment codes, and codes must not be generated by an agent.
+`product_code` должен приходить из каталога Дана / NocoDB. Slug страницы лабы
+не является основанием для платежного кода, и агент не должен генерировать
+коды.
 
-Runtime price flow:
+Runtime flow цены:
 
-1. The Astro page renders the pricing block.
-2. The client-side pricing card deduplicates product codes.
-3. The card calls `/api/payment/site-discount-check`.
-4. If the code resolves, the card shows the runtime EUR price.
-5. If the code is absent, unknown, or payment runtime is unavailable, the card
-   falls back to `цена уточняется`; the payment popup does its own runtime check.
+1. Astro-страница рендерит pricing block.
+2. Клиентская pricing card дедуплицирует product codes.
+3. Card вызывает `/api/payment/site-discount-check`.
+4. Если код резолвится, card показывает runtime EUR price.
+5. Если кода нет, он неизвестен или payment runtime недоступен, card
+   откатывается к `цена уточняется`; payment popup делает собственную runtime
+   проверку.
 
-For a working sale, every visible tariff needs a confirmed product code in
-NocoDB and a successful payment runtime check.
+Для рабочей продажи у каждого видимого тарифа должен быть подтвержденный
+product code в NocoDB и успешная runtime-проверка оплаты.
 
-## Staging And Deployment
+## Staging и deployment
 
-Sanity publish triggers one webhook:
+Sanity publish запускает один webhook:
 
 `Sanity publish -> repository_dispatch: sanity-content-update -> deploy-staging + deploy-new`
 
-The deploy workflows build the Astro site and rsync `dist/` to the VPS:
+Deploy workflows собирают Astro-сайт и делают rsync `dist/` на VPS:
 
 - staging: `https://staging.aimindset.org/`;
 - new: `https://new.aimindset.org/`.
 
-Git pushes can also trigger deploys, but content-only `content/labs/**/*.md`
-changes first go through the import workflow so Sanity remains the source of
-truth.
+Git pushes тоже могут запускать deploy, но content-only изменения
+`content/labs/**/*.md` сначала проходят import workflow, чтобы Sanity оставался
+source of truth.
 
-## Vibe-Coding Pages And Agents
+## Vibe-coding страницы и агенты
 
-When creating vibe-coded landing pages or standalone visual pages from AIM
-content:
+Когда создаются vibe-coded лендинги или standalone visual pages на основе AIM
+контента:
 
-- source current lab/shared content from Sanity exports, Studio, or the repo's
-  Sanity-aware scripts;
-- do not use old screenshots, old `common_content.md`, or chat memory as the
-  final source of truth;
-- use `common_content.md` for identifiers and exported lab Markdown for lab
-  page structure;
-- preserve product codes exactly when wiring payment buttons or embeds;
-- verify staging/local preview after changing content or payment surfaces.
+- брать актуальный lab/shared content из Sanity exports, Studio или repo scripts,
+  которые знают про Sanity;
+- не использовать старые скриншоты, старый `common_content.md` или память чата
+  как финальный source of truth;
+- использовать `common_content.md` для identifiers и экспортированный lab
+  Markdown для структуры lab page;
+- сохранять product codes точь-в-точь при подключении payment buttons или
+  embeds;
+- проверять staging/local preview после изменений контента или payment surfaces.
 
-## Vasily / QA Handoff
+## Vasily / QA handoff
 
-Surikat Vasily is documented as the AIM/NIMS website QA intake and Telegram
-dispatcher. He can route website bugs, QA questions, staging/production issues,
-CTA/form/payment reports, and owner-gated site audit requests.
+Surikat Vasily задокументирован как AIM/NIMS website QA intake и Telegram
+dispatcher. Он может маршрутизировать website bugs, QA questions,
+staging/production issues, CTA/form/payment reports и owner-gated site audit
+requests.
 
-Use `website-ops/bot-operating-rules.md` as the source for Vasily behavior. Do
-not treat a Telegram chat recollection as durable content truth unless the
-specific rule or source has been exported into tracked docs or confirmed by the
-owner.
+Источник правил поведения Vasily — `website-ops/bot-operating-rules.md`.
+Telegram-пересказ из памяти не считается durable content truth, пока конкретное
+правило или source не экспортированы в tracked docs или не подтверждены owner.
 
-## Canonical Source Files
+## Канонические source-файлы
 
 - `Site Repo - ai-mindset-website/docs/architecture/README.md`
 - `Site Repo - ai-mindset-website/docs/architecture/md-format.md`
