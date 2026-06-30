@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanity в проекте AIMindset — данные, наполнение, переиспользование</title>
+<style>
+  :root{
+    --blue:#3498db; --dark:#2c3e50; --gray:#34495e; --light:#f5f5f5;
+    --info:#e8f4f8; --green:#27ae60; --orange:#f39c12; --red:#e74c3c; --purple:#8e44ad;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;
+    line-height:1.6; color:#2d3338; background:#eef1f4; padding:20px; margin:0;
+  }
+  article{max-width:1000px; margin:0 auto; background:#fff; border-radius:8px; box-shadow:0 6px 28px rgba(0,0,0,.10); overflow:hidden}
+  header{background:linear-gradient(135deg,#2c3e50,#34495e); color:#fff; padding:42px 48px}
+  header h1{margin:0 0 8px; font-size:1.85rem; line-height:1.25; font-weight:600}
+  header .sub{opacity:.92; font-size:1.05rem}
+  header .meta{margin-top:18px; font-size:.82rem; opacity:.72; border-top:1px solid rgba(255,255,255,.15); padding-top:12px}
+  main{padding:38px 48px}
+
+  nav.toc{background:#f7f9fa; border:1px solid #e1e6ea; border-radius:6px; padding:18px 22px; margin-bottom:30px}
+  nav.toc h2{margin:0 0 10px; font-size:.92rem; text-transform:uppercase; letter-spacing:.05em; color:#7f8c8d; border:none; padding:0}
+  nav.toc ol{margin:0; padding-left:20px; columns:2; column-gap:32px}
+  nav.toc li{margin:4px 0; break-inside:avoid}
+  nav.toc a{color:var(--gray); text-decoration:none}
+  nav.toc a:hover{color:var(--blue); text-decoration:underline}
+
+  h2{color:var(--dark); font-size:1.32rem; margin:40px 0 14px; padding-bottom:8px; border-bottom:3px solid var(--blue); scroll-margin-top:14px}
+  h3{color:var(--gray); font-size:1.08rem; margin:24px 0 10px}
+  h4{color:var(--gray); font-size:.97rem; margin:16px 0 6px}
+  p{margin:10px 0}
+  .lead{font-size:1.02rem; color:#445}
+  code{font-family:'Monaco','Menlo','Ubuntu Mono','Courier New',monospace; background:var(--light); padding:2px 6px; border-radius:4px; font-size:.85em}
+  pre{background:#f8f9fa; border-left:4px solid #007acc; border-radius:4px; padding:16px 18px; overflow-x:auto; margin:14px 0}
+  pre code{background:none; padding:0; font-size:.84rem; line-height:1.55}
+  .cmt{color:#7f8c8d}.kw{color:var(--purple)}.str{color:var(--green)}
+
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:.9rem}
+  th,td{border:1px solid #e1e6ea; padding:9px 11px; text-align:left; vertical-align:top}
+  th{background:var(--dark); color:#fff; font-weight:600}
+  tbody tr:nth-child(even){background:#f7f9fa}
+  .req{color:var(--red); font-weight:700}
+  .tag{display:inline-block; font-size:.73rem; font-weight:600; padding:2px 8px; border-radius:10px; white-space:nowrap}
+  .tag.doc{background:#e8f4f8; color:#1f6f8b}
+  .tag.single{background:#fef5e7; color:#9c640c}
+  .tag.yes{background:#eafaf1; color:#1e8449}
+  .tag.no{background:#fdedec; color:#b03a2e}
+  .tag.new{background:#f5eef8; color:#6c3483}
+
+  .info-section,.success-section,.warning-section,.error-section,.callout{border-radius:6px; padding:14px 18px; margin:16px 0}
+  .info-section{background:var(--info); border-left:4px solid var(--blue)}
+  .success-section{background:#eafaf1; border-left:4px solid var(--green)}
+  .warning-section{background:#fef9e7; border-left:4px solid var(--orange)}
+  .error-section{background:#fdedec; border-left:4px solid var(--red)}
+  .info-section h3,.success-section h3,.warning-section h3,.error-section h3{margin:0 0 6px; font-size:1rem}
+  .callout{background:#f5eef8; border-left:4px solid var(--purple)}
+  .callout p{margin:6px 0}
+
+  .flow{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:14px 0; font-size:.86rem}
+  .flow .step{background:var(--light); border:1px solid #dfe4e8; border-radius:6px; padding:8px 12px; font-weight:600; color:var(--gray)}
+  .flow .arr{color:var(--blue); font-weight:700}
+  .flow .step.s{background:#e8f4f8; border-color:#bfe0ee}
+  .flow .step.d{background:#f5eef8; border-color:#e2cdee}
+
+  ul,ol{margin:10px 0; padding-left:22px}
+  li{margin:5px 0}
+  .muted{color:#7f8c8d; font-size:.86rem}
+  .backtop{font-size:.78rem}
+  .backtop a{color:#aab4bd; text-decoration:none}
+
+  footer{background:#f7f9fa; border-top:1px solid #e1e6ea; padding:28px 48px; font-size:.9rem}
+  footer h3{margin-top:0}
+  footer a{color:var(--blue); text-decoration:none}
+  footer a:hover{text-decoration:underline}
+
+  @media (max-width:768px){
+    main{padding:26px} header{padding:32px 24px} footer{padding:22px 24px}
+    nav.toc ol{columns:1} table{font-size:.82rem}
+  }
+  @media (max-width:480px){
+    body{padding:10px} main{padding:16px} header{padding:24px 16px}
+    header h1{font-size:1.4rem} h2{font-size:1.15rem} pre{font-size:.78rem}
+  }
+</style>
+</head>
+<body>
+<article>
+<header>
+  <h1>Sanity в проекте AIMindset</h1>
+  <div class="sub">Что такое CMS-слой, как наполнять его данными (вручную и агентами) и как переиспользовать данные на других разделах и лендингах.</div>
+  <div class="meta">Технический отчёт для команды · 01.07.2026 · основан на анализе кодовой базы ai-mindset-website</div>
+</header>
+<main>
+
+  <nav class="toc">
+    <h2>Содержание</h2>
+    <ol>
+      <li><a href="#s1">Назначение документа</a></li>
+      <li><a href="#s2">Архитектура: Sanity ≠ сайт</a></li>
+      <li><a href="#s3">Зачем база, а не markdown</a></li>
+      <li><a href="#s4">Контент-модель</a></li>
+      <li><a href="#s5">Наполнение данными</a></li>
+      <li><a href="#s6">Скилл /sanity-content</a></li>
+      <li><a href="#s7">Скиллы vs запрограммированные скрипты</a></li>
+      <li><a href="#s8">Где запускать агента</a></li>
+      <li><a href="#s9">Чтение данных на сторонние страницы</a></li>
+      <li><a href="#s10">Безопасность: публичный датасет</a></li>
+      <li><a href="#s11">Один контент — разные варианты дизайна</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1 -->
+  <h2 id="s1">1. Назначение документа</h2>
+  <p class="lead">Документ объясняет роль Sanity в проекте, описывает структуру данных, показывает, как наполнять базу контентом (через интерфейс и через агентов), и как переиспользовать эти данные на других страницах сайта и вайбкод-лендингах. Цель — единое понимание того, что такое CMS-слой, как с ним работать и как его не сломать.</p>
+
+  <!-- 2 -->
+  <h2 id="s2">2. Архитектура: Sanity и сайт — две разные вещи</h2>
+  <p>Система состоит из трёх независимых слоёв:</p>
+  <table>
+    <thead><tr><th>Слой</th><th>Что это</th><th>Кто меняет</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Sanity Content Lake</strong></td><td>Облачная база данных — набор документов (кейсы, отзывы, спикеры, лаборатории). Размещается на стороне Sanity.</td><td>API (агент/скрипт) или редактор через Studio</td></tr>
+      <tr><td><strong>Sanity Studio</strong></td><td>Веб-редактор поверх базы («админка»): формы, drag&amp;drop блоков, кнопка Publish.</td><td>Администратор, вручную в браузере</td></tr>
+      <tr><td><strong>Сайт (Astro)</strong></td><td>Движок: страницы и компоненты, в которых закодировано, какие данные и в каком виде отображать. Генерирует статичный HTML.</td><td>Разработчик (код)</td></tr>
+    </tbody>
+  </table>
+  <p>Sanity хранит <strong>данные</strong>; сайт — это <strong>движок отображения</strong>. Источник истины для контента — Sanity.</p>
+  <h3>Цикл публикации</h3>
+  <div class="flow">
+    <span class="step s">Правка в Studio</span><span class="arr">→</span>
+    <span class="step s">Publish</span><span class="arr">→</span>
+    <span class="step">webhook</span><span class="arr">→</span>
+    <span class="step d">пересборка Astro</span><span class="arr">→</span>
+    <span class="step d">обновлённые HTML-страницы</span>
+  </div>
+  <p class="muted">Редактор не программирует — он меняет данные, после чего движок пересобирает страницы автоматически. Участие агента в этот момент не требуется.</p>
+  <p class="backtop"><a href="#s1">↑ наверх</a></p>
+
+  <!-- 3 -->
+  <h2 id="s3">3. Зачем база данных, а не markdown в репозитории</h2>
+  <p>Markdown и Sanity — не альтернативы, а разные роли. Markdown удобен для авторской подготовки и переноса (его легко генерировать и хранить в git). Sanity — это <em>рантайм-источник истины</em>, из которого собирается сайт. В проекте уже есть мост между ними — команды <code>import-lab</code> / <code>export-lab</code>.</p>
+  <table>
+    <thead><tr><th>Критерий</th><th>Markdown в репозитории</th><th>Sanity (CMS)</th></tr></thead>
+    <tbody>
+      <tr><td>Кто может править</td><td>Тот, кто умеет в git и разметку</td><td>Любой, через Studio</td></tr>
+      <tr><td>Попадание на сайт</td><td>Нужен агент, чтобы интерпретировать MD и разместить в коде</td><td>Publish → авто-пересборка</td></tr>
+      <tr><td>Структура и проверки</td><td>Свободный текст</td><td>Схема: обязательные поля, форматы, списки значений</td></tr>
+      <tr><td>Связи между сущностями</td><td>По соглашению, вручную</td><td>References: сущность заведена один раз, подставляется везде</td></tr>
+      <tr><td>Изображения</td><td>Не переносятся (только пути)</td><td>Управляемые ассеты (CDN, кроп)</td></tr>
+      <tr><td>Версионирование</td><td>git history</td><td>Draft/Publish + история версий</td></tr>
+    </tbody>
+  </table>
+  <div class="success-section">
+    <h3>Вывод</h3>
+    <p>Sanity целесообразно использовать как базу данных и источник истины для кейсов, отзывов, спикеров и лабораторий. Markdown — как формат авторинга и резервного экспорта. Это взаимодополняющие части одного пайплайна, а не конкуренты.</p>
+  </div>
+  <p class="backtop"><a href="#s1">↑ наверх</a></p>
+
+  <!-- 4 -->
+  <h2 id="s4">4. Контент-модель: что лежит в базе</h2>
+  <p>В базе два вида объектов: <span class="tag doc">документы</span> — самостоятельные сущности (их наполняет команда) и блоки лаборатории — элементы массива <code>blocks[]</code>, которые обычно не хранят контент сами, а <strong>ссылаются</strong> на документы.</p>
+  <h3>Документы, наполняемые контентом</h3>
+  <table>
+    <thead><tr><th>Тип (<code>_type</code>)</th><th>Назначение</th><th>Идентификатор</th><th>Фото</th></tr></thead>
+    <tbody>
+      <tr><td><code>caseStudy</code></td><td>Кейс клиента</td><td><code>title</code></td><td>опц.</td></tr>
+      <tr><td><code>review</code></td><td>Отзыв</td><td><code>name</code></td><td>опц.</td></tr>
+      <tr><td><code>speaker</code></td><td>Спикер</td><td><code>name</code></td><td>опц.</td></tr>
+      <tr><td><code>faqItem</code></td><td>Вопрос-ответ FAQ</td><td><code>title</code> (тех. id)</td><td>—</td></tr>
+      <tr><td><code>quote</code></td><td>Цитата</td><td><code>title</code></td><td>—</td></tr>
+      <tr><td><code>philosophyPillar</code></td><td>Принцип философии</td><td><code>title</code></td><td><span class="req">обязательно</span></td></tr>
+      <tr><td><code>closingPhrase</code></td><td>Финальная фраза</td><td><code>title</code></td><td>—</td></tr>
+      <tr><td><code>product</code></td><td>Карточка продукта</td><td><code>title</code></td><td>опц.</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Служебные документы (обычно не редактируются вручную): <code>lab</code>, синглтоны <code>mainPage</code>/<code>sidebarNav</code>/<code>footer</code> <span class="tag single">singleton</span>, <code>legalPage</code>.</p>
+  <h3>Поля ключевых сущностей</h3>
+  <p>Это и есть структура данных, которую нельзя нарушать (<span class="req">красным</span> — обязательные поля).</p>
+  <table>
+    <thead><tr><th>caseStudy</th><th>review</th><th>speaker</th></tr></thead>
+    <tbody>
+      <tr><td><span class="req">title</span></td><td><span class="req">name</span></td><td><span class="req">name</span></td></tr>
+      <tr><td>author, role</td><td>role</td><td>role</td></tr>
+      <tr><td>summary, details</td><td><span class="req">quote</span></td><td>bio</td></tr>
+      <tr><td>tools, metric</td><td>photo</td><td>photo</td></tr>
+      <tr><td>filters (из списка)</td><td>telegram</td><td>—</td></tr>
+      <tr><td>image, productImage, videoUrl</td><td>—</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <p class="muted"><code>caseStudy.filters</code> — только из набора <code>manager / creative / developer / educator</code>. Сортируемые типы используют служебное поле <code>orderRank</code>.</p>
+  <p class="backtop"><a href="#s1">↑ наверх</a></p>
+
+  <!-- 5 -->
+  <h2 id="s5">5. Наполнение данными</h2>
+  <p>Есть два способа положить данные в Sanity:</p>
+  <h3>5.1. Вручную через Studio</h3>
+  <p>Администратор открывает Studio, заполняет форму документа, прикрепляет фото, нажимает Publish. Подходит для единичных правок и работы без агента.</p>
+  <h3>5.2. Программно (агент или скрипт)</h3>
+  <p>Запись идёт по HTTP через <code>@sanity/client</code>. <strong>Запущенный Studio не требуется.</strong> Нужны четыре параметра и токен с правом записи:</p>
+  <table>
+    <thead><tr><th>Параметр</th><th>Значение</th></tr></thead>
+    <tbody>
+      <tr><td>projectId</td><td><code>ms4mgrt9</code></td></tr>
+      <tr><td>dataset</td><td><code>production</code></td></tr>
+      <tr><td>apiVersion</td><td><code>2026-03-29</code></td></tr>
+      <tr><td>token</td><td><code>SANITY_API_TOKEN</code> (права Editor; только локально / в CI, не в браузер)</td></tr>
+    </tbody>
+  </table>
+  <pre><code><span class="kw">await</span> client.createOrReplace({
+  _id: <span class="str">'case-ai-coaching'</span>,   <span class="cmt">// детерминированный id → повторный запуск не плодит дубли</span>
+  _type: <span class="str">'caseStudy'</span>,        <span class="cmt">// точно как в схеме</span>
+  title: <span class="str">'AI COACHING'</span>,      <span class="cmt">// обязательное, уникальное</span>
+  tools: <span class="str">'Claude · Obsidian'</span>,
+  filters: [<span class="str">'manager'</span>],       <span class="cmt">// только из списка схемы</span>
+  orderRank: <span class="str">'a0|'</span>,
+})</code></pre>
+  <div class="error-section">
+    <h3>Чем можно нарушить структуру</h3>
+    <ul>
+      <li><strong>Неверный <code>_type</code></strong> — должен буквально совпадать со схемой; иначе документ не найдётся и не отрисуется.</li>
+      <li><strong>Пропуск обязательных полей</strong> — публикация будет отклонена.</li>
+      <li><strong>Дубли идентификатора</strong> (<code>title</code>/<code>name</code>) — ломают связь из блока. Защита: детерминированный <code>_id</code> + <code>createOrReplace</code>.</li>
+      <li><strong>Отсутствие <code>_key</code></strong> у элементов массива — Studio выдаёт «Missing keys» и ломает drag&amp;drop.</li>
+      <li><strong>References — это объект</strong> <code>{_type:'reference', _ref:'&lt;id&gt;'}</code>, а не строка; ссылка только на существующий документ.</li>
+      <li><strong>Спецформаты:</strong> <code>faqItem.title</code> обязан матчить <code>^[a-z0-9_]+$</code>; описания и юр-страницы — Portable Text, а не строка.</li>
+      <li><strong><code>createOrReplace</code> перезаписывает документ целиком</strong> — для точечной правки используется <code>patch().set()</code>.</li>
+    </ul>
+  </div>
+  <p>Образцы рабочего кода записи — в <code>scripts/seed-cases.mjs</code>, <code>seed-reviews.mjs</code>. Чтобы агент делал это корректно и безопасно при произвольном запросе человека, введён скилл <code>/sanity-content</code> (раздел 6).</p>
+  <p class="backtop"><a href="#s1">↑ наверх</a></p>
+
+  <!-- 6 -->
+  <h2 id="s6">6. Скилл <code>/sanity-content</code> <span class="tag new">новое</span></h2>
+  <p>Скилл-инструкция для агента: наполнять Sanity контентом по запросу человека, понимая намерение и не нарушая структуру.</p>
+  <h3>Что покрывает</h3>
+  <table>
+    <thead><tr><th>Уровень</th><th>Что делает</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Сущность</strong></td><td>Создаёт/обновляет документы: кейсы, отзывы, спикеры, FAQ, цитаты, философию, продукты.</td></tr>
+      <tr><td><strong>Блок</strong></td><td>Наполняет блок внутри лаборатории: создаёт нужные сущности и связывает их через references.</td></tr>
+      <tr><td><strong>Лаборатория</strong></td><td>Целую лабу не дублирует — опирается на существующий MD-пайплайн (<code>import-lab</code>).</td></tr>
+    </tbody>
+  </table>
+  <h3>Ключевые принципы поведения</h3>
+  <ol>
+    <li><strong>Разбор намерения.</strong> Понимает свободные формулировки («наполни кейсы, данные возьми здесь»): определяет тип сущности, источник данных, наличие фото. При неоднозначности — уточняет.</li>
+    <li><strong>Безопасная обработка дублей.</strong> Перед записью проверяет существующие документы по идентификатору. Если найден дубль и нет явной команды обновлять — <strong>останавливается и спрашивает</strong> (обновить / пропустить / создать новый). Молча не перезаписывает.</li>
+    <li><strong>Валидация до записи.</strong> Проверяет обязательные поля, форматы и существование связей. Битый документ не пишет.</li>
+    <li><strong>План перед записью.</strong> Показывает сводку (создать / обновить / пропустить), получает подтверждение, затем пишет.</li>
+    <li><strong>Фото.</strong> Загружает изображения как ассеты (двухшаговая привязка). Отсутствующий файл — повод уточнить, а не пропустить молча.</li>
+    <li><strong>Целостность.</strong> Детерминированный <code>_id</code>, <code>_key</code> для массивов, <code>orderRank</code> для сортируемых типов, <code>patch</code> для частичных правок.</li>
+  </ol>
+  <div class="info-section">
+    <h3>Как вызвать</h3>
+    <p>В сессии агента (в этом репозитории, с настроенным <code>.env</code>): <code>/sanity-content</code> и далее запрос — например, «добавь три кейса, данные в <code>./my-cases.md</code>, фото в <code>./photos/</code>». Агент разберёт запрос, покажет план, спросит про дубли и выполнит.</p>
+  </div>
+  <p class="backtop"><a href="#s1">↑ наверх</a></p>
+
+  <!-- 7 -->
+  <h2 id="s7">7. Скиллы для агента vs запрограммированные скрипты</h2>
+  <p>Важно различать два типа автоматизации — это не одно и то же.</p>
+  <table>
+    <thead><tr><th></th><th>Скилл (для агента)</th><th>Запрограммированный скрипт</th></tr></thead>
+    <tbody>
+      <tr><td>Что это</td><td>Инструкция, которую агент исполняет, понимая контекст</td><td>Детерминированная программа (npm-команда)</td></tr>
+      <tr><td>Вход</td><td>Свободный: текст, файлы, фото, устный запрос</td><td>Строго заданный формат</td></tr>
+      <tr><td>Понимает намерение</td><td><span class="tag yes">да</span></td><td><span class="tag no">нет</span></td></tr>
+      <tr><td>Гибкость</td><td>Высокая (агент адаптируется)</td><td>Нулевая (делает ровно одно)</td></tr>
+      <tr><td>Где живёт</td><td><code>.claude/commands/*.md</code></td><td><code>scripts/*.mjs</code>, <code>package.json</code></td></tr>
+      <tr><td>Примеры</td><td><code>/sanity-content</code>, <code>/sanity-schema</code>, <code>/port-block</code></td><td><code>import-lab</code>, <code>export-lab</code>, <code>seed-*.mjs</code></td></tr>
+    </tbody>
+  </table>
+  <p>Скилл может опираться на скрипт (например, <code>/sanity-content</code> для уровня «лаборатория» использует <code>import-lab</code>), но природа у них разная: скрипт не «понимает» человека, скилл — понимает.</p>
+  <div class="warning-section">
+    <h3>Что есть и чего не было</h3>
+    <p>Наполнение <em>целой лабы</em> из MD было закрыто скриптом <code>import-lab</code>. А вот наполнение <em>отдельных сущностей</em> (кейсы/отзывы/спикеры) из произвольного ввода с фото скриптами не покрывалось — только разовые хардкод-seed. Этот пробел и закрывает новый скилл <code>/sanity-content</code>.</p>
+  </div>
+  <p class="backtop"><a href="#s1">↑ наверх</a></p>
+
+  <!-- 8 -->
+  <h2 id="s8">8. Где запускать агента: в репозитории или вне</h2>
+  <p>Ответ зависит от направления — запись или чтение.</p>
+  <table>
+    <thead><tr><th>Операция</th><th>Токен</th><th>Папка <code>studio/</code></th><th>Где запускать</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Запись</strong> (наполнение контентом)</td><td><span class="tag yes">нужен (write)</span></td><td><span class="tag yes">желательна</span></td><td>в этом репозитории</td></tr>
+      <tr><td><strong>Чтение</strong> (данные на лендинг)</td><td><span class="tag no">не нужен</span></td><td><span class="tag no">не нужна</span></td><td>где угодно</td></tr>
+    </tbody>
+  </table>
+  <div class="warning-section">
+    <h3>Почему запись держим в этом репозитории</h3>
+    <p>Агент пишет безопасно только тогда, когда знает схему: точные <code>_type</code>, обязательные поля, форматы, по какому полю резолвятся ссылки. Эти знания — в <code>studio/schemaTypes/</code>. Во внешнем репозитории их нет; пришлось бы дублировать «контракт схемы» отдельным документом и держать его в синхроне (риск рассинхрона = риск повредить данные). Поэтому запись выполняется в этом репозитории, где есть схемы, рабочие образцы скриптов и токен в <code>.env</code>.</p>
+  </div>
+  <p class="backtop"><a href="#s1">↑ наверх</a></p>
+
+  <!-- 9 -->
+  <h2 id="s9">9. Чтение данных на сторонние страницы и вайбкод-лендинги</h2>
+  <p>Чтение проще записи: датасет публичный, токен не нужен. Минимум — клиент и GROQ-запрос.</p>
+  <pre><code><span class="kw">const</span> sanity = createClient({
+  projectId: <span class="str">'ms4mgrt9'</span>, dataset: <span class="str">'production'</span>,
+  apiVersion: <span class="str">'2026-03-29'</span>, useCdn: <span class="kw">true</span>,  <span class="cmt">// без токена</span>
+})
+<span class="kw">const</span> cases = <span class="kw">await</span> sanity.fetch(`
+  *[_type == <span class="str">"caseStudy"</span>] | order(orderRank asc){
+    title, author, tools, metric, <span class="str">"imageUrl"</span>: image.asset-&gt;url
+  }`)</code></pre>
+  <p>В проекте это уже работает: вайбкод-лендинги тянут из Sanity навигацию и футер, а тело пока захардкожено. Готовые запросы — в <code>src/lib/queries.ts</code>, их можно переиспользовать. Внешнему сайту, читающему из браузера, дополнительно нужно прописать его origin в CORS-allowlist Sanity.</p>
+  <p class="backtop"><a href="#s1">↑ наверх</a></p>
+
+  <!-- 10 -->
+  <h2 id="s10">10. Безопасность: что значит «публичный датасет»</h2>
+  <p>Чтение без токена означает, что любой, кто знает projectId, может прочитать <strong>опубликованные</strong> документы через API. Это штатная модель headless CMS со статическим сайтом. Важные границы (проверено запросами к API):</p>
+  <table>
+    <thead><tr><th>Доступно без токена</th><th>Защищено</th></tr></thead>
+    <tbody>
+      <tr><td>Опубликованный контент (то же, что и так показано на публичном сайте)</td><td><strong>Черновики</strong> (draft) — без токена не видны</td></tr>
+      <tr><td>Чтение через API в формате JSON</td><td><strong>Запись и удаление</strong> — невозможны без write-токена</td></tr>
+      <tr><td>projectId (он и так зашит в URL картинок сайта)</td><td><strong>Write-токен</strong> — только в <code>.env</code>/CI, в браузер не передаётся</td></tr>
+    </tbody>
+  </table>
+  <div class="info-section">
+    <h3>Итог</h3>
+    <p>Публичный датасет = «публичный сайт, только в виде JSON». Новых данных наружу это не открывает: всё доступное и так отрисовано на сайте. В Sanity нет чувствительной информации (персональные данные клиентов, платёжные секреты хранятся в отдельном бэкенде). Если в будущем понадобится хранить непубличный контент — датасет можно перевести в private (тогда токен потребуется на любое чтение, включая сборку сайта и сторонние лендинги).</p>
+  </div>
+  <p class="backtop"><a href="#s1">↑ наверх</a></p>
+
+  <!-- 11 -->
+  <h2 id="s11">11. Один контент — разные варианты дизайна</h2>
+  <p>При правильно спроектированной структуре данных один и тот же контент можно отображать в нескольких вариантах дизайна. В проекте данные и отрисовка разделены: сущности (например, кейсы) хранятся в Sanity один раз, а способ их показа определяет компонент сайта.</p>
+  <p>Поэтому второй (или третий) вариант дизайна блока — это <strong>не копия данных</strong>, а <strong>поле-переключатель на блоке</strong>. Движок по значению переключателя выбирает соответствующий компонент-отрисовщик, а данные оба варианта берут одни и те же.</p>
+  <div class="flow">
+    <span class="step s">Данные в Sanity (один раз)</span><span class="arr">→</span>
+    <span class="step">переключатель <code>variant</code> на блоке</span><span class="arr">→</span>
+    <span class="step d">вариант A</span><span class="step d">вариант B</span>
+  </div>
+  <div class="callout">
+    <p><strong>Требование к структуре:</strong> данных в Sanity должно хватать для всех вариантов отображения — схема проектируется универсальной, под все нужные представления сразу.</p>
+    <p><strong>Реализация:</strong> поле <code>variant</code> в схеме блока (через скилл <code>/sanity-schema</code>) → проекция поля в GROQ → выбор компонента по <code>variant</code> на странице. Изменение небольшое именно потому, что данные уже отделены от отрисовки.</p>
+  </div>
+  <p class="backtop"><a href="#s1">↑ наверх</a></p>
+
+</main>
+<footer>
+  <h3>Справочные данные и источники</h3>
+  <ul>
+    <li>Параметры подключения: projectId <code>ms4mgrt9</code> · dataset <code>production</code> · apiVersion <code>2026-03-29</code></li>
+    <li>Схемы: <code>studio/schemaTypes/</code> · Запросы: <code>src/lib/queries.ts</code> · Клиент чтения: <code>src/lib/sanity.ts</code></li>
+    <li>Образцы записи: <code>scripts/seed-cases.mjs</code>, <code>scripts/seed-reviews.mjs</code> · Загрузка ассетов: <code>studio/scripts/seedCommunityNightCases.mjs</code></li>
+    <li>MD-формат лаб: <code>docs/architecture/md-format.md</code> · Карта блоков: <code>docs/architecture/README.md</code></li>
+    <li>Скиллы: <code>/sanity-content</code>, <code>/sanity-schema</code>, <code>/port-block</code> (в <code>.claude/commands/</code>) · Скрипты: <code>import-lab</code>, <code>export-lab</code>, <code>seed-*.mjs</code></li>
+    <li>Локальный Studio: <code>cd studio &amp;&amp; npm run dev</code> → <a href="http://localhost:3343">http://localhost:3343</a></li>
+  </ul>
+</footer>
+</article>
+</body>
+</html>

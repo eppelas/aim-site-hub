@@ -617,6 +617,7 @@
         <a class="tab" href="index.html">Обзор</a>
         <a class="tab active" href="sanity-cms.html">Sanity CMS</a>
         <a class="tab" href="#downloads">Скачать</a>
+        <a class="tab" href="#content-fill">Наполнение</a>
         <a class="tab" href="#workflow">Процесс</a>
         <a class="tab" href="#rules">Правила</a>
         <a class="tab" href="#api">API и CLI</a>
@@ -773,6 +774,70 @@
         </div>
       </section>
 
+      <section id="content-fill">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">данные, не схема</p>
+            <h2>Наполнение Sanity</h2>
+          </div>
+          <p class="section-note">
+            Новый <code>/sanity-content</code> нужен для первичного наполнения и точечных правок
+            сущностей. Он работает с документами и references, но не должен менять структуру схем.
+          </p>
+        </div>
+
+        <div class="two-col">
+          <article class="panel">
+            <div class="tag-row"><span class="tag ok">ручной ввод</span><span class="tag">запись агентом</span></div>
+            <h3>Что можно наполнять</h3>
+            <ul>
+              <li>Standalone-документы: <code>caseStudy</code>, <code>review</code>, <code>speaker</code>, <code>faqItem</code>, <code>quote</code>, <code>philosophyPillar</code>, <code>closingPhrase</code>, <code>product</code>.</li>
+              <li>Блоки лаборатории: создать или найти сущности и связать их в <code>blocks[]</code> через reference-объекты с <code>_key</code>.</li>
+              <li>Целую лабораторию не собирать вручную: для неё остаётся MD-пайплайн <code>import-lab</code> / <code>export-lab</code>.</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <div class="tag-row"><span class="tag warn">запись только из repo</span></div>
+            <h3>Где запускать агента</h3>
+            <ul>
+              <li>Для записи запускать в <code>ai-mindset-website</code>, где есть <code>studio/schemaTypes/</code>, примеры <code>seed-*.mjs</code> и локальный <code>.env</code>.</li>
+              <li><code>SANITY_API_TOKEN</code> нужен только для write/import и не должен попадать в браузер, логи, правила или tracked files.</li>
+              <li>Если данные не помещаются в текущую схему, агент останавливается и предлагает вариант, а не меняет файлы схемы.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="rule-grid" style="margin-top: 16px">
+          <article class="rule-card warn">
+            <div class="tag-row"><span class="tag warn">защита схемы</span></div>
+            <h3>Схему не трогать</h3>
+            <ul>
+              <li>Не добавлять, не переименовывать и не удалять поля в <code>studio/schemaTypes/</code>.</li>
+              <li>Не менять validation, типы блоков и структуру <code>blocks[]</code> без отдельной задачи на изменение схемы.</li>
+              <li>Наполнять существующие блоки можно; добавлять, удалять или переставлять типы блоков — только по явной просьбе.</li>
+            </ul>
+          </article>
+          <article class="rule-card ok">
+            <div class="tag-row"><span class="tag ok">план</span><span class="tag">дубли</span></div>
+            <h3>План до записи</h3>
+            <ul>
+              <li>До записи показать сводку: что будет создано, обновлено или пропущено.</li>
+              <li>Дубли искать по id-полю: <code>title</code> или <code>name</code>, затем обновлять реальный <code>_id</code>.</li>
+              <li>Без явной команды на overwrite найденный дубль означает остановку и вопрос человеку.</li>
+            </ul>
+          </article>
+          <article class="rule-card ok">
+            <div class="tag-row"><span class="tag ok">только чтение</span><span class="tag">лендинги</span></div>
+            <h3>Читать можно проще</h3>
+            <ul>
+              <li>Опубликованный dataset читается без токена: это публичный сайт в JSON-форме.</li>
+              <li>Для стороннего лендинга нужен Sanity client, GROQ-запрос и разрешённый origin в Sanity CORS.</li>
+              <li>Черновики, запись и удаление без write-токена недоступны.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
       <section id="workflow">
         <div class="section-head">
           <div>
@@ -922,6 +987,29 @@ npm run import-lab content/labs/<slug>.md'><span class="button-icon" aria-hidden
                 </div>
               </div>
               <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-open"></use></svg></span>
+                <div>
+                  <h4>Отчёт: Sanity в AIMindset</h4>
+                  <p>Человеческий разбор CMS-слоя, наполнения данных, чтения на лендинги и границ безопасности.</p>
+                </div>
+                <div class="resource-actions">
+                  <a class="button" href="website-ops/sanity-guide.html"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-open"></use></svg></span>Открыть</a>
+                  <a class="button" href="website-ops/sanity-guide.html" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать</a>
+                </div>
+              </div>
+              <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-code"></use></svg></span>
+                <div>
+                  <h4>Скилл <code>/sanity-content</code></h4>
+                  <p>Инструкция агента для наполнения кейсов, отзывов, спикеров, FAQ, цитат, философии и продуктов.</p>
+                </div>
+                <div class="resource-actions">
+                  <a class="button" href="website-ops/sanity-content.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-open"></use></svg></span>Открыть</a>
+                  <a class="button" href="website-ops/sanity-content.md" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать</a>
+                  <button class="button" type="button" data-copy-url="website-ops/sanity-content.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать</button>
+                </div>
+              </div>
+              <div class="resource-row">
                 <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-code"></use></svg></span>
                 <div>
                   <h4>Текст <code>SKILL.md</code></h4>
@@ -991,6 +1079,26 @@ npm run import-lab content/labs/<slug>.md'><span class="button-icon" aria-hidden
                 </div>
                 <div class="resource-actions">
                   <button class="button" type="button" data-copy-text="scripts/import-lab.mjs&#10;scripts/export-lab.mjs"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать пути</button>
+                </div>
+              </div>
+              <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-file"></use></svg></span>
+                <div>
+                  <h4>Отчёт разработчика</h4>
+                  <p><code>reports/sanity-guide.html</code></p>
+                </div>
+                <div class="resource-actions">
+                  <button class="button" type="button" data-copy-text="reports/sanity-guide.html"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать путь</button>
+                </div>
+              </div>
+              <div class="resource-row">
+                <span class="mini-icon" aria-hidden="true"><svg><use href="#icon-code"></use></svg></span>
+                <div>
+                  <h4>Команда Claude</h4>
+                  <p><code>.claude/commands/sanity-content.md</code></p>
+                </div>
+                <div class="resource-actions">
+                  <button class="button" type="button" data-copy-text=".claude/commands/sanity-content.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать путь</button>
                 </div>
               </div>
             </div>
