@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sanity CMS правила | AIM Site Hub</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #050505;
+        --ink: #fffaf0;
+        --muted: #aaa196;
+        --soft: rgba(255, 255, 255, 0.12);
+        --hair: rgba(255, 255, 255, 0.08);
+        --panel: rgba(18, 18, 18, 0.72);
+        --panel-soft: rgba(255, 255, 255, 0.05);
+        --accent: #ff4d4d;
+        --green: #1dc263;
+        --blue: #6f97ff;
+        --amber: #ffc17a;
+        --mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(circle at 8% 0%, rgba(255, 77, 77, 0.24), transparent 25rem),
+          radial-gradient(circle at 86% 5%, rgba(29, 194, 99, 0.15), transparent 28rem),
+          radial-gradient(circle at 50% 100%, rgba(111, 151, 255, 0.14), transparent 32rem),
+          var(--bg);
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: center;
+        padding: 14px 22px;
+        border-bottom: 1px solid var(--soft);
+        background: rgba(5, 5, 5, 0.76);
+        backdrop-filter: blur(12px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .brand-mark {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 28px;
+        background: var(--ink);
+        color: var(--bg);
+        font-size: 10px;
+      }
+
+      .top-links,
+      .tabs,
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .action,
+      .tab,
+      button.action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 32px;
+        padding: 7px 11px;
+        border: 1px solid var(--soft);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.055);
+        color: var(--ink);
+        font: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-decoration: none;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+
+      .action:hover,
+      .action:focus-visible,
+      .tab:hover,
+      .tab:focus-visible {
+        border-color: rgba(255, 250, 240, 0.42);
+        background: rgba(255, 250, 240, 0.1);
+        outline: 0;
+      }
+
+      .action.primary,
+      .tab.active {
+        border-color: rgba(29, 194, 99, 0.62);
+        background: rgba(29, 194, 99, 0.13);
+        color: #dfffe8;
+      }
+
+      main {
+        width: min(1320px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 28px 0 72px;
+      }
+
+      .tabs {
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--hair);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+        gap: clamp(18px, 4vw, 46px);
+        padding: clamp(22px, 4vw, 46px);
+        border: 1px solid var(--soft);
+        border-radius: 22px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+          var(--panel);
+        background-size: 32px 32px;
+        box-shadow: 0 28px 70px rgba(0, 0, 0, 0.42);
+      }
+
+      .kicker,
+      .pill,
+      .path {
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 850px;
+        margin-top: 16px;
+        font-size: clamp(42px, 7vw, 86px);
+        line-height: 0.96;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .lead {
+        max-width: 720px;
+        margin-top: 18px;
+        color: rgba(255, 250, 240, 0.78);
+        font-size: clamp(15px, 1.45vw, 19px);
+      }
+
+      .hero-side {
+        display: grid;
+        gap: 12px;
+        align-content: end;
+      }
+
+      .status-card,
+      .panel,
+      .rule-card {
+        border: 1px solid var(--soft);
+        border-radius: 12px;
+        background: rgba(10, 10, 10, 0.72);
+      }
+
+      .status-card {
+        padding: 16px;
+      }
+
+      .status-card strong {
+        display: block;
+        font-size: 18px;
+        line-height: 1.15;
+      }
+
+      .status-card span {
+        display: block;
+        margin-top: 8px;
+        color: rgba(255, 250, 240, 0.68);
+      }
+
+      .grid,
+      .rule-grid,
+      .source-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .grid {
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        margin-top: 18px;
+      }
+
+      .rule-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .source-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      section {
+        margin-top: 36px;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--hair);
+      }
+
+      h2 {
+        font-size: clamp(24px, 3vw, 38px);
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      h3 {
+        font-size: 17px;
+        line-height: 1.2;
+      }
+
+      .section-note {
+        max-width: 620px;
+        color: rgba(255, 250, 240, 0.62);
+      }
+
+      .panel,
+      .rule-card {
+        padding: 16px;
+      }
+
+      .rule-card {
+        display: grid;
+        gap: 12px;
+      }
+
+      .rule-card.ok {
+        border-color: rgba(29, 194, 99, 0.45);
+      }
+
+      .rule-card.warn {
+        border-color: rgba(255, 193, 122, 0.38);
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      li + li {
+        margin-top: 8px;
+      }
+
+      code,
+      pre {
+        font-family: var(--mono);
+      }
+
+      .code-lines,
+      pre {
+        overflow-x: auto;
+        border: 1px solid var(--hair);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.045);
+      }
+
+      .code-line {
+        display: block;
+        padding: 8px 10px;
+        white-space: nowrap;
+        border-bottom: 1px solid var(--hair);
+      }
+
+      .code-line:last-child {
+        border-bottom: 0;
+      }
+
+      pre {
+        margin: 0;
+        padding: 14px;
+        max-height: 360px;
+        color: rgba(255, 250, 240, 0.82);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      .copy-status {
+        min-height: 20px;
+        margin-top: 12px;
+        color: var(--green);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        padding: 4px 7px;
+        border: 1px solid rgba(255, 250, 240, 0.14);
+        border-radius: 999px;
+        background: rgba(255, 250, 240, 0.045);
+      }
+
+      .pill.ok {
+        border-color: rgba(29, 194, 99, 0.45);
+        color: #dfffe8;
+      }
+
+      .path {
+        display: block;
+        margin-top: 12px;
+        color: rgba(255, 250, 240, 0.42);
+        overflow-wrap: anywhere;
+      }
+
+      @media (max-width: 860px) {
+        .top {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .tabs,
+        .top-links {
+          width: 100%;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          padding-bottom: 8px;
+        }
+
+        .tab,
+        .action {
+          white-space: nowrap;
+        }
+
+        .hero,
+        .grid,
+        .rule-grid,
+        .source-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section-head {
+          display: block;
+        }
+
+        .section-note {
+          margin-top: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">AIM</span>
+        <span>Site Hub</span>
+      </a>
+      <nav class="top-links" aria-label="Быстрые переходы">
+        <a class="action" href="index.html">хаб</a>
+        <a class="action primary" href="sanity-cms.html">Sanity rules</a>
+        <a class="action" href="website-ops/sanity-cms-lab-pipeline.md">pipeline md</a>
+      </nav>
+    </header>
+
+    <main>
+      <nav class="tabs" aria-label="Домены AIM Website">
+        <a class="tab" href="index.html">Обзор</a>
+        <a class="tab active" href="sanity-cms.html">Sanity CMS</a>
+        <a class="tab" href="index.html#rules-pipelines">Мелкие правила</a>
+        <a class="tab" href="index.html#qa">Сурикаты и QA</a>
+        <a class="tab" href="index.html#review-tools">Мастерские</a>
+        <a class="tab" href="index.html#analytics">Аналитика</a>
+      </nav>
+
+      <section class="hero">
+        <div>
+          <p class="kicker">developer review surface</p>
+          <h1>Sanity CMS rules</h1>
+          <p class="lead">
+            Отдельная страница для правил Sanity, lab Markdown import, `common_content.md`,
+            API/CLI доступа, связки Astro build, staging и payment `product_code`.
+          </p>
+          <div class="actions" style="margin-top: 22px">
+            <button class="action primary" type="button" data-copy-text="https://eppelas.github.io/aim-site-hub/sanity-cms.html">copy developer link</button>
+            <a class="action" href="website-ops/create-aim-lab-md-skill.md" download>download skill</a>
+            <button class="action" type="button" data-copy-url="website-ops/create-aim-lab-md-skill.md">copy skill</button>
+            <a class="action" href="website-ops/create-aim-lab-md-prompt.md" download>download prompt</a>
+            <button class="action" type="button" data-copy-url="website-ops/create-aim-lab-md-prompt.md">copy prompt</button>
+          </div>
+          <div class="copy-status" id="copy-status" role="status" aria-live="polite"></div>
+        </div>
+        <div class="hero-side">
+          <article class="status-card">
+            <span class="pill ok">source of truth</span>
+            <strong>Sanity project `ms4mgrt9`, dataset `production`</strong>
+            <span>Studio owns lab documents and shared entities. Astro reads published Sanity content during build with `useCdn: false`.</span>
+          </article>
+          <article class="status-card">
+            <span class="pill">review URL</span>
+            <strong>https://eppelas.github.io/aim-site-hub/sanity-cms.html</strong>
+            <span>Use this link when a developer needs only the Sanity rules, not the full operations hub.</span>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Hard Rules</h2>
+          <p class="section-note">Эти правила нельзя восстанавливать из памяти чата или старых скриншотов.</p>
+        </div>
+        <div class="rule-grid">
+          <article class="rule-card ok">
+            <div class="pill-row"><span class="pill ok">common_content.md</span><span class="pill">references</span></div>
+            <h3>Reference IDs</h3>
+            <ul>
+              <li>Reference-блоки заполняются только точными ID из свежего `common_content.md`.</li>
+              <li>Если сущности нет в экспортe, её надо создать в Studio и заново экспортировать файл.</li>
+              <li>Пустой reference-блок означает import behavior "all entities" и используется только осознанно.</li>
+            </ul>
+          </article>
+          <article class="rule-card ok">
+            <div class="pill-row"><span class="pill ok">product_code</span><span class="pill">payment</span></div>
+            <h3>Payment Codes</h3>
+            <ul>
+              <li>`product_code` каждого тарифа приходит из каталога Дана / NocoDB.</li>
+              <li>Код не строится из `slug`, названия лаборатории или цены в описании.</li>
+              <li>Sanity хранит `productCode`; финальная EUR-цена приходит runtime-проверкой `/api/payment/*`.</li>
+            </ul>
+          </article>
+          <article class="rule-card warn">
+            <div class="pill-row"><span class="pill ok">slug</span><span class="pill">dates</span></div>
+            <h3>Lab Identity</h3>
+            <ul>
+              <li>Frontmatter `slug` задаёт URL и идентичность документа; имя файла не решает.</li>
+              <li>Даты пишутся строго `YYYY-MM-DD`.</li>
+              <li>FAQ остаётся плоским списком без категорий.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Creation Paths</h2>
+          <p class="section-note">Три поддержанных способа завести или обновить lab content.</p>
+        </div>
+        <div class="source-grid">
+          <article class="panel">
+            <div class="pill-row"><span class="pill ok">Studio</span><span class="pill">manual</span></div>
+            <h3>Manual Editing</h3>
+            <ul>
+              <li>Открыть AIM Studio.</li>
+              <li>Править `Лаборатория` или shared entities: speakers, cases, reviews, FAQ, quotes, philosophy, closing.</li>
+              <li>Publish запускает rebuild staging/new через Sanity webhook.</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <div class="pill-row"><span class="pill ok">MD import</span><span class="pill">agent</span></div>
+            <h3>Markdown Upload</h3>
+            <ul>
+              <li>Скачать свежий `common_content.md` кнопкой `Экспорт общего контента`.</li>
+              <li>Заполнить `create-lab-from-md.md` по инструкции внутри шаблона.</li>
+              <li>В Studio использовать `Создать лабу из MD` или `Обновить из MD`.</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <div class="pill-row"><span class="pill">git</span><span class="pill">import workflow</span></div>
+            <h3>Git Markdown Import</h3>
+            <ul>
+              <li>Положить файл в `content/labs/&lt;slug&gt;.md`.</li>
+              <li>Push в `main` запускает `.github/workflows/import-labs.yml`.</li>
+              <li>`scripts/import-lab.mjs` импортирует parsed lab в Sanity.</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <div class="pill-row"><span class="pill">vibe coding</span><span class="pill">pages</span></div>
+            <h3>Content For Pages</h3>
+            <ul>
+              <li>Брать контент из Studio, Sanity export, `common_content.md` или tracked docs.</li>
+              <li>Не брать финальную истину из старого export-а, скриншота или пересказа чата.</li>
+              <li>Сохранять slugs, dates, reference IDs, product codes, CTA labels и payment links.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>API And CLI</h2>
+          <p class="section-note">Подключение для локальной Studio, clean scratch Studio и repo import/export.</p>
+        </div>
+        <div class="grid">
+          <article class="panel">
+            <h3>Commands</h3>
+            <div class="code-lines" style="margin-top: 12px">
+              <span class="code-line">cd "Site Repo - ai-mindset-website"</span>
+              <span class="code-line">npm run dev                         # Astro, http://localhost:4331</span>
+              <span class="code-line">cd studio && npm run dev             # Sanity Studio, http://localhost:3343</span>
+              <span class="code-line">npm create sanity@latest -- --project ms4mgrt9 --dataset production --template clean</span>
+              <span class="code-line">npm run export-lab &lt;slug&gt;</span>
+              <span class="code-line">npm run import-lab content/labs/&lt;slug&gt;.md</span>
+            </div>
+          </article>
+          <article class="panel">
+            <h3>Environment</h3>
+            <ul style="margin-top: 12px">
+              <li>`SANITY_PROJECT_ID` for CLI import/export.</li>
+              <li>`SANITY_DATASET`, default `production`.</li>
+              <li>`SANITY_API_VERSION`, default `2026-03-29` in the repo script.</li>
+              <li>`SANITY_API_TOKEN` only for write/import contexts; never write temporary tokens into rules or tracked files.</li>
+              <li>The clean Sanity CLI bootstrap is scratch-only; do not run it inside the active repo unless replacing Studio is the task.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Publish Flow</h2>
+          <p class="section-note">How Sanity content reaches review environments.</p>
+        </div>
+        <div class="rule-grid">
+          <article class="rule-card">
+            <div class="pill-row"><span class="pill ok">publish</span></div>
+            <h3>Webhook</h3>
+            <p>Sanity publish sends `repository_dispatch: sanity-content-update`.</p>
+          </article>
+          <article class="rule-card">
+            <div class="pill-row"><span class="pill ok">build</span></div>
+            <h3>Astro</h3>
+            <p>GitHub Actions builds the Astro site from published Sanity data with `useCdn: false`.</p>
+          </article>
+          <article class="rule-card">
+            <div class="pill-row"><span class="pill ok">review</span></div>
+            <h3>Staging / New</h3>
+            <p>Review `https://staging.aimindset.org/labs/&lt;slug&gt;` and `https://new.aimindset.org/labs/&lt;slug&gt;` after rebuild.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="agent-pack">
+        <div class="section-head">
+          <h2>Agent Pack</h2>
+          <p class="section-note">Текст скилла и prompt доступны для копирования и скачивания.</p>
+        </div>
+        <div class="grid">
+          <article class="panel">
+            <div class="pill-row"><span class="pill ok">skill</span><span class="pill">Codex</span></div>
+            <h3>Create AIM Lab MD Skill</h3>
+            <p style="margin-top: 10px; color: rgba(255, 250, 240, 0.68)">
+              Скачиваемая копия локального skill-файла. Для установки в Codex положить как `SKILL.md`
+              в skill-директорию `create-aim-lab-md`.
+            </p>
+            <div class="actions" style="margin-top: 14px">
+              <a class="action primary" href="website-ops/create-aim-lab-md-skill.md" download>download skill</a>
+              <button class="action" type="button" data-copy-url="website-ops/create-aim-lab-md-skill.md">copy skill text</button>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="pill-row"><span class="pill ok">prompt</span><span class="pill">lab md</span></div>
+            <h3>Prompt For Lab Creation</h3>
+            <p style="margin-top: 10px; color: rgba(255, 250, 240, 0.68)">
+              Короткий prompt для агента, если нужно создать lab Markdown из brief-а и свежего `common_content.md`.
+            </p>
+            <div class="actions" style="margin-top: 14px">
+              <a class="action primary" href="website-ops/create-aim-lab-md-prompt.md" download>download prompt</a>
+              <button class="action" type="button" data-copy-url="website-ops/create-aim-lab-md-prompt.md">copy prompt text</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Canonical Sources</h2>
+          <p class="section-note">Files used to build this page and the deeper pipeline doc.</p>
+        </div>
+        <div class="source-grid">
+          <article class="panel">
+            <h3>Public Docs</h3>
+            <ul style="margin-top: 12px">
+              <li><a href="website-ops/sanity-cms-lab-pipeline.md">website-ops/sanity-cms-lab-pipeline.md</a></li>
+              <li><a href="website-ops/create-aim-lab-md-skill.md">website-ops/create-aim-lab-md-skill.md</a></li>
+              <li><a href="website-ops/create-aim-lab-md-prompt.md">website-ops/create-aim-lab-md-prompt.md</a></li>
+            </ul>
+          </article>
+          <article class="panel">
+            <h3>Repo Sources</h3>
+            <ul style="margin-top: 12px">
+              <li>`Site Repo - ai-mindset-website/docs/guides/create-lab-from-md.md`</li>
+              <li>`Site Repo - ai-mindset-website/studio/lib/commonContentMd.mjs`</li>
+              <li>`Site Repo - ai-mindset-website/studio/components/CreateLabFromMdButton.tsx`</li>
+              <li>`Site Repo - ai-mindset-website/scripts/import-lab.mjs`</li>
+              <li>`Site Repo - ai-mindset-website/scripts/export-lab.mjs`</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const copyStatus = document.querySelector('#copy-status');
+
+      async function copyText(text) {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+      }
+
+      async function textForButton(button) {
+        if (button.dataset.copyText) return button.dataset.copyText;
+        const url = button.dataset.copyUrl;
+        if (!url) return '';
+        const response = await fetch(url, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Cannot read ${url}`);
+        return response.text();
+      }
+
+      document.querySelectorAll('[data-copy-text], [data-copy-url]').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const originalText = button.textContent;
+          try {
+            const text = await textForButton(button);
+            await copyText(text);
+            button.textContent = 'copied';
+            copyStatus.textContent = 'Copied to clipboard';
+          } catch (error) {
+            copyStatus.textContent = 'Copy failed';
+          } finally {
+            window.setTimeout(() => {
+              button.textContent = originalText;
+            }, 1400);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
