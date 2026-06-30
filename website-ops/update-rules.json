@@ -1,0 +1,563 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-06-20",
+  "sourceOfTruth": "website-ops/update-rules.json",
+  "updateRules": [
+    {
+      "id": "product-rules-sync",
+      "title": "Product rules and Website Hub sync",
+      "ownerAgent": "AIM Website Product Rules Sync Watch",
+      "automationId": "aim-website-product-rules-sync-watch",
+      "cadence": "daily at 09:00 Europe/Lisbon",
+      "trigger": "Codex app cron automation",
+      "inputs": [
+        "website-ops/product-rules.json",
+        "website-ops/product-rules.md",
+        "website-ops/rules-and-pipelines.md",
+        "aim-site-hub.html",
+        "local-preview/sync-product-rules-summary.mjs",
+        "Bots/Telegram Bug Intake Bot - Linear/README.md",
+        "Bots/Telegram Bug Intake Bot - Linear/src/telegram-bug-intake.mjs",
+        "V3 Site Repo - aimwebsite0.5/src/components/PricingPaymentPopupDatalineHeader.tsx",
+        "AIM Site Agent Evaluation/config/cta-rules.json"
+      ],
+      "outputs": [
+        "website-ops/product-rules.json",
+        "website-ops/product-rules.md",
+        "aim-site-hub.html",
+        "TASK_VERIFICATION_CANVAS.md"
+      ],
+      "policy": [
+        "Do not invent product rules when sources conflict.",
+        "If implementation code contradicts the registry, report drift with exact files and lines.",
+        "Do not push or deploy."
+      ]
+    },
+    {
+      "id": "case-source-fidelity-review",
+      "title": "Case source fidelity review",
+      "ownerAgent": "Case Source Fidelity Reviewer",
+      "cadence": "before every new or materially updated case study handoff",
+      "trigger": "manual Codex work, case-source update, YouTube fragment extraction, or user-provided case notes",
+      "inputs": [
+        "user-provided case notes and markdown",
+        "YouTube fragment URL, transcript, or downloaded source frames",
+        "V3 Site Repo - aimwebsite0.5/src/components/LabW26PageV3.tsx",
+        "V3 Site Repo - aimwebsite0.5/public/assets/cases/**",
+        "website-ops/case-source-fidelity-reviewer.md",
+        "website-ops/product-rules.json"
+      ],
+      "outputs": [
+        "verified case task, description, tools, result, and media notes",
+        "clean source-cropped screenshots and speaker portrait when needed",
+        "TASK_VERIFICATION_CANVAS.md"
+      ],
+      "policy": [
+        "Do not publish a case with technology claims that are not evidenced in the exact case source set.",
+        "For YouTube cases, crop relevant video frames and remove browser, OS, and player UI unless it is part of the case evidence.",
+        "Unsupported facts must be removed, marked unverified, or returned to the user as a question.",
+        "Do not push or deploy."
+      ]
+    },
+    {
+      "id": "site-qa-dashboard",
+      "title": "Production/staging QA dashboards",
+      "ownerAgent": "AIM Site Agent Evaluation",
+      "cadence": "manual; health on demand; biweekly candidate every Monday 07:00 UTC with even ISO-week guard; monthly sweep on day 1 at 08:00 UTC",
+      "trigger": "GitHub Actions .github/workflows/site-qa.yml",
+      "inputs": [
+        "https://aimindset.org/",
+        "https://staging.aimindset.org/",
+        "AIM Site Agent Evaluation/config/*.json",
+        "AIM Site Agent Evaluation/src/**"
+      ],
+      "outputs": [
+        "AIM Site Agent Evaluation/reports/latest/report.json",
+        "AIM Site Agent Evaluation/reports/latest/dashboard.html",
+        "AIM Site Agent Evaluation/reports/latest/dashboard.production.html",
+        "AIM Site Agent Evaluation/reports/latest/dashboard.staging.html",
+        "AIM Site Agent Evaluation/reports/history/**",
+        "GitHub Pages dashboard"
+      ],
+      "policy": [
+        "First screenshot run creates baselines; later runs compare against baselines.",
+        "High findings make the run failed.",
+        "Generated dashboards are published by GitHub Pages when the workflow runs."
+      ]
+    },
+    {
+      "id": "device-cloud-preflight",
+      "title": "DeviceCloud preflight",
+      "ownerAgent": "AI Mindset Device Cloud QA",
+      "cadence": "manual; monthly preflight on day 2 at 09:00 UTC",
+      "trigger": "GitHub Actions .github/workflows/device-cloud.yml",
+      "inputs": [
+        "AIM Site Agent Evaluation/config/device-cloud-matrix.json",
+        "BrowserStack/LambdaTest/Sauce Labs secrets when available"
+      ],
+      "outputs": [
+        "GitHub Actions job summary",
+        "future report.json device-cloud session evidence"
+      ],
+      "policy": [
+        "Skip cleanly without provider secrets.",
+        "Do not make paid provider sessions part of the main QA gate until the adapter is stable."
+      ]
+    },
+    {
+      "id": "surikat-intake",
+      "title": "Surikat Telegram intake",
+      "ownerAgent": "Surikat Vasily",
+      "cadence": "Cloud Run webhook, always-on while the service is active; local LaunchAgent is rollback only",
+      "trigger": "Telegram webhook to Cloud Run service aim-surikat-vasily /telegram in GCP project aim-surikat-vasily",
+      "inputs": [
+        "Telegram group and DM messages",
+        "Telegram voice/audio/video-note media via getFile for Gemini/Vertex transcription",
+        "Bots/Telegram Bug Intake Bot - Linear/src/telegram-bug-intake.mjs",
+        "Bots/Telegram Bug Intake Bot - Linear/cloud-run/README.md",
+        "Site Repo - ai-mindset-website/cloud-run/telegram-lead-relay/server.js",
+        "Site Repo - ai-mindset-website/cloud-run/telegram-lead-relay/README.md",
+        "website-ops/bot-operating-rules.json",
+        "Bots/Telegram Bug Intake Bot - Linear/data/bot-rules.local.json",
+        "GCS state mirror gs://aim-surikat-vasily-state/vasily/state/",
+        "website-ops/product-rules.json"
+      ],
+      "outputs": [
+        "Telegram reactions or clarification questions",
+        "Linear bug issues",
+        "LLM site-audit replies for owner-gated read-only tasks",
+        "Durable owner-learned runtime rules, ownerRuntimeInstructions, and chat aliases in GCS",
+        "local pending queue when Linear is unavailable",
+        "Cloud Run audit log mirrored from /tmp/vasily-state/audit-log.jsonl to GCS",
+        "local audit log at Bots/Telegram Bug Intake Bot - Linear/data/audit-log.jsonl when rollback polling is active"
+      ],
+      "policy": [
+        "Group chat behavior is conservative.",
+        "Addressed messages must be classified semantically before action: visual QA/full-pass/audit/check tasks, concrete site breakage, and questions/discussion must not collapse into one generic route.",
+        "For addressed questions/discussion/bot-flow critique, LLM may write only the final short reply after hard guards and semantic intent classification; it must not accept tasks, create Linear issues, or invent QA/dashboard status.",
+        "Owner tone feedback such as 'говори нормально' or 'не по-ишному' updates conversationalReplyStyle and must not be treated as just another chat question.",
+        "Broader owner instructions such as 'запомни правило', 'когда я говорю...', or 'в следующий раз...' update ownerRuntimeInstructions and are injected into future conversational and task prompts.",
+        "Telegram text_link entities count as URLs for task recognition.",
+        "Telegram voice/audio/video-note attachments must be transcribed through Gemini/Vertex before routing; the transcript counts as effective text for URL extraction, semantic classification, and private owner context memory.",
+        "URL-backed aliases learned in a chat/thread, such as ai-native, count as task targets for future owner commands in that same thread.",
+        "AI Native visual QA output belongs in AIM Site Agent Evaluation as a separate dashboard page linked from the choose-site selector once the local QA/Codex runner is connected.",
+        "Do not run Telegram webhook and local getUpdates polling at the same time.",
+        "Vasily production Cloud Run and lead relay live in dedicated GCP project aim-surikat-vasily; Sonya remains in project-f40c3e3c-0fca-49de-96d.",
+        "Owner-gated LLM site audits are read-only and must not edit the website or push code.",
+        "Related Labs/sprint pages must be checked for stale or ending-soon dates, not only HTTP 200.",
+        "Product/payment answers must use the Website Hub registry.",
+        "Metrika/form/payment lead DMs are allowed only to explicit owner-controlled recipients; the browser-facing aim-pay-lead-relay must filter SURIKAT_METRIKA_LEAD_DM_RECIPIENTS through SURIKAT_METRIKA_LEAD_DM_ALLOWED_USERNAMES and must not fall back to a generic TELEGRAM_CHAT_ID when the allowlist is configured. Payment lead notification pause/resume may also be controlled by configured managers, currently Anca/@stavenski and Ira/@Irhen_N, through Vasily's durable metrikaLeadDmDeliveryPaused state.",
+        "Owner Telegram rule changes, generic owner runtime instructions, conversational style feedback, and chat alias memory must hydrate from and persist to the Vasily GCS state prefix before/after webhook processing.",
+        "OwnerRuntimeInstructions do not override Metrika DM recipient allowlists, read-only audit limits, secrets, Linear, or deploy guards.",
+        "Owner-only tuning commands are accepted only from Anca/@stavenski."
+      ]
+    },
+    {
+      "id": "bot-operating-rules-sync",
+      "title": "Bot operating rules and Website Hub sync",
+      "ownerAgent": "AIM Site Ops Sync",
+      "cadence": "on every meaningful bot runtime/behavior change; local preview auto-sync on /aim-site-hub/",
+      "trigger": "manual Codex work, bot-operating-rules sync script, or local preview request to /aim-site-hub/",
+      "inputs": [
+        "website-ops/bot-operating-rules.json",
+        "website-ops/bot-operating-rules.md",
+        "Bots/Telegram Bug Intake Bot - Linear/README.md",
+        "Bots/Telegram Bug Intake Bot - Linear/cloud-run/README.md",
+        "Site Repo - ai-mindset-website/cloud-run/telegram-lead-relay/README.md",
+        "Site Repo - ai-mindset-website/cloud-run/telegram-lead-relay/server.js",
+        "Bots/Telegram Design Taste Bot - Sonya/README.md",
+        "Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md",
+        "local-preview/sync-bot-operating-rules-summary.mjs",
+        "aim-site-hub.html"
+      ],
+      "outputs": [
+        "website-ops/bot-operating-rules.json",
+        "website-ops/bot-operating-rules.md",
+        "aim-site-hub.html",
+        "TASK_VERIFICATION_CANVAS.md"
+      ],
+      "policy": [
+        "Bot runtime changes must be visible in the Hub and in the relevant bot README/runtime docs.",
+        "Bot rule or architecture changes must update website-ops/bot-operating-rules.json first, then regenerate the Hub summary through local-preview/sync-bot-operating-rules-summary.mjs or local preview auto-sync.",
+        "Each Telegram bot must have one delivery owner at a time: webhook or polling, never both.",
+        "Secrets stay in Keychain locally or Secret Manager in Cloud Run, not tracked files.",
+        "Read-only audit commands from Telegram must not edit the website or push code."
+      ]
+    },
+    {
+      "id": "website-hub-refresh",
+      "title": "Website Hub refresh",
+      "ownerAgent": "AIM Site Ops Sync",
+      "cadence": "on every meaningful operational/UI/doc change; generated summaries also refreshed by local preview auto-sync",
+      "trigger": "manual Codex work, product-rules sync script, tool-registry sync script, bot-operating-rules sync script, or local preview request to /aim-site-hub/",
+      "inputs": [
+        "aim-site-hub.html",
+        "website-ops/*.json",
+        "website-ops/*.md",
+        "local-preview/sync-product-rules-summary.mjs",
+        "local-preview/sync-tool-registry-summary.mjs",
+        "local-preview/sync-bot-operating-rules-summary.mjs",
+        "local-preview/README.md",
+        "TASK_VERIFICATION_CANVAS.md"
+      ],
+      "outputs": [
+        "http://localhost:5123/aim-site-hub/",
+        "LAN/mobile preview URL",
+        "updated task ledger"
+      ],
+      "policy": [
+        "After meaningful hub/UI change, provide desktop and LAN/mobile preview links.",
+        "The local preview server auto-syncs generated Product rules, Tool registry, and Bot operating rules sections before serving /aim-site-hub/ unless AIM_PREVIEW_AUTO_SYNC_HUB=false is set.",
+        "Validate local links and no horizontal overflow on desktop/mobile.",
+        "Do not push without explicit review approval and push authorization."
+      ]
+    },
+    {
+      "id": "design-feedback-evaluation-dashboard",
+      "title": "Design feedback evaluation dashboard",
+      "ownerAgent": "AIM Design Evaluation",
+      "automationId": "aim-design-rating-evaluator",
+      "cadence": "on every explicit design rating/rejection; automated rating evaluator every 4 hours while active; before new design-generation runs",
+      "trigger": "AIM Page Design Lab site rating, Surikat Sonya Telegram rating, manual Codex work, user design review, or Codex automation aim-design-rating-evaluator",
+      "inputs": [
+        "design-feedback-dashboard/data/design-feedback-registry.json",
+        "website-ops/design-generator-feedback-handoff.jsonl",
+        "website-ops/design-feedback-rules.md",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/manifest.json",
+        "V3 Site Repo - aimwebsite0.5/payment-page-design-lab/manifest.json",
+        "website-ops/homepage-design-brief.json",
+        "website-ops/design-curriculum-reference-pack.md",
+        "user feedback in Codex thread"
+      ],
+      "outputs": [
+        "design-feedback-dashboard/data/design-feedback-registry.json",
+        "design-feedback-dashboard/index.html",
+        "website-ops/design-feedback-rules.md",
+        "website-ops/design-generator-feedback-handoff.jsonl",
+        "aim-site-hub.html",
+        "TASK_VERIFICATION_CANVAS.md"
+      ],
+      "policy": [
+        "Dashboard has three lanes: main homepage design, guided payment page design, and standalone elements/blocks/popups.",
+        "AIM Design Quality Pursuit is active: every generated design direction should plausibly score at least 8/10 and match AI Mindset spirit before handoff.",
+        "If the agent's own expected rating is below 8/10, iterate, mark the run as failed exploration, or state the exact gap instead of presenting it as good.",
+        "Every explicit numeric user rating must be stored with artifact path, diagnosis, and generator impact.",
+        "AIM Page Design Lab cards show the average score out of 10 across all explicit ratings and reveal individual ratings on hover/focus; missing reviewer scores stay blank.",
+        "AIM Page Design Lab can write ratings through the local preview endpoint /__aim_design_rating; Anka/Sasha/custom site ratings are included in the visible average and retained as generator evidence.",
+        "The automated rating evaluator must periodically read the registry and generator handoff, then update docs/manifests/task ledgers or queue follow-up design work according to the latest ratings.",
+        "Ratings from 1-3 out of 10 are rejected directions and become hard avoid rules.",
+        "Strong negative feedback without a number is still negative memory and should be tagged strong-negative.",
+        "Structure-only wireframes, sitemap diagrams, and information-architecture maps must be hidden from the default AIM Page Design Lab gallery; they are internal planning artifacts, not design candidates.",
+        "Near-duplicate review skins must be hidden from the default AIM Page Design Lab gallery and Sonya review. Payment 02-05 / Topographic-style variants are the current negative example: same payment card and canvas shell with mostly background/accent/ambient changes is not a set of different designs.",
+        "Every new homepage/payment/element review candidate must have a material delta: composition, hierarchy, interaction/motion mechanic, content model, state behavior, or source-mechanic fidelity. If the same shell is intentionally explored, keep at most two variants and record reviewFocus/designDelta.",
+        "Before sending payment design review links, run QA for active-control contrast, black-on-dark text, red CTA/active cards, invented checkout copy, compact input typography, route animation placement, discount behavior, and desktop/mobile overflow.",
+        "Payment page work must preserve the functional payment UX and cover four states: choose/pay, bank redirect, payment failed, payment succeeded.",
+        "Do not invent final success/failure payment copy before the user provides its source.",
+        "Do not commit, push, deploy, or replace production/staging pages.",
+        "Homepage and element design links must pass a screenshot readability gate before handoff: readable Russian body copy, proportional body font, high contrast, calm background under text, comfortable line-height, and no dense grid/diagram noise behind paragraphs.",
+        "AIM OS is a principles/mechanics reference only; do not copy its low-readability monospaced page style, beige/yellow grid, or system-map density into homepage body copy.",
+        "If an artifact is materially redesigned after rating, its manifest must set ratingPolicy.ratingResetAt; older ratings become stale context, Page Design Lab shows recheck until a fresh rating exists, and the evaluator should queue Sonya rereview when ratingPolicy.needsSonyaRereview is true."
+      ]
+    },
+    {
+      "id": "surikat-sonya-design-review",
+      "title": "Surikat Sonya design review bot",
+      "ownerAgent": "Surikat Sonya",
+      "cadence": "nightly candidate scan and daytime DM review delivery when review windows are known",
+      "trigger": "local catalog publisher, manual /review command, Cloud Run webhook, or future schedule after night-design-pursuit output",
+      "inputs": [
+        "Telegram DM messages and callback_query ratings from @stavenski and @alex_named",
+        "Bots/Telegram Design Taste Bot - Sonya/src/telegram-design-taste-bot.mjs",
+        "Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/manifest.json",
+        "V3 Site Repo - aimwebsite0.5/payment-page-design-lab/manifest.json",
+        "website-ops/night-design-pursuit-latest.md",
+        "design-feedback-dashboard/data/design-feedback-registry.json",
+        "Vertex AI via Google Cloud billing credits when SONYA_LLM_PROVIDER=vertex",
+        "Gemini Developer API as local fallback when GEMINI_API_KEY is configured",
+        "Cloud Storage bucket for incoming Telegram media when SONYA_GCS_BUCKET is configured",
+        "GCS catalog.json curated selection and inventory.json broad review inventory published by the local catalog publisher"
+      ],
+      "outputs": [
+        "Telegram screenshot review cards with 0-10 inline rating buttons",
+        "design-feedback-dashboard/data/design-feedback-registry.json feedbackEvents",
+        "website-ops/design-generator-feedback-handoff.jsonl with next-design instructions for page generators",
+        "Bots/Telegram Design Taste Bot - Sonya/data/review-dispatch.local.json",
+        "Cloud Run webhook service when deployed from Bots/Telegram Design Taste Bot - Sonya/",
+        "Cloud Storage media objects under SONYA_GCS_PREFIX/telegram-media/ when configured",
+        "Bots/Telegram Bug Intake Bot - Linear/data/sonya-design-handoff.jsonl for bug-like design feedback",
+        "review-only GitHub Pages links for full-page design lab artifacts when published",
+        "GCS state/catalog surfaces for Cloud Run review cards and durable owner/dispatch/registry/handoff state"
+      ],
+      "policy": [
+        "Curated and scheduled review sends only candidates with sonyaScore strictly greater than 5/10; manual broad review requests may draw from inventory.json to inspect unrated candidates, but still use review-only artifacts and owner-controlled pacing.",
+        "Use the full 0-10 rating scale: 0 is hard reject, 1-3 rejected, 4-6 weak, 7-8 promising, 9-10 strong.",
+        "Anka and Sasha are the only owners; Sasha must press /start once before Sonya can DM him.",
+        "Store Telegram and Gemini secrets outside tracked files, preferably Keychain.",
+        "Cloud credits path must use SONYA_LLM_PROVIDER=vertex with VERTEX_PROJECT_ID inside the credit-linked Google Cloud project; plain GEMINI_API_KEY is only the Gemini Developer API fallback.",
+        "Do not run Telegram polling and Cloud Run webhook mode at the same time.",
+        "Cloud Run uses the GCS state mirror for owner/dispatch/log/registry/handoff surfaces; if hydrate fails while enabled, the webhook acknowledges without side effects instead of overwriting durable state from stale local files.",
+        "Cloud Run reads review cards from GCS catalog.json and inventory.json; the local catalog publisher owns scoring, screenshot capture, stale-lock cleanup, published-only public links, and GCS publication.",
+        "Current live health should expose mode=webhook, genaiProvider=vertex, groupChatEnabled=true, groupVideoReplyEnabled=true, autoReviewEnabled=false, requireSendApproval=true, and sashaProactiveDmEnabled=false.",
+        "Runtime Veo is configured but disabled and expired. The repo Dockerfile runtime has ffmpeg available, so real Telegram video_note output is possible only if the owner explicitly reopens paid generation and health reports runtimeVeo.ffmpegAvailable=true; buildpack/source deploys without ffmpeg must not enable sendAsVideoNote.",
+        "Every numeric rating must be passed to the relevant design generator handoff with target automation ids, rating sentiment, what to keep/change/avoid/promote, and a concrete next-generation brief.",
+        "Narrow publication exception: Sonya may commit and push review-only design lab artifacts with sonyaScore > 5 without Anka local review, but may not replace live routes, deploy production/staging replacements, or stage unrelated dirty files.",
+        "Full-page review cards should include a GitHub Pages URL for the specific page when available.",
+        "Review cards should include Na chto smotret / Chem otlichaetsya when the manifest or GCS catalog includes reviewFocus/designDelta. If a candidate is only a near-duplicate skin, hide it instead of asking for another rating.",
+        "Explicit low owner ratings override Sonya cached self-scores: a candidate rated <=5/10 by Anca or Sasha is skipped from the curated catalog even if an older background evaluation scored it higher.",
+        "Bug-like feedback about a design/page is written to the Sonya-to-Vasily handoff JSONL instead of creating Linear issues directly.",
+        "Candidates with ratingPolicy.needsSonyaRereview should be sent again as fresh review cards even if they already have older ratings; caption the previous rating as stale context after redesign."
+      ]
+    },
+    {
+      "id": "homepage-full-design-generator",
+      "title": "Homepage full design generator",
+      "ownerAgent": "AIM Homepage Full Design Generator",
+      "automationId": "aim-homepage-full-design-generator",
+      "cadence": "weekly on Monday at 09:40 Europe/Lisbon after initial manual burst",
+      "trigger": "Codex app cron automation",
+      "inputs": [
+        "website-ops/homepage-design-brief.json",
+        "website-ops/design-curriculum-reference-pack.md",
+        "design-feedback-dashboard/data/design-feedback-registry.json",
+        "website-ops/design-generator-feedback-handoff.jsonl",
+        "https://aimindset.org/",
+        "https://aim-os.netlify.app/",
+        "https://health.aimindset.org/",
+        "https://selfdev.aimindset.org/",
+        "https://www.associate.studio/artofnoise",
+        "/Users/viola/All/Yandex.Disk.localized/3 Process/8 Vibe Coding/Anca Projects/index.html",
+        "http://localhost:5123/aim-site-hub/",
+        "http://localhost:5123/style-index/",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/manifest.json",
+        "Blocks Repo - ai-mindset-blocks/src/** when available",
+        "/Users/viola/All/Yandex.Disk.localized/3 Process/8 Vibe Coding/evalv : Creative Taste Bot/generated-animations/manifest.json when available",
+        "/Users/viola/.codex/automations/weekly-github-design-digest/automation.toml"
+      ],
+      "outputs": [
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/runs/full/<timestamp-slug>/index.html",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/runs/full/<timestamp-slug>/README.md",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/manifest.json",
+        "TASK_VERIFICATION_CANVAS.md"
+      ],
+      "policy": [
+        "This is a review-only homepage design lab; do not replace the live React route.",
+        "Every full-page run must cover all 13 blocks from website-ops/homepage-design-brief.json.",
+        "Use a light theme and improve readability/user flow when borrowing AIM OS visual language.",
+        "Before generation, use website-ops/design-curriculum-reference-pack.md as a preflight for project argumentation, visual codes, information clarity, accessibility, composition, storytelling, UI/product, and brand-system reasoning.",
+        "Before generation, use design-feedback-dashboard/data/design-feedback-registry.json as a feedback preflight. Active rejected ratings and strong negative feedback must change the next concept.",
+        "Before generation, read the latest relevant Sonya generator handoff events and explicitly respond to their keep/change/avoid/promote instructions.",
+        "AIM Design Quality Pursuit target is 8+/10. Self-check against AIM spirit and stored feedback before handoff; if expected score is below 8, iterate or mark the run as failed exploration.",
+        "The Stas Leto School lesson files are internal reasoning references only; do not copy lesson text into AIM prototypes.",
+        "Anca Projects may be used as an owned mechanics reference for mouse-reactive galaxy/starfield backgrounds.",
+        "Use Art of Noise only for mechanics: sound-to-typography logic, variable type behavior, disciplined labels plus immersive large-scale type, density/repetition, and spatial rhythm.",
+        "Treat external references as inspiration for mechanics, hierarchy, and structure only; do not copy assets or layouts.",
+        "Do not copy visible reference text into AIM prototypes. Slide titles, reference labels, exhibition copy, demo captions, and arbitrary numeric labels must be removed or replaced with source-backed AIM/payment/site copy.",
+        "Do not create fake proof: no review blocks without real reviews, no archive/project cards without real links, and no source-thin homepage pretending to be complete.",
+        "Run a source-fidelity pass for names, links, CTAs, product labels, and footer/legal/archive references before handoff.",
+        "Do not commit, push, deploy, or edit production/staging routes.",
+        "Exception: Surikat Sonya may publish only review-only design lab artifacts to GitHub Pages after sonyaScore > 5; this does not authorize live route replacement or unrelated staging.",
+        "After the 2026-05-28 rejection, do not repeat over-literal AIM OS / beige-grid / monospaced Russian homepage directions or self-rate them as 8/10.",
+        "Homepage body copy must use readable proportional typography; monospace is limited to short labels, tags, codes, and metadata.",
+        "Before handoff, check desktop/mobile screenshots for immediate readability and hide failed explorations from the default gallery.",
+        "Do not generate many variants of the same page shell with only background/accent/ambient changes. At most two same-shell variants may be kept for comparison, and only if the README/manifest states exactly what changed.",
+        "Payment Event Horizon learning: keep the mouse-dependent glow from AIM Payment Gravity, but do not repeat simple vertical galaxy sway. The rejected AIM Event Horizon was a local 2D approximation, not a Gemini-assisted review and not a direct source port. When the user asks to use owned X26/Anca/Creative Taste Bot code directly, first port the source mechanic 1:1, then adapt the AIM/payment composition around it. X26-derived payment variants should use owned presentation math/code for pointer inertia, depth rotation, strand/bowl/event-horizon motion, and velocity wake. Treat AIM Payment Gravity and AIM Vortex Checkout as 7.5/10 archive candidates only after a stronger replacement is user-approved.",
+        "After materially redesigning an already rated artifact, add ratingPolicy.ratingResetAt and ratingPolicy.needsSonyaRereview when it should go back to Anka/Sonya review; do not promote or sort by stale ratings as current approval."
+      ]
+    },
+    {
+      "id": "night-design-pursuit",
+      "title": "AIM Night Design Pursuit",
+      "ownerAgent": "AIM Night Design Pursuit",
+      "automationId": "aim-night-design-pursuit",
+      "cadence": "hourly during 00:05, 01:05, 02:05, 03:05, 04:05, 05:05, and 06:05 Europe/Lisbon",
+      "trigger": "Codex app cron automation",
+      "inputs": [
+        "website-ops/night-design-pursuit.md",
+        "design-feedback-dashboard/data/design-feedback-registry.json",
+        "website-ops/design-feedback-rules.md",
+        "website-ops/design-generator-feedback-handoff.jsonl",
+        "website-ops/homepage-design-brief.json",
+        "website-ops/design-curriculum-reference-pack.md",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/manifest.json",
+        "V3 Site Repo - aimwebsite0.5/payment-page-design-lab/manifest.json",
+        "V3 Site Repo - aimwebsite0.5/payment-popup-compare.html",
+        "V3 Site Repo - aimwebsite0.5/case-popup-compare.html",
+        "/Users/viola/All/Yandex.Disk.localized/3 Process/8 Vibe Coding/",
+        "/Users/viola/.codex/automations/weekly-github-design-digest/automation.toml",
+        "Creative Taste Bot generated animations and research dashboard when available"
+      ],
+      "outputs": [
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/runs/full/<timestamp-slug>/",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/runs/elements/<timestamp-slug>/",
+        "V3 Site Repo - aimwebsite0.5/payment-page-design-lab/runs/<timestamp-slug>/ or updated payment lab variants",
+        "updated relevant manifests",
+        "website-ops/night-design-pursuit-latest.md",
+        "TASK_VERIFICATION_CANVAS.md"
+      ],
+      "policy": [
+        "Owner-approved resource window is 00:00-07:00 Europe/Lisbon.",
+        "During that window, the worker may quit nonessential apps such as Telegram, Obsidian, Pencil, Linear, extra Terminal sessions, stale subagents, and stale local servers not needed for validation.",
+        "Preserve Codex, needed browser/Arc, OS services, Finder, Yandex Disk/sync services, and active Creative Taste Bot/code-animation automation processes.",
+        "The optional local bug continuation automation may stay paused while this night-design lane is active.",
+        "Generate diverse review-only designs across homepage, guided payment page, and standalone element lanes.",
+        "Do not repeat the same motif; each night should vary structure, interaction, typography, imagery/media system, density, mood, and content emphasis.",
+        "Do not generate many variants of the same page shell with only background/accent/ambient changes. At most two same-shell variants may be kept for comparison, and only if the README/manifest states exactly what changed.",
+        "AIM Design Quality Pursuit target is 8+/10. If expected score is below 8, iterate or mark as failed exploration.",
+        "Treat the latest Sonya generator handoff events as high-priority taste instructions: hard rejects block repetition, weak ratings require mutation, high ratings become style anchors.",
+        "Do not create fake proof, fake reviews, archive cards without links, or source-thin complete pages.",
+        "Do not commit, push, deploy, delete, rename, or replace production/staging pages.",
+        "Exception: Surikat Sonya may publish only review-only design lab artifacts to GitHub Pages after sonyaScore > 5; this does not authorize live route replacement or unrelated staging.",
+        "The automation is scheduled repeatedly through the quiet window; do not treat it as a one-shot short burst.",
+        "After the 2026-05-28 rejection, do not repeat over-literal AIM OS / beige-grid / monospaced Russian homepage or element directions.",
+        "Homepage and element runs must pass screenshot readability gates before being promoted: readable proportional Russian body copy, high contrast, calm text surfaces, no dense grid/constellation noise under paragraphs.",
+        "Payment Event Horizon learning: keep the mouse-dependent glow from AIM Payment Gravity, but do not repeat simple vertical galaxy sway. The rejected AIM Event Horizon was a local 2D approximation, not a Gemini-assisted review and not a direct source port. When the user asks to use owned X26/Anca/Creative Taste Bot code directly, first port the source mechanic 1:1, then adapt the AIM/payment composition around it. X26-derived payment variants should use owned presentation math/code for pointer inertia, depth rotation, strand/bowl/event-horizon motion, and velocity wake. Treat AIM Payment Gravity and AIM Vortex Checkout as 7.5/10 archive candidates only after a stronger replacement is user-approved.",
+        "After materially redesigning an already rated artifact, add ratingPolicy.ratingResetAt and ratingPolicy.needsSonyaRereview when it should go back to Anka/Sonya review; do not promote or sort by stale ratings as current approval."
+      ]
+    },
+    {
+      "id": "aim-gemini-page-generation-sprint",
+      "title": "AIM Gemini Page Generation Sprint",
+      "ownerAgent": "AIM Gemini Page Generation Sprint",
+      "automationId": "aim-gemini-page-generation-sprint",
+      "cadence": "one-off manual sprint in the current quiet window",
+      "trigger": "Codex app cron automation",
+      "inputs": [
+        "/Users/viola/All/Yandex.Disk.localized/3 Process/8 Vibe Coding/agent-rules/cross-agent-rerouting.md",
+        "/Users/viola/All/Yandex.Disk.localized/3 Process/8 Vibe Coding/agent-rules/web-ui-agent-route-experiment.md",
+        "website-ops/agent-route-design-experiment.md",
+        "website-ops/agent-route-design-experiment-queue.json",
+        "website-ops/rules-and-pipelines.md",
+        "website-ops/design-feedback-rules.md",
+        "website-ops/design-generator-feedback-handoff.jsonl",
+        "website-ops/homepage-design-brief.json",
+        "website-ops/design-curriculum-reference-pack.md",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/manifest.json",
+        "V3 Site Repo - aimwebsite0.5/payment-page-design-lab/manifest.json"
+      ],
+      "outputs": [
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/runs/full/<timestamp-slug>/",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/runs/elements/<timestamp-slug>/",
+        "V3 Site Repo - aimwebsite0.5/payment-page-design-lab/runs/<timestamp-slug>/",
+        "updated relevant manifests",
+        "updated screenshot previews when possible",
+        "TASK_VERIFICATION_CANVAS.md",
+        "website-ops/night-design-pursuit-latest.md"
+      ],
+      "policy": [
+        "Route is Gemini visual scout -> Codex implementation -> local/browser QA.",
+        "Run /Users/viola/All/Yandex.Disk.localized/3 Process/8 Vibe Coding/agent-tools/gemini-web-ui-scout.sh before each open-ended page/UI artifact.",
+        "If Gemini fails because of auth, quota, timeout, rate limit, malformed output, or CLI error, run /Users/viola/All/Yandex.Disk.localized/3 Process/8 Vibe Coding/agent-tools/web-ui-model-fallback-scout.sh and continue with a fallback label.",
+        "Prioritize Route B from the agent route experiment queue.",
+        "Do not shrink the run to one card, one route, or one queued item unless a real blocker is documented.",
+        "Prefer full homepage concepts and payment-page concepts first; include elements only when queue or feedback makes that more useful.",
+        "Do not use Flow as the default visual scout.",
+        "Do not enable Vertex, GenMedia, Veo, Imagen, Lyria, or other billable media generation.",
+        "Do not commit, push, deploy, delete, rename, replace live routes, or edit production/staging pages.",
+        "Every artifact must include index.html, README.md, Gemini scout path, fallback status if any, source notes, feedback response, self-rating, and validation notes.",
+        "Validate JSON and manifest paths; when local preview can run, check desktop/mobile for no horizontal overflow, no blank canvases/iframes, and immediate Russian readability."
+      ]
+    },
+    {
+      "id": "homepage-element-design-generator",
+      "title": "Homepage element design generator",
+      "ownerAgent": "AIM Homepage Element Design Generator",
+      "automationId": "aim-homepage-element-design-generator",
+      "cadence": "weekly on Friday at 10:20 Europe/Lisbon after initial manual burst",
+      "trigger": "Codex app cron automation",
+      "inputs": [
+        "website-ops/homepage-design-brief.json",
+        "website-ops/design-curriculum-reference-pack.md",
+        "design-feedback-dashboard/data/design-feedback-registry.json",
+        "website-ops/design-generator-feedback-handoff.jsonl",
+        "https://aimindset.org/",
+        "https://www.associate.studio/artofnoise",
+        "/Users/viola/All/Yandex.Disk.localized/3 Process/8 Vibe Coding/Anca Projects/index.html",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/manifest.json",
+        "V3 Site Repo - aimwebsite0.5/payment-popup-compare.html",
+        "V3 Site Repo - aimwebsite0.5/case-popup-compare.html",
+        "Blocks Repo - ai-mindset-blocks/src/** when available",
+        "http://localhost:5123/style-index/",
+        "/Users/viola/All/Yandex.Disk.localized/3 Process/8 Vibe Coding/evalv : Creative Taste Bot/generated-animations/manifest.json when available"
+      ],
+      "outputs": [
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/runs/elements/<timestamp-slug>/index.html",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/runs/elements/<timestamp-slug>/README.md",
+        "V3 Site Repo - aimwebsite0.5/homepage-design-lab/manifest.json",
+        "TASK_VERIFICATION_CANVAS.md"
+      ],
+      "policy": [
+        "Create exactly one focused homepage block, popup, CTA, card system, footer, or comparable element per run.",
+        "Rotate coverage across hero, philosophy, ecosystem/products, programs, formats, cases/reviews, team, consulting, space, non-profit, FAQ, footer, CTA, and popups.",
+        "Before generation, use website-ops/design-curriculum-reference-pack.md as a preflight for project argumentation, visual codes, information clarity, accessibility, composition, storytelling, UI/product, and brand-system reasoning.",
+        "Before generation, use design-feedback-dashboard/data/design-feedback-registry.json as a feedback preflight. Active rejected ratings and strong negative feedback must change the next element.",
+        "Before generation, read the latest relevant Sonya generator handoff events and explicitly respond to their keep/change/avoid/promote instructions.",
+        "AIM Design Quality Pursuit target is 8+/10. Self-check against AIM spirit and stored feedback before handoff; if expected score is below 8, iterate or mark the run as failed exploration.",
+        "The Stas Leto School lesson files are internal reasoning references only; do not copy lesson text into AIM prototypes.",
+        "Anca Projects may be used as an owned mechanics reference for mouse-reactive galaxy/starfield backgrounds.",
+        "Write artifacts only inside V3 Site Repo - aimwebsite0.5/homepage-design-lab.",
+        "Do not create fake proof: no review blocks without real reviews, no archive/project cards without real links, and no source-thin element pretending to be complete.",
+        "Run a source-fidelity pass for copied names, links, CTAs, product labels, and footer/legal/archive references before handoff.",
+        "Do not commit, push, deploy, or edit production/staging routes.",
+        "Exception: Surikat Sonya may publish only review-only design lab artifacts to GitHub Pages after sonyaScore > 5; this does not authorize live route replacement or unrelated staging.",
+        "After the 2026-05-28 rejection, do not repeat over-literal AIM OS / beige-grid / monospaced Russian element directions or self-rate them as 8/10.",
+        "Element body copy must use readable proportional typography; monospace is limited to short labels, tags, codes, and metadata.",
+        "Before handoff, check desktop/mobile screenshots for immediate readability and hide failed explorations from the default gallery.",
+        "Do not generate many variants of the same page shell with only background/accent/ambient changes. At most two same-shell variants may be kept for comparison, and only if the README/manifest states exactly what changed.",
+        "Payment Event Horizon learning: keep the mouse-dependent glow from AIM Payment Gravity, but do not repeat simple vertical galaxy sway. The rejected AIM Event Horizon was a local 2D approximation, not a Gemini-assisted review and not a direct source port. When the user asks to use owned X26/Anca/Creative Taste Bot code directly, first port the source mechanic 1:1, then adapt the AIM/payment composition around it. X26-derived payment variants should use owned presentation math/code for pointer inertia, depth rotation, strand/bowl/event-horizon motion, and velocity wake. Treat AIM Payment Gravity and AIM Vortex Checkout as 7.5/10 archive candidates only after a stronger replacement is user-approved.",
+        "After materially redesigning an already rated artifact, add ratingPolicy.ratingResetAt and ratingPolicy.needsSonyaRereview when it should go back to Anka/Sonya review; do not promote or sort by stale ratings as current approval."
+      ]
+    },
+    {
+      "id": "codex-bug-automation",
+      "title": "Local Codex bug continuation",
+      "ownerAgent": "Codex automation `bug`",
+      "automationId": "bug",
+      "cadence": "every day at 01:00 Europe/Lisbon",
+      "trigger": "Codex app cron automation with prompt `continue this task`",
+      "inputs": [
+        "/Users/viola/.codex/automations/bug/automation.toml",
+        "/Users/viola/.codex/automations/bug/memory.md",
+        "current repo/files from the last unresolved bug-style thread in the AIM workspace"
+      ],
+      "outputs": [
+        "continued local review/fix pass in the active workspace",
+        "/Users/viola/.codex/automations/bug/memory.md run log",
+        "Codex inbox handoff item"
+      ],
+      "policy": [
+        "This automation lives on the local Mac outside the git repo.",
+        "automation.toml defines schedule, cwd, model, and the generic continuation prompt.",
+        "memory.md is the readable run history: what it checked, what it changed, what remains open.",
+        "It is an execution helper, not a source of truth for product rules or site content.",
+        "Do not push or deploy without explicit review approval and push authorization."
+      ]
+    },
+    {
+      "id": "tool-registry",
+      "title": "Tool registry",
+      "ownerAgent": "AIM Site Ops Sync",
+      "cadence": "on every new reusable website review or design tool",
+      "trigger": "node local-preview/sync-tool-registry-summary.mjs or local preview auto-sync on /aim-site-hub/",
+      "inputs": [
+        "website-ops/tool-registry.json",
+        "website-ops/tool-registry.md",
+        "local-preview/sync-tool-registry-summary.mjs",
+        "aim-site-hub.html"
+      ],
+      "outputs": [
+        "aim-site-hub.html grouped tools section",
+        "local desktop preview",
+        "LAN/mobile preview URL",
+        "TASK_VERIFICATION_CANVAS.md"
+      ],
+      "policy": [
+        "Register every reusable review or design tool before handoff.",
+        "Use kind=review for compare/QA/preview surfaces and kind=design for visual generators, asset-making tools, and design references.",
+        "Do not hardcode chat-only tool links without a source path.",
+        "Open the tool through the hub route and check mobile overflow when the hub UI changes.",
+        "The local preview server runs the generated hub sync scripts automatically before serving /aim-site-hub/, so newly registered tools should appear after refresh even if the explicit sync command was not run first."
+      ]
+    }
+  ]
+}

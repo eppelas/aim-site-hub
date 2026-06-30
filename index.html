@@ -637,6 +637,16 @@
         border-color: rgba(29, 194, 99, 0.62);
       }
 
+      .map-node.analytics {
+        left: 44px;
+        top: 462px;
+        width: 198px;
+        min-height: 116px;
+        padding: 12px;
+        border-color: rgba(111, 151, 255, 0.54);
+        background: rgba(8, 13, 24, 0.88);
+      }
+
       .map-node.legacy {
         left: 270px;
         top: 462px;
@@ -1318,6 +1328,50 @@
         overflow-wrap: anywhere;
       }
 
+      .utm-table-wrap {
+        overflow-x: auto;
+        border: var(--frame) solid var(--soft);
+        border-radius: 8px;
+        background: rgba(255, 250, 240, 0.05);
+      }
+
+      .utm-table {
+        width: 100%;
+        min-width: 980px;
+        border-collapse: collapse;
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .utm-table th,
+      .utm-table td {
+        padding: 10px;
+        border-bottom: var(--frame) solid var(--hair);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .utm-table th {
+        color: var(--ink);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        background: rgba(255, 250, 240, 0.08);
+      }
+
+      .utm-table td {
+        color: var(--muted);
+      }
+
+      .utm-table tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .utm-table code {
+        color: var(--ink);
+        font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
+      }
+
       .arrow {
         color: var(--muted);
         font-size: 18px;
@@ -1510,7 +1564,8 @@
 
         .site-split,
         .workshop-list,
-        .rule-families {
+        .rule-families,
+        .handoff-list {
           grid-template-columns: 1fr;
         }
 
@@ -1530,7 +1585,8 @@
         .map-node.qa-agent,
         .map-node.feedback,
         .map-node.legacy,
-        .map-node.rules {
+        .map-node.rules,
+        .map-node.analytics {
           width: 100%;
         }
 
@@ -1572,13 +1628,14 @@
             </p>
             <div class="actions">
               <a class="action" href="https://aimindset.org/" target="_blank" rel="noopener noreferrer">сайт</a>
-              <a class="action" href="https://eppelas.github.io/aimwebsite0.5/">локально</a>
+              <a class="action" href="../aimwebsite0.5/">локально</a>
               <a class="action" href="https://staging.aimindset.org/" target="_blank" rel="noopener noreferrer">стейджинг</a>
-              <a class="action" href="https://eppelas.github.io/aim-web-design-index/">дизайн-индекс</a>
+              <a class="action" href="../style-index/">дизайн-индекс</a>
               <a class="action" href="https://eppelas.github.io/aim-site-hub/" target="_blank" rel="noopener noreferrer">hub pages</a>
               <a class="action" href="https://github.com/eppelas/aim-site-hub" target="_blank" rel="noopener noreferrer">repo</a>
               <a class="action" href="sanity-cms.html">CMS</a>
               <a class="action" href="#rules-pipelines">правила</a>
+              <a class="action" href="#analytics">аналитика</a>
             </div>
           </div>
         </div>
@@ -1627,7 +1684,7 @@
               <text x="914" y="502">оценки 0-10</text>
               <text x="560" y="512">память генераторам</text>
             </svg>
-            <a class="map-node current" href="https://eppelas.github.io/aimwebsite0.5/" data-detail="Текущий сайт здесь означает боевой домен, staging-домен и локальную папку/preview-контекст `aimwebsite0.5`. Локальный порт не является постоянным адресом сайта; его дает текущий preview launcher." aria-label="Открыть текущий локальный сайт">
+            <a class="map-node current" href="../aimwebsite0.5/" data-detail="Текущий сайт здесь означает боевой домен, staging-домен и локальную папку/preview-контекст `aimwebsite0.5`. Локальный порт не является постоянным адресом сайта; его дает текущий preview launcher." aria-label="Открыть текущий локальный сайт">
               <span class="node-main">
                 <span class="map-glyph glyph-site" aria-hidden="true">
                   <svg viewBox="0 0 120 84" fill="none">
@@ -1665,7 +1722,7 @@
               </span>
               <span class="telegram-badge">Telegram: @aim_surikat_bot</span>
             </a>
-            <a class="map-node qa-agent" href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html" data-detail="Автоматический black-box worker: открывает production/staging и текущий local preview как внешний пользователь, проверяет CTA, ссылки, скриншоты, даты и читаемость, затем отдает результат Василию." aria-label="Открыть последний QA-дашборд">
+            <a class="map-node qa-agent" href="AIM Site Agent Evaluation/reports/latest/dashboard.html" data-detail="Автоматический black-box worker: открывает production/staging и текущий local preview как внешний пользователь, проверяет CTA, ссылки, скриншоты, даты и читаемость, затем отдает результат Василию." aria-label="Открыть последний QA-дашборд">
               <span class="node-main">
                 <span class="map-glyph glyph-scan" aria-hidden="true">
                   <svg viewBox="0 0 64 56" fill="none">
@@ -1718,7 +1775,7 @@
               </span>
               <span class="telegram-badge">Telegram: @aim_surikat_sonya_bot</span>
             </a>
-            <a class="map-node feedback" href="#review-tools" data-detail="Design feedback memory хранит оценки дизайнов из Сони и site-side review: 0-10, keep/change/avoid, negative memory и preferred mechanics. Это память для следующих генераторов и мастерских, а не QA-рейтинг Василия." aria-label="Открыть дизайн feedback dashboard">
+            <a class="map-node feedback" href="../preview/design-feedback-dashboard/" data-detail="Design feedback memory хранит оценки дизайнов из Сони и site-side review: 0-10, keep/change/avoid, negative memory и preferred mechanics. Это память для следующих генераторов и мастерских, а не QA-рейтинг Василия." aria-label="Открыть дизайн feedback dashboard">
               <span class="node-main">
                 <span class="map-glyph glyph-feedback" aria-hidden="true">
                   <svg viewBox="0 0 64 56" fill="none">
@@ -1759,7 +1816,29 @@
                 <span>generator cadence</span>
               </span>
             </a>
-            <a class="map-node legacy" href="https://eppelas.github.io/aim-web-design-index/" data-detail="Дизайн-архив — меньший источник: Style Index, legacy-направления, старые элементы и удачные механики. Он дает семена мастерским, но не управляет сайтом напрямую." aria-label="Открыть дизайн-индекс">
+            <a class="map-node analytics" href="analytics.html" data-detail="Аналитика — отдельный контур: Яндекс Метрика, Вебвизор, UTM-правила, цели по оплате и страховка Суриката для контактных полей." aria-label="Открыть аналитику AIM Website">
+              <span class="node-main">
+                <span class="map-glyph glyph-feedback" aria-hidden="true">
+                  <svg viewBox="0 0 64 56" fill="none">
+                    <path d="M8 46H56" stroke="rgba(255,250,240,0.48)" stroke-width="2" />
+                    <path d="M16 38V26M28 38V14M40 38V22M52 38V10" stroke="rgba(111,151,255,0.92)" stroke-width="4" />
+                    <path d="M14 14L28 22L40 15L52 20" stroke="rgba(29,194,99,0.72)" stroke-width="2" />
+                  </svg>
+                </span>
+                <span class="map-copy">
+                  <span class="map-eyebrow">аналитика</span>
+                  <strong>Метрика</strong>
+                  <small>UTM, цели, Вебвизор</small>
+                </span>
+              </span>
+              <span class="handoff-list" aria-hidden="true">
+                <span>Яндекс Метрика</span>
+                <span>UTM-правила</span>
+                <span>таблица ссылок</span>
+                <span>цели воронки</span>
+              </span>
+            </a>
+            <a class="map-node legacy" href="../style-index/" data-detail="Дизайн-архив — меньший источник: Style Index, legacy-направления, старые элементы и удачные механики. Он дает семена мастерским, но не управляет сайтом напрямую." aria-label="Открыть дизайн-индекс">
               <span class="node-main">
                 <span class="map-glyph glyph-archive" aria-hidden="true">
                   <svg viewBox="0 0 56 48" fill="none">
@@ -1779,13 +1858,13 @@
         </div>
       </section>
 
-
       <nav class="actions domain-tabs" aria-label="Домены AIM Website">
         <a class="action active" href="#current">обзор</a>
         <a class="action" href="sanity-cms.html">Sanity CMS</a>
         <a class="action" href="#rules-pipelines">мелкие правила</a>
         <a class="action" href="#qa">сурикаты и QA</a>
         <a class="action" href="#review-tools">мастерские</a>
+        <a class="action" href="#analytics">аналитика</a>
       </nav>
 
       <section class="section" id="styles">
@@ -1824,7 +1903,7 @@
           <p class="section-note">Только то, что нужно открыть в первую очередь.</p>
         </div>
         <div class="grid">
-          <a class="card dark wide" data-search-item href="https://eppelas.github.io/aimwebsite0.5/">
+          <a class="card dark wide" data-search-item href="../aimwebsite0.5/">
             <div class="label-row"><span class="pill ok">локально</span></div>
             <div>
               <h3>Текущий сайт V3</h3>
@@ -1848,7 +1927,7 @@
             </div>
             <span class="path">staging.aimindset.org</span>
           </a>
-          <a class="card green" data-search-item href="https://eppelas.github.io/aim-web-design-index/">
+          <a class="card green" data-search-item href="../style-index/">
             <div class="label-row"><span class="pill ok">дизайн</span></div>
             <div>
               <h3>AIM Web Design Index</h3>
@@ -1856,13 +1935,21 @@
             </div>
             <span class="path">/style-index/</span>
           </a>
-          <a class="card" data-search-item href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html">
+          <a class="card" data-search-item href="AIM Site Agent Evaluation/reports/latest/dashboard.html">
             <div class="label-row"><span class="pill">QA</span></div>
             <div>
               <h3>QA-дашборд</h3>
               <p class="summary">Последний отчет бота.</p>
             </div>
             <span class="path">reports/latest/dashboard.html</span>
+          </a>
+          <a class="card dark" data-search-item href="analytics.html">
+            <div class="label-row"><span class="pill ok">аналитика</span><span class="pill">Метрика</span></div>
+            <div>
+              <h3>Аналитика сайта</h3>
+              <p class="summary">Отдельная страница про Метрику, Вебвизор, цели, UTM-ссылки и то, как читать неизвестный Direct.</p>
+            </div>
+            <span class="path">analytics.html / website-ops/analytics-current-setup.md</span>
           </a>
           <a class="card green" data-search-item href="sanity-cms.html">
             <div class="label-row"><span class="pill ok">CMS</span><span class="pill">Sanity</span></div>
@@ -1872,7 +1959,7 @@
             </div>
             <span class="path">sanity-cms.html / скачать скилл / скачать промпт</span>
           </a>
-          <a class="card" data-search-item href="https://eppelas.github.io/ai-mindset-blocks/">
+          <a class="card" data-search-item href="../ai-mindset-blocks/">
             <div class="label-row"><span class="pill">блоки</span></div>
             <div>
               <h3>Blocks Lab</h3>
@@ -1883,6 +1970,67 @@
         </div>
       </section>
 
+
+      <section class="section" id="analytics">
+        <div class="section-head">
+          <h2>Аналитика</h2>
+          <p class="section-note">Коротко: здесь мы отделяем поведение людей на сайте от наших тестов, смотрим путь до оплаты и не верим сырому Direct без проверки источников.</p>
+        </div>
+        <div class="ops-layout">
+          <article class="card dark" data-search-item>
+            <div class="label-row">
+              <span class="pill ok">Метрика</span>
+              <span class="pill">AI Native + payment</span>
+            </div>
+            <div>
+              <h3>Что это за контур</h3>
+              <p class="summary">
+                Сейчас этот контур относится к AI Native, странице оплаты и staging-зеркалу.
+                Главный смысл: видеть, кто доходит до цены, кто нажимает оплату, какие блоки читают,
+                какие ссылки привели людей и какие визиты нужно исключать как командные.
+              </p>
+            </div>
+            <div class="actions">
+              <a class="action" href="analytics.html">открыть страницу аналитики</a>
+              <a class="action" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">открыть Метрику</a>
+              <a class="action" href="website-ops/analytics-current-setup.md">техническая настройка</a>
+            </div>
+            <span class="path">analytics.html · счетчик 106857835 · AI Native/payment</span>
+          </article>
+
+          <div class="ops-board">
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">смысл</span><span class="pill">воронка</span></div>
+              <h3>Что смотрим</h3>
+              <ul class="ops-list">
+                <li><strong>Путь:</strong> визит → блок цены → кнопка записи → страница оплаты.</li>
+                <li><strong>Качество:</strong> где люди зависают, что раскрывают, где уходят.</li>
+                <li><strong>Источники:</strong> Telegram, Instagram, email, партнерские ссылки и остаточный неизвестный Direct.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">правило</span><span class="pill">UTM</span></div>
+              <h3>Как не терять источники</h3>
+              <ul class="ops-list">
+                <li><strong>Ссылка:</strong> перед публикацией добавляем строку в UTM-таблицу.</li>
+                <li><strong>Direct:</strong> не называем Direct каналом, пока не проверили UTM, referrer и наши правила.</li>
+                <li><strong>Команда:</strong> внутренние визиты нужно маркировать отдельно, иначе они портят маленькую выборку.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">Сурикат</span><span class="pill">страховка</span></div>
+              <h3>Почему это не одно и то же</h3>
+              <ul class="ops-list">
+                <li><strong>Метрика:</strong> показывает поведение, источники и цели.</li>
+                <li><strong>Сурикат:</strong> страхует контакт, если Telegram-ник теряется в оплате.</li>
+                <li><strong>Отчет:</strong> для решений по сайту смотрим оба источника, но не смешиваем их роли.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
 
       <section class="section" id="review-tools">
         <div class="section-head">
@@ -1897,7 +2045,7 @@
               <p class="summary">Открывать, сравнивать и проверять конкретные состояния сайта.</p>
             </div>
             <div class="grid tool-grid">
-              <a class="card" data-search-item href="aimwebsite0.5/payment-popup-compare.html">
+              <a class="card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-payment-popup-compare-html/">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">payment</span></div>
             <div>
               <h3>Payment popup compare</h3>
@@ -1909,7 +2057,7 @@
             </div>
             <span class="path">V3 Site Repo - aimwebsite0.5/payment-popup-compare.html</span>
           </a>
-              <a class="card" data-search-item href="https://eppelas.github.io/aimwebsite0.5/payment-page-design-lab/">
+              <a class="card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-payment-page-design-lab/">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">payment</span></div>
             <div>
               <h3>Payment Page Design Lab</h3>
@@ -1921,7 +2069,7 @@
             </div>
             <span class="path">V3 Site Repo - aimwebsite0.5/payment-page-design-lab/index.html</span>
           </a>
-              <a class="card" data-search-item href="aimwebsite0.5/case-popup-compare.html">
+              <a class="card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-case-popup-compare-html/">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">cases</span></div>
             <div>
               <h3>Case popup compare</h3>
@@ -1933,7 +2081,7 @@
             </div>
             <span class="path">V3 Site Repo - aimwebsite0.5/case-popup-compare.html</span>
           </a>
-              <a class="card" data-search-item href="https://eppelas.github.io/aimwebsite0.5/homepage-design-lab/">
+              <a class="card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-homepage-design-lab/">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">homepage</span></div>
             <div>
               <h3>Page Design Lab</h3>
@@ -1945,7 +2093,7 @@
             </div>
             <span class="path">V3 Site Repo - aimwebsite0.5/homepage-design-lab/index.html</span>
           </a>
-              <a class="card" data-search-item href="#review-tools">
+              <a class="card" data-search-item href="../preview/design-feedback-dashboard/">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">design-feedback</span></div>
             <div>
               <h3>AIM Design Feedback Dashboard</h3>
@@ -1957,7 +2105,7 @@
             </div>
             <span class="path">design-feedback-dashboard/index.html</span>
           </a>
-              <a class="card" data-search-item href="./">
+              <a class="card" data-search-item href="../">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">navigation</span></div>
             <div>
               <h3>Local Preview Index</h3>
@@ -1969,7 +2117,7 @@
             </div>
             <span class="path">local-preview/server.mjs / root route</span>
           </a>
-              <a class="card" data-search-item href="#review-tools">
+              <a class="card" data-search-item href="../preview/design-feedback-dashboard/">
             <div class="label-row"><span class="pill ok">local-bot</span><span class="pill">design-feedback</span></div>
             <div>
               <h3>Surikat Sonya Design Review Bot</h3>
@@ -2070,7 +2218,7 @@
             <h3>Vasily Cloud Run owns Telegram delivery</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> @aim_surikat_bot is served by Cloud Run service aim-surikat-vasily in dedicated Google Cloud project aim-surikat-vasily, separate from Surikat Sonya&#039;s project. Telegram webhook delivery goes to /telegram with max_connections=1; the local launchd poller must stay disabled while the webhook is set. The old Sonya-project Vasily Cloud Run services are rollback only unless the webhook/site secrets are intentionally moved back.</li>
-              <li><strong>Check:</strong> Health endpoint https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/health must report mode=webhook, genaiProvider=vertex, vertexProjectConfigured=true, stateGcsEnabled=true, and linearConfigured=true.</li>
+              <li><strong>Check:</strong> Health endpoint https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/health must report mode=webhook, genaiProvider=vertex, vertexProjectConfigured=true, audioTranscriptionEnabled=true, stateGcsEnabled=true, linearConfigured=true, metrikaLeadDmAllowlistConfigured=true, metrikaLeadDmAllowlistCount=3, metrikaLeadDmManagerCount=4, and metrikaLeadDmDeliveryPaused=false in normal delivery mode.</li>
               <li><strong>Check:</strong> Telegram getWebhookInfo must point to https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/telegram and pending_update_count should normally be 0.</li>
               <li><strong>Check:</strong> Rollback is deleteWebhook, then launchctl enable/bootstrap ai.aim.surikat.bot.</li>
               <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/cloud-run/README.md</li>
@@ -2080,10 +2228,10 @@
             <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">telegram</span><span class="pill">active</span></div>
             <h3>Vasily is QA intake, not a generic chat bot</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Vasily listens for AIM/NIMS website bugs, QA questions, link/date/content problems, CTA/form/payment issues, and direct owner commands. In group chats he stays conservative: react or stay silent unless addressed, the message is clearly bug-like, or the owner gives a semantic long audit/QA task with an explicit URL. Voice/audio/video-note messages are transcribed through Gemini/Vertex before routing so spoken owner tasks are handled like typed text.</li>
+              <li><strong>Rule:</strong> Vasily listens for AIM/NIMS website bugs, QA questions, link/date/content problems, CTA/form/payment issues, and direct owner commands. In group chats he stays conservative: react or stay silent unless addressed or the message is clearly bug-like. Group links, UTM links, analytics notes, and edited chat notes are context only; they do not start long LLM audits unless the current owner message is in DM or directly addresses Vasily and asks him to check, audit, review, QA, inspect, or rerun. Owner DMs and directly addressed owner messages use one LLM semantic intent prepass before task, conversation, stop/resume control, bug intake, or owner-rule handling. Voice/audio/video-note messages are transcribed through Gemini/Vertex before routing so spoken owner tasks are handled like typed text.</li>
               <li><strong>Check:</strong> Accepted names include Сурикат Василий, Сурикат, суркат, Вася, Вась, Васек, Васёк, Васька and @aim_surikat_bot.</li>
-              <li><strong>Check:</strong> Owner DMs, addressed owner messages, and owner messages with an explicit URL are classified by the LLM semantic intent router before conversational replies.</li>
-              <li><strong>Check:</strong> The semantic router decides by meaning, not task regexes: wording such as &#039;давай сделаем аудит вот этого сайта https://...&#039; is accepted as LLM task mode because it asks Vasily to perform website QA.</li>
+              <li><strong>Check:</strong> Owner DMs and directly addressed owner messages are classified by one LLM semantic intent prepass before task execution, conversational replies, stop/resume controls, bug intake, or owner-rule updates.</li>
+              <li><strong>Check:</strong> A bare URL, UTM link, analytics note, or edited group note is context only and must not start an LLM audit without direct Vasily addressing plus an actionable check/audit/QA/rerun request.</li>
               <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/README.md</li>
             </ul>
           </article>
@@ -2102,7 +2250,7 @@
             <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">llm</span><span class="pill">active</span></div>
             <h3>Vasily uses LLM for short scoped conversation</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> After hard guards and semantic intent classification decide that an addressed/private message is a question, discussion, bot-flow critique, light conversation, or off-topic redirect, Vasily may use Vertex/Gemini to write the final short Telegram wording. This does not make him a generic ChatGPT: the reply stays inside AIM/NIMS website, QA dashboards, staging/production, links, CTA/forms/payment, bot behavior, and routing. Owner feedback like &#039;говори нормально / не по-ишному / по-человечески&#039; updates conversationalReplyStyle instead of being treated as a normal question. Broader owner instructions like &#039;запомни правило&#039; or &#039;когда я говорю QA сайта&#039; update ownerRuntimeInstructions and guide future routing/wording.</li>
+              <li><strong>Rule:</strong> After hard guards and semantic intent classification decide that an addressed/private message is a question, discussion, bot-flow critique, light conversation, or off-topic redirect, Vasily may use Vertex/Gemini to write the final short Telegram wording. This does not make him a generic ChatGPT: the reply stays inside AIM/NIMS website, QA dashboards, staging/production, links, CTA/forms/payment, bot behavior, and routing. A confident semantic conversation intent can keep bot-behavior discussion conversational even when older question/off-topic regexes would guess wrong. Owner feedback like &#039;говори нормально / не по-ишному / по-человечески&#039; updates conversationalReplyStyle instead of being treated as a normal question. Broader owner instructions no longer require a fixed &#039;запомни правило&#039; phrase: semantic owner_rule_update intent updates ownerRuntimeInstructions and guides future routing/wording.</li>
               <li><strong>Check:</strong> SURIKAT_LLM_CHAT_ENABLED controls conversational wording separately from long crawl/audit tasks and from SURIKAT_LLM_INTENT_ROUTER_ENABLED.</li>
               <li><strong>Check:</strong> The LLM must not accept tasks, create Linear issues, claim screenshots/dashboard files, or invent QA status.</li>
               <li><strong>Check:</strong> Owner style feedback returns rules_style_updated and persists conversationalReplyStyle through the Vasily GCS state mirror.</li>
@@ -2113,10 +2261,10 @@
             <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">llm</span><span class="pill">active</span></div>
             <h3>Owner-gated LLM site audits</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Owner requests like &#039;сходи проверь сайт, ссылки, даты и названия&#039; or &#039;давай сделаем аудит вот этого сайта https://...&#039; trigger bounded read-only website QA via Vertex/Gemini. Vasily crawls the target, same-origin pages, linked AIM Labs/sprint pages, and a bounded external-link sample, then answers in DM or the source chat.</li>
+              <li><strong>Rule:</strong> Owner requests like &#039;Вась, сходи проверь сайт, ссылки, даты и названия&#039; or &#039;Вась, давай сделаем аудит вот этого сайта https://...&#039; trigger bounded read-only website QA via Vertex/Gemini. Vasily crawls the target, same-origin pages, linked AIM Labs/sprint pages, and a bounded external-link sample, then answers in DM or the source chat. A plain group URL or analytics discussion is only remembered as context and must not trigger this mode.</li>
               <li><strong>Check:</strong> SURIKAT_LLM_TASK_OWNER_ONLY stays true unless the owner explicitly opens access.</li>
-              <li><strong>Check:</strong> The LLM semantic intent router runs before conversational replies, so owner audit/QA tasks with URLs are classified by meaning and cannot be answered as casual chat just because they miss a task regex.</li>
-              <li><strong>Check:</strong> Visual QA/full pass/dashboard/screenshot requests for ai-native are task-mode requests even when the visible Telegram text hides the full URL in a text_link entity.</li>
+              <li><strong>Check:</strong> The LLM semantic intent router runs before conversational replies for owner DMs and directly addressed owner messages, so audit/QA tasks are classified by meaning and cannot be answered as casual chat just because they miss a task regex.</li>
+              <li><strong>Check:</strong> A plain URL, UTM link, analytics note, or edited chat note is not a site-audit task by itself, even if the URL is an accepted AIM surface.</li>
               <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/runtime-options.md</li>
             </ul>
           </article>
@@ -2135,10 +2283,10 @@
             <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">privacy</span><span class="pill">active</span></div>
             <h3>Metrika lead DMs require an owner allowlist</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Metrika/form/payment leads may be sent to personal Telegram messages only for explicit owner-approved recipients. The allowlist and delivery map are separate: @stavenski, @Irhen_N, and @dan_named are approved usernames, but the live relay sends only to active username=chat_id targets. Normal live staging/payment delivery is active for @stavenski / 75263878 and @Irhen_N / 125291022. Owner-approved night tests may temporarily narrow delivery to owner-only stavenski=75263878, but the normal map must be restored after the test window. Successful deliveries must be traceable through lead_relay_delivered logs with masked contact and Telegram messageId. This is not a blanket permission to DM anyone. Recipient expansion remains owner-approved; payment lead notification pause/resume may also be controlled by configured notification managers, currently Anca / @stavenski and Ira / @Irhen_N, through the durable metrikaLeadDmDeliveryPaused state.</li>
+              <li><strong>Rule:</strong> Metrika/form/payment leads may be sent to personal Telegram messages only for explicit owner-approved recipients. The allowlist and delivery map are separate: @stavenski, @Irhen_N, and @dan_named are approved usernames, and the live relay sends only to confirmed username=chat_id targets. Dan&#039;s private DM route is confirmed by his /start message to Vasily on 2026-06-22. Normal live staging/payment delivery uses SURIKAT_METRIKA_LEAD_DM_RECIPIENTS=stavenski=75263878,Irhen_N=125291022,dan_named=7999727989 and has three active confirmed recipients; owner-approved night tests may temporarily narrow delivery to owner-only mode, but the normal map must be restored after the test window. Successful deliveries must be traceable through lead_relay_delivered logs with masked contact and Telegram messageId. This is not a blanket permission to DM anyone. Recipient expansion remains owner-approved; payment lead notification pause/resume may also be controlled by configured notification managers, currently Anca / @stavenski and Ira / @Irhen_N, through the durable metrikaLeadDmDeliveryPaused state.</li>
               <li><strong>Check:</strong> Use SURIKAT_METRIKA_LEAD_DM_ALLOWED_USERNAMES or owner-updated metrikaLeadDmAllowedUsernames as the source of truth.</li>
+              <li><strong>Check:</strong> aim-pay-lead-relay /readyz must expose leadDmDeliveryMode=dm_recipient_map, leadDmAllowlistCount=3, leadDmRecipientMapCount=3, leadDmActiveRecipientCount=3, leadDmDeliveryPaused=false, leadDmDeliveryControlSource=vasily/state/bot-rules.local.json, stateGcsEnabled=true, and legacyTelegramChatConfigured=false in normal delivery mode.</li>
               <li><strong>Check:</strong> The browser-facing staging service is aim-pay-lead-relay in project aim-surikat-vasily for https://staging.aimindset.org form/payment leads.</li>
-              <li><strong>Check:</strong> Use SURIKAT_METRIKA_LEAD_DM_RECIPIENTS as the concrete username=chat_id delivery map; normal active production value is stavenski=75263878,Irhen_N=125291022 unless the owner adds more confirmed DM recipients.</li>
               <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/runtime-options.md; Site Repo - ai-mindset-website/cloud-run/telegram-lead-relay/README.md</li>
             </ul>
           </article>
@@ -2146,10 +2294,10 @@
             <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">runtime</span><span class="pill">active</span></div>
             <h3>Sonya Cloud Run owns design-review Telegram</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> @aim_surikat_sonya_bot runs as Cloud Run webhook aim-surikat-sonya in the Sonya Google Cloud project project-f40c3e3c-0fca-49de-96d. Local polling should not run while webhook mode is active. Sonya uses Vertex AI for the Google Cloud credits path and Cloud Storage for media/state surfaces. Vasily must not be deployed into this project except as an explicit rollback.</li>
-              <li><strong>Check:</strong> Cloud Run exposes GET /health and POST /telegram protected by TELEGRAM_WEBHOOK_SECRET.</li>
-              <li><strong>Check:</strong> Use SONYA_LLM_PROVIDER=vertex with the credit-linked VERTEX_PROJECT_ID for Cloud Run.</li>
-              <li><strong>Check:</strong> Do not mix local getUpdates polling with Telegram webhook mode.</li>
+              <li><strong>Rule:</strong> @aim_surikat_sonya_bot runs as Cloud Run webhook aim-surikat-sonya in the Sonya Google Cloud project project-f40c3e3c-0fca-49de-96d. Local polling should not run while webhook mode is active. Sonya uses Vertex AI for the Google Cloud credits path and Cloud Storage for media/state/catalog surfaces. Cloud Run can answer in groups when addressed, but auto-review remains off and send approval remains required. Runtime Veo is configured but currently disabled/expired; the repo Dockerfile runtime has ffmpeg available for real Telegram video_note output if the owner explicitly re-enables that mode. Vasily must not be deployed into this project except as an explicit rollback.</li>
+              <li><strong>Check:</strong> Live health should report mode=webhook, genaiProvider=vertex, groupChatEnabled=true, groupVideoReplyEnabled=true, autoReviewEnabled=false, requireSendApproval=true, and sashaProactiveDmEnabled=false.</li>
+              <li><strong>Check:</strong> runtimeVeo should remain enabled=false and expired=true unless the owner explicitly reopens the paid media-generation window; if reopened with sendAsVideoNote=true, health must report ffmpegAvailable=true.</li>
+              <li><strong>Check:</strong> Cloud Run reads review cards from GCS catalog.json/inventory.json; the local catalog publisher owns candidate scoring, bounded missing-preview capture, stale-lock cleanup, and GCS catalog publication.</li>
               <li><strong>Source:</strong> Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md</li>
             </ul>
           </article>
@@ -2157,10 +2305,10 @@
             <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">design-feedback</span><span class="pill">active</span></div>
             <h3>Sonya ratings become generator memory</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Sonya sends review-only homepage/payment/element screenshots, collects 0-10 owner ratings, writes the design feedback registry, and appends keep/change/avoid/promote instructions for future generators.</li>
+              <li><strong>Rule:</strong> Sonya sends review-only homepage/payment/element screenshots, collects 0-10 owner ratings, writes the design feedback registry, mirrors fresh state/catalog surfaces to GCS for Cloud Run, and appends keep/change/avoid/promote instructions for future generators.</li>
               <li><strong>Check:</strong> 0 is hard reject; 1-3 rejected; 4-6 weak; 7-8 promising; 9-10 strong.</li>
-              <li><strong>Check:</strong> Explicit low owner ratings override cached Sonya self-scores.</li>
-              <li><strong>Check:</strong> Bug-like design/page feedback is handed to Vasily instead of creating Linear issues directly.</li>
+              <li><strong>Check:</strong> catalog.json is the curated top selection for normal/scheduled Sonya review; inventory.json is the full screenshot-ready review inventory for owner broad review requests.</li>
+              <li><strong>Check:</strong> SONYA_PAGES_LINK_MODE=published-only guards public links: untracked/local-only review labs may be evaluated and screenshotted but must not be advertised as GitHub Pages URLs.</li>
               <li><strong>Source:</strong> website-ops/design-feedback-rules.md</li>
             </ul>
           </article>
@@ -2262,7 +2410,7 @@
                 <li><strong>QA dashboards:</strong> manual / health, раз в 2 недели по понедельникам 07:00 UTC на четных ISO-неделях, monthly 1-го числа 08:00 UTC.</li>
                 <li><strong>DeviceCloud:</strong> manual и preflight 2-го числа 09:00 UTC; реальные сессии ждут provider secrets.</li>
                 <li><strong>Surikat:</strong> Cloud Run webhook `aim-surikat-vasily`; local LaunchAgent выключен и используется только как rollback после `deleteWebhook`.</li>
-                <li><strong>Surikat LLM chat:</strong> LLM may write only the final short reply after deterministic routing; it must not accept tasks, create Linear issues, or invent QA/dashboard status.</li>
+                <li><strong>Surikat LLM chat:</strong> LLM may write only the final short reply after hard guards and semantic intent classification; it must not accept tasks, create Linear issues, or invent QA/dashboard status.</li>
                 <li><strong>Homepage full design:</strong> раз в неделю по понедельникам 09:40 Europe/Lisbon; automation `aim-homepage-full-design-generator` создаёт полный light-theme прототип в `homepage-design-lab/runs/full/` и читает Sonya handoff.</li>
                 <li><strong>AIM Night Design Pursuit:</strong> каждый день 00:05 Europe/Lisbon; automation `aim-night-design-pursuit` использует ночное окно 00:00–07:00 для разнообразных review-only дизайнов, может закрывать лишние приложения и читает Sonya handoff.</li>
                 <li><strong>Homepage elements:</strong> раз в неделю по пятницам 10:20 Europe/Lisbon; automation `aim-homepage-element-design-generator` создаёт один блок/попап/элемент в `homepage-design-lab/runs/elements/` и читает Sonya handoff.</li>
@@ -2295,7 +2443,7 @@
               </p>
             </div>
             <div class="actions">
-              <a class="action" href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/README.md">README</a>
+              <a class="action" href="AIM Site Agent Evaluation/README.md">README</a>
               <a class="action" href="https://github.com/eppelas/aim-site-agent-evaluation" target="_blank" rel="noopener noreferrer">GitHub</a>
               <a class="action" href="https://eppelas.github.io/aim-site-agent-evaluation/" target="_blank" rel="noopener noreferrer">GitHub Pages</a>
             </div>
@@ -2378,7 +2526,7 @@
             </div>
             <span class="path">Bots/Telegram Design Taste Bot - Sonya</span>
           </a>
-          <a class="card" data-search-item href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html">
+          <a class="card" data-search-item href="AIM Site Agent Evaluation/reports/latest/dashboard.html">
             <div class="label-row"><span class="pill">подключаемый QA-агент</span></div>
             <div>
               <h3>QA-бот сайта</h3>
@@ -2386,7 +2534,7 @@
             </div>
             <span class="path">AIM Site Agent Evaluation/reports/latest/dashboard.html</span>
           </a>
-          <a class="card dark" data-search-item href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html">
+          <a class="card dark" data-search-item href="AIM Site Agent Evaluation/reports/latest/dashboard.html">
             <div class="label-row"><span class="pill ok">latest</span><span class="pill">local launcher</span></div>
             <div>
               <h3>Последний QA-дашборд</h3>
@@ -2418,7 +2566,7 @@
             </div>
             <span class="path">eppelas/aim-site-agent-evaluation</span>
           </a>
-          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/12-github-actions-operations.md">
+          <a class="card" data-search-item href="AIM Site Agent Evaluation/docs/12-github-actions-operations.md">
             <div class="label-row"><span class="pill">ops</span></div>
             <div>
               <h3>Расписание</h3>
@@ -2426,7 +2574,7 @@
             </div>
             <span class="path">docs/12-github-actions-operations.md</span>
           </a>
-          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/13-device-cloud-integration.md">
+          <a class="card" data-search-item href="AIM Site Agent Evaluation/docs/13-device-cloud-integration.md">
             <div class="label-row"><span class="pill">devices</span></div>
             <div>
               <h3>DeviceCloud</h3>
@@ -2434,7 +2582,7 @@
             </div>
             <span class="path">docs/13-device-cloud-integration.md</span>
           </a>
-          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/03-visual-workflow-qa.md">
+          <a class="card" data-search-item href="AIM Site Agent Evaluation/docs/03-visual-workflow-qa.md">
             <div class="label-row"><span class="pill">visual</span></div>
             <div>
               <h3>Пустые блоки на скриншотах</h3>
@@ -2442,7 +2590,7 @@
             </div>
             <span class="path">docs/03-visual-workflow-qa.md</span>
           </a>
-          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/05-agent-readability.md">
+          <a class="card" data-search-item href="AIM Site Agent Evaluation/docs/05-agent-readability.md">
             <div class="label-row"><span class="pill">agents</span></div>
             <div>
               <h3>HTML vs Markdown</h3>
@@ -2450,7 +2598,7 @@
             </div>
             <span class="path">docs/05-agent-readability.md</span>
           </a>
-          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/TODO.md">
+          <a class="card" data-search-item href="AIM Site Agent Evaluation/TODO.md">
             <div class="label-row"><span class="pill">todo</span></div>
             <div>
               <h3>Открытые задачи</h3>
@@ -2472,7 +2620,8 @@
               <ul class="ops-list">
                 <li><strong>Где живет:</strong> отдельный Telegram-бот `@aim_surikat_sonya_bot`.</li>
                 <li><strong>Хозяева:</strong> Анка `@stavenski` и Саша `@alex_named`; numeric id сохраняется после `/start`.</li>
-                <li><strong>Что отправляет:</strong> review-only design-lab screenshots с кнопками `0-10` и ссылкой на GitHub Pages/local preview, если она есть.</li>
+                <li><strong>Что отправляет:</strong> review-only design-lab screenshots с кнопками `0-10` и ссылкой на published GitHub Pages/local preview, если она есть.</li>
+                <li><strong>Каталог:</strong> Cloud Run берет быстрые карточки из GCS `catalog.json` / `inventory.json`; локальный publisher отвечает за scoring, screenshots, stale-lock cleanup и published-only ссылки.</li>
                 <li><strong>Что можно писать:</strong> `/review`, просьбы вроде «пришли дизайны», оценки, медиа-референсы и дизайн-фидбек.</li>
                 <li><strong>Safety gate:</strong> scheduled delivery остается approval/catalog-based; прямые owner-команды «все/больше/неоцененное» могут расширять выдачу по inventory без live deploy.</li>
               </ul>
@@ -2495,6 +2644,7 @@
               <ul class="ops-list">
                 <li><strong>Registry:</strong> каждая оценка пишет `design-feedback-dashboard/data/design-feedback-registry.json`.</li>
                 <li><strong>Generator handoff:</strong> `website-ops/design-generator-feedback-handoff.jsonl` получает next-design brief: что сохранить, поменять, запретить или развить.</li>
+                <li><strong>GCS mirror:</strong> свежие registry/handoff/catalog surfaces зеркалятся в `sonya/state`, чтобы Cloud Run не зависел от локальной файловой системы.</li>
                 <li><strong>Design Lab:</strong> homepage, payment и element generators читают этот handoff перед следующими runs и создают новые review-only страницы, блоки и элементы.</li>
                 <li><strong>Vasily handoff:</strong> bug-like feedback по странице/дизайну пишет событие в `Bots/Telegram Bug Intake Bot - Linear/data/sonya-design-handoff.jsonl`.</li>
               </ul>
@@ -2504,9 +2654,9 @@
               <div class="label-row"><span class="pill">cloud</span></div>
               <h3>Google Cloud режим</h3>
               <ul class="ops-list">
-                <li><strong>Entrypoint:</strong> `npm run serve` поднимает Cloud Run-compatible server: `GET /health`, `POST /telegram`, protected `POST /review-queue`.</li>
+                <li><strong>Entrypoint:</strong> `npm run serve` поднимает Cloud Run-compatible server: `GET /health`, `POST /telegram`, protected `POST /review-queue`, `/agent-link`, `/group-intro`, `/scan-candidates`, `/conversation-log`.</li>
                 <li><strong>Media:</strong> `SONYA_GCS_BUCKET` складывает входящие фото/аудио/видео в Cloud Storage; большие файлы для Vertex идут как `gs://...`.</li>
-                <li><strong>Runtime Veo:</strong> временный owner-only режим генерирует короткие клипы через Vertex AI с TTL, дневными лимитами и GCS ledger; пока без `ffmpeg` свежие клипы уходят как `sendVideo`, не как настоящий круг.</li>
+                <li><strong>Runtime Veo:</strong> сейчас configured, но disabled/expired. Dockerfile runtime уже содержит `ffmpeg`; настоящий Telegram `video_note` возможен только если owner явно заново откроет paid generation и health покажет `runtimeVeo.ffmpegAvailable=true`. Buildpack/source deploy без `ffmpeg` не должен включать `sendAsVideoNote`.</li>
                 <li><strong>Architecture:</strong> `website-ops/sonya-cloud-run-architecture.md`.</li>
                 <li><strong>Deploy notes:</strong> `Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md`.</li>
               </ul>
@@ -2527,6 +2677,7 @@
                 <li><strong>Где живет:</strong> группа сайта и личка `@aim_surikat_bot`.</li>
                 <li><strong>Как обращаться:</strong> `Сурикат Василий`, `Сурикат`, `суркат`, `Вася`, `Вась`, `Васек`, `Васёк`, `Васька`.</li>
                 <li><strong>Что ловит:</strong> баги, сбои, тормоза, странное поведение, неправильные ссылки, сломанные блоки, проблемы CTA и форм.</li>
+                <li><strong>Голос/аудио:</strong> voice, audio и video-note сначала транскрибируются через Gemini/Vertex; дальше transcript идет в тот же semantic routing.</li>
                 <li><strong>Как отвечает:</strong> если все понятно, ставит `👀`; если мало данных, просит страницу/ссылку, устройство/браузер или скрин.</li>
                 <li><strong>Локальный аудит:</strong> все новые входящие update, которые Сурикат реально увидел, пишутся в `data/audit-log.jsonl`.</li>
               </ul>
@@ -2563,10 +2714,11 @@
               <h3>Токены и доступы</h3>
               <ul class="ops-list">
                 <li><strong>Telegram token:</strong> не хранится на сайте и не пишется в репозиторий; если что, токен у Ани.</li>
-                <li><strong>Локально:</strong> rollback watcher читает Telegram token из macOS Keychain service `aim_surikat_bot_token`, account `aim_surikat_bot`.</li>
-                <li><strong>Cloud Run:</strong> использует Secret Manager `vasily-telegram-bot-token`, `vasily-linear-api-key`, `vasily-telegram-webhook-secret`.</li>
+                <li><strong>Локально:</strong> rollback watcher читает Telegram token из macOS Keychain; token не попадает в файлы сайта.</li>
+                <li><strong>Cloud Run:</strong> использует Secret Manager для Telegram, Linear и webhook secret; сами значения не хранятся в репозитории или Hub.</li>
                 <li><strong>Linear:</strong> нужен отдельный `LINEAR_API_KEY`; без него Сурикат отвечает в Telegram, но складывает баги в локальную очередь.</li>
-                <li><strong>Команды управления:</strong> принимает только от Анки / `@stavenski`; остальных вежливо не слушается.</li>
+                <li><strong>Команды управления:</strong> полное tuning/owner rules принимает только от Анки / `@stavenski`; pause/resume payment lead notifications также доступны настроенным менеджерам Анка/Ира.</li>
+                <li><strong>Health:</strong> live Cloud Run должен показывать `mode=webhook`, `audioTranscriptionEnabled=true`, `stateGcsEnabled=true`, `linearConfigured=true`, allowlist count `3`, manager count `4`, delivery not paused.</li>
               </ul>
             </article>
 
@@ -2576,8 +2728,8 @@
               <ul class="ops-list">
                 <li><strong>Сурикат:</strong> диспетчер, голос в Telegram, маршрутизация в Linear, дайджесты людям.</li>
                 <li><strong>AIM Site Agent Evaluation:</strong> worker, который запускает black-box проверки, генерирует `reports/latest/report.json` и dashboard.</li>
-                <li><strong>Следующий шаг:</strong> команда вроде `Васек, проверь сайт` может запускать GitHub Action, а Сурикат потом будет читать результат и докладывать high/medium findings.</li>
-                <li><strong>Безопасный минимум:</strong> пока держим обе системы раздельно: Сурикат принимает человеческие баги, QA-бот регулярно проверяет сайт.</li>
+                <li><strong>Сейчас:</strong> Сурикат может читать/объяснять latest QA report и роутить findings; запуск новых прогонов остается отдельной QA/Actions lane.</li>
+                <li><strong>Следующий шаг:</strong> команда вроде `Васек, проверь сайт` может запускать GitHub Action, а Сурикат потом будет докладывать high/medium findings.</li>
               </ul>
             </article>
 
@@ -2638,7 +2790,7 @@
               <p class="summary">Единый вход в опубликованные визуальные направления. Справа можно листать прошлые варианты прямо здесь, не уходя со страницы.</p>
             </div>
             <div class="actions">
-              <a class="action" href="https://eppelas.github.io/aim-web-design-index/">открыть индекс</a>
+              <a class="action" href="../style-index/">открыть индекс</a>
               <a class="action" href="https://github.com/eppelas/aim-web-design-index" target="_blank" rel="noopener noreferrer">GitHub-репозиторий</a>
             </div>
             <span class="path">/style-index/</span>

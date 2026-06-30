@@ -162,6 +162,17 @@ prompts so Vasily can understand owner shorthand and recurring task rules, but
 they do not override hard guards such as Metrika DM allowlists, read-only
 Telegram audits, secrets, Linear routing, or deploy/push rules.
 
+Live Vasily health should currently expose `mode=webhook`,
+`genaiProvider=vertex`, `audioTranscriptionEnabled=true`,
+`stateGcsEnabled=true`, `linearConfigured=true`,
+`metrikaLeadDmAllowlistCount=3`, `metrikaLeadDmManagerCount=4`, and
+`metrikaLeadDmDeliveryPaused=false`. The browser-facing lead relay `/readyz`
+should expose `leadDmDeliveryMode=dm_recipient_map`,
+`leadDmAllowlistCount=3`, `leadDmRecipientMapCount=2`,
+`leadDmActiveRecipientCount=2`, `leadDmDeliveryPaused=false`,
+`leadDmDeliveryControlSource=vasily/state/bot-rules.local.json`,
+`stateGcsEnabled=true`, and `legacyTelegramChatConfigured=false`.
+
 ## Homepage Design Automation
 
 These automations create review-only light-theme HTML prototypes before anything is ported into the React site.
@@ -334,18 +345,25 @@ Sonya's live Telegram owner is the Cloud Run webhook while local polling is
 disabled. The local Mac can still prepare design review artifacts and run manual
 GenMedia experiments, but Telegram updates should have exactly one owner.
 
-Temporary owner-only Veo generation is allowed only with all of these guards:
+Cloud Run Sonya reads fast review cards from GCS catalog surfaces: `catalog.json`
+is the curated top selection for normal/scheduled review, and `inventory.json`
+is the full screenshot-ready inventory for explicit broad review requests. The
+local catalog publisher owns scoring, bounded missing-preview capture,
+stale-lock cleanup, public published-only link selection, and GCS publication;
+GitHub Pages is the stable public URL layer, not the freshness source.
 
-- `SONYA_RUNTIME_VEO_ENABLED=true`;
-- `SONYA_RUNTIME_VEO_OWNER_ONLY=true`;
-- a short `SONYA_RUNTIME_VEO_EXPIRES_AT`;
-- daily and per-chat caps;
-- GCS ledger mirror in `sonya/state/video-generation-ledger.local.jsonl`.
-
-Cloud Billing budgets are alerts, not hard caps. Treat the runtime TTL and
-ledger caps as the operational brake. Until Cloud Run has an `ffmpeg` container,
-fresh generated clips are sent as normal Telegram videos; true `video_note`
-circles are cached assets or Mac-post-processed outputs.
+Live Sonya health should currently expose `mode=webhook`,
+`genaiProvider=vertex`, `groupChatEnabled=true`,
+`groupVideoReplyEnabled=true`, `autoReviewEnabled=false`,
+`requireSendApproval=true`, and `sashaProactiveDmEnabled=false`.
+Runtime Veo is configured but disabled and expired. If the owner explicitly
+reopens paid runtime generation, keep `SONYA_RUNTIME_VEO_OWNER_ONLY=true`, a
+short `SONYA_RUNTIME_VEO_EXPIRES_AT`, daily/per-chat caps, and the GCS ledger
+mirror. The repo Dockerfile runtime has `ffmpeg`; with
+`SONYA_RUNTIME_VEO_SEND_AS_VIDEO_NOTE=true` and health
+`runtimeVeo.ffmpegAvailable=true`, generated clips can be post-processed into
+real Telegram `video_note` output. Buildpack/source deploys without `ffmpeg`
+must not enable `sendAsVideoNote`.
 
 ## Bot Operating Rules
 

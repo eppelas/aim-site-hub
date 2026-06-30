@@ -58,21 +58,23 @@ bot-like workers. The Website Hub renders the same source through
   form/payment leads. It must use a separate
   `SURIKAT_METRIKA_LEAD_DM_RECIPIENTS` `username=chat_id` delivery map and send
   only recipients that are also in `SURIKAT_METRIKA_LEAD_DM_ALLOWED_USERNAMES`.
-  Normal live staging/payment delivery is active for
-  `stavenski=75263878,Irhen_N=125291022`, because owner and Ira already have
-  private dialogs with `@aim_surikat_bot`; `@dan_named` stays approved but
-  inactive in the relay until his private DM route is confirmed. For
-  owner-approved live/night test windows, temporarily narrow relay delivery to
-  owner-only `stavenski=75263878` and verify `aim-pay-lead-relay` `/readyz`
+  Normal live staging/payment delivery has two active confirmed DM recipients;
+  `@dan_named` stays approved but inactive in the relay until his private DM
+  route is confirmed. For owner-approved live/night test windows, temporarily
+  narrow relay delivery to owner-only mode and verify `aim-pay-lead-relay` `/readyz`
   reports `leadDmActiveRecipientCount=1` before sending test leads; restore the
   normal map after the window. Successful relay deliveries should write
   `lead_relay_delivered` logs with masked contact, contact hash, delivered
   usernames, and Telegram `messageId` for diagnostics and precise cleanup.
-  After deploy, Vasily `/health` should
-  expose `metrikaLeadDmAllowlistConfigured=true`, and relay `/readyz` should
-  expose `leadDmDeliveryMode=dm_recipient_map` plus
-  `leadDmActiveRecipientCount=1` during owner-only test windows or
-  `leadDmActiveRecipientCount=2+` after Ira is restored.
+  After deploy, Vasily `/health` should expose
+  `audioTranscriptionEnabled=true`, `metrikaLeadDmAllowlistConfigured=true`,
+  `metrikaLeadDmAllowlistCount=3`, `metrikaLeadDmManagerCount=4`, and
+  `metrikaLeadDmDeliveryPaused=false` in normal delivery mode. Relay `/readyz`
+  should expose `leadDmDeliveryMode=dm_recipient_map`,
+  `leadDmAllowlistCount=3`, `leadDmRecipientMapCount=2`,
+  `leadDmActiveRecipientCount=2`, `leadDmDeliveryPaused=false`,
+  `leadDmDeliveryControlSource=vasily/state/bot-rules.local.json`,
+  `stateGcsEnabled=true`, and `legacyTelegramChatConfigured=false`.
   Owner Telegram commands that tune behavior must persist through the GCS state
   mirror, not only local Cloud Run `/tmp`. The production prefix is
   `gs://aim-surikat-vasily-state/vasily/state/`; Vasily must
@@ -88,8 +90,15 @@ bot-like workers. The Website Hub renders the same source through
 - **Surikat Sonya** (`@aim_surikat_sonya_bot`) is the design-review and taste
   memory bot in separate GCP project `project-f40c3e3c-0fca-49de-96d`. She
   sends review-only design candidates, collects `0-10` ratings, and writes
-  generator memory. Vasily should not be redeployed into Sonya's project except
-  as an explicit rollback.
+  generator memory. Cloud Run reads review cards from GCS
+  `catalog.json`/`inventory.json`; the local catalog publisher owns scoring,
+  bounded missing-preview capture, stale-lock cleanup, and GCS catalog
+  publication. Live health currently keeps group replies enabled when addressed,
+  `autoReviewEnabled=false`, `requireSendApproval=true`, and
+  `sashaProactiveDmEnabled=false`. Runtime Veo is configured but disabled and
+  expired; the repo Dockerfile runtime has `ffmpeg` available for real Telegram
+  `video_note` output if the owner explicitly reopens paid generation. Vasily
+  should not be redeployed into Sonya's project except as an explicit rollback.
 - **AIM Site Agent Evaluation** is the black-box QA worker. It checks the site
   read-only and reports findings that Vasily can summarize or route.
 

@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Аналитика AIM Website</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #050505;
+        --ink: #fffaf0;
+        --muted: #9a948a;
+        --soft: rgba(255, 255, 255, 0.12);
+        --hair: rgba(255, 255, 255, 0.08);
+        --pale: rgba(255, 250, 240, 0.07);
+        --panel: rgba(18, 18, 18, 0.72);
+        --accent: #ff4d4d;
+        --green: #1dc263;
+        --blue: #6f97ff;
+        --mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(circle at 12% 0%, rgba(255, 77, 77, 0.22), transparent 28rem),
+          radial-gradient(circle at 88% 2%, rgba(29, 194, 99, 0.14), transparent 30rem),
+          var(--bg);
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 22px;
+        border-bottom: 1px solid var(--soft);
+        background: rgba(5, 5, 5, 0.78);
+        backdrop-filter: blur(10px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .brand-mark {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        background: var(--ink);
+        color: var(--bg);
+        font-size: 10px;
+      }
+
+      .nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 34px;
+        padding: 7px 12px;
+        border: 1px solid var(--soft);
+        border-radius: 999px;
+        background: rgba(255, 250, 240, 0.055);
+        color: var(--ink);
+        font: inherit;
+        font-size: 11px;
+        line-height: 1;
+        text-decoration: none;
+      }
+
+      .action:hover,
+      .action:focus-visible {
+        border-color: var(--ink);
+        outline: 0;
+      }
+
+      main {
+        width: min(1320px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 34px 0 72px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+        gap: clamp(20px, 4vw, 58px);
+        align-items: end;
+        padding: clamp(24px, 4vw, 52px);
+        border: 1px solid var(--soft);
+        border-radius: 24px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+          var(--panel);
+        background-size: 32px 32px;
+      }
+
+      .kicker {
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        margin-top: 18px;
+        font-size: clamp(42px, 7vw, 88px);
+        line-height: 0.96;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .lead {
+        color: rgba(255, 250, 240, 0.8);
+        font-size: clamp(15px, 1.4vw, 20px);
+        line-height: 1.48;
+      }
+
+      .section {
+        margin-top: 34px;
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: minmax(220px, 0.48fr) minmax(280px, 0.52fr);
+        gap: 18px;
+        align-items: end;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--hair);
+      }
+
+      .section-head h2 {
+        font-size: clamp(24px, 4vw, 46px);
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .section-note {
+        color: rgba(255, 250, 240, 0.68);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .wide {
+        grid-column: span 2;
+      }
+
+      .card,
+      .panel {
+        min-width: 0;
+        min-height: 170px;
+        padding: 18px;
+        border: 1px solid var(--soft);
+        border-radius: 8px;
+        background: rgba(255, 250, 240, 0.05);
+        color: var(--ink);
+        overflow-wrap: anywhere;
+      }
+
+      .card.dark {
+        background: rgba(8, 8, 8, 0.86);
+        border-color: rgba(255, 250, 240, 0.18);
+      }
+
+      .label-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+
+      .pill {
+        display: inline-flex;
+        min-height: 22px;
+        align-items: center;
+        padding: 4px 8px;
+        border: 1px solid var(--soft);
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1;
+      }
+
+      .pill.ok {
+        border-color: rgba(29, 194, 99, 0.38);
+        color: rgba(157, 232, 190, 0.96);
+      }
+
+      .card h3,
+      .panel h3 {
+        font-size: 18px;
+        line-height: 1.1;
+      }
+
+      .summary {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.42;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 18px;
+      }
+
+      .path {
+        display: block;
+        margin-top: 16px;
+        color: rgba(255, 250, 240, 0.44);
+        font-size: 10px;
+      }
+
+      .list {
+        display: grid;
+        gap: 8px;
+        margin: 12px 0 0;
+        padding: 0;
+        list-style: none;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .list strong {
+        color: var(--ink);
+      }
+
+      .code-lines {
+        display: grid;
+        gap: 6px;
+        margin-top: 12px;
+      }
+
+      .code-line {
+        display: block;
+        padding: 8px 9px;
+        border: 1px solid var(--hair);
+        border-radius: 6px;
+        background: var(--pale);
+        color: var(--ink);
+        font-family: SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 10px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--soft);
+        border-radius: 8px;
+        background: rgba(255, 250, 240, 0.05);
+      }
+
+      table {
+        width: 100%;
+        min-width: 1080px;
+        border-collapse: collapse;
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border-bottom: 1px solid var(--hair);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: rgba(255, 250, 240, 0.08);
+        color: var(--ink);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      td {
+        color: var(--muted);
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      code {
+        color: var(--ink);
+        font-family: SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      @media (max-width: 900px) {
+        .hero,
+        .section-head,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .wide {
+          grid-column: auto;
+        }
+
+        main {
+          width: min(100% - 20px, 760px);
+          padding-top: 18px;
+        }
+
+        .hero {
+          padding: 22px;
+          border-radius: 18px;
+        }
+
+        h1 {
+          font-size: clamp(36px, 15vw, 58px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">AIM</span>
+        <span>Аналитика AIM Website</span>
+      </a>
+      <nav class="nav" aria-label="Навигация по аналитике">
+        <a class="action" href="index.html">назад в хаб</a>
+        <a class="action" href="#staff-traffic">staff-mode</a>
+        <a class="action" href="#utm-table">UTM-таблица</a>
+        <a class="action" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">открыть Метрику</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="kicker">Метрика / Вебвизор / UTM</p>
+          <h1>Аналитика</h1>
+        </div>
+        <div>
+          <p class="lead">
+            Эта страница нужна, чтобы не смешивать реальные визиты, командные проверки,
+            Telegram-ники из оплаты и сырые отчеты Метрики. Главный счетчик сейчас относится
+            к AI Native, странице оплаты и staging-зеркалу, а не ко всем сайтам AIM.
+          </p>
+          <div class="actions">
+            <a class="action" href="website-ops/analytics-current-setup.md">текущая настройка</a>
+            <a class="action" href="website-ops/analytics-rules.md">правила отчетов</a>
+            <a class="action" href="website-ops/analytics-surface-map.md">карта счетчиков</a>
+            <a class="action" href="website-ops/utm-link-table.md">markdown-таблица</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="overview">
+        <div class="section-head">
+          <h2>Как это работает</h2>
+          <p class="section-note">Короткая человеческая карта: что чем является и где не надо делать ложные выводы.</p>
+        </div>
+        <div class="grid">
+          <article class="card dark">
+            <div class="label-row"><span class="pill ok">счетчик</span><span class="pill">106857835</span></div>
+            <h3>AI Native + оплата</h3>
+            <p class="summary">
+              Этот счетчик смотрит `ai-native.aimindset.org` и payment flow на `staging.aimindset.org`.
+              Его не считаем общим счетчиком всех AIM-поверхностей.
+            </p>
+          </article>
+          <article class="card">
+            <div class="label-row"><span class="pill ok">поведение</span><span class="pill">Вебвизор</span></div>
+            <h3>Что люди делают на сайте</h3>
+            <p class="summary">
+              Смотрим скролл, клики, раскрытие кейсов, FAQ, маршрут до цены и переход на оплату.
+              Это надежнее, чем угадывать источник по сырому Direct.
+            </p>
+          </article>
+          <article class="card">
+            <div class="label-row"><span class="pill ok">страховка</span><span class="pill">Сурикат</span></div>
+            <h3>Контакты из оплаты</h3>
+            <p class="summary">
+              Сурикат страхует ввод Telegram/contact на странице оплаты. Это полезно для контактов,
+              но не заменяет Метрику как источник данных о трафике.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="source-rules">
+        <div class="section-head">
+          <h2>Источники</h2>
+          <p class="section-note">Direct читаем осторожно: часто это мессенджеры, Instagram bio, email, приватные браузеры или редиректы.</p>
+        </div>
+        <div class="grid">
+          <article class="panel wide">
+            <div class="label-row"><span class="pill ok">правило</span><span class="pill">Direct</span></div>
+            <h3>Не показываем сырой Direct как главный ответ</h3>
+            <ul class="list">
+              <li><strong>Сначала:</strong> проверяем UTM-параметры.</li>
+              <li><strong>Потом:</strong> смотрим referrer, messenger/social/search признаки Метрики и наши правила.</li>
+              <li><strong>Только остаток:</strong> называем неизвестным Direct.</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <div class="label-row"><span class="pill ok">пример</span><span class="pill">Instagram</span></div>
+            <h3>bio.aimindset.org</h3>
+            <p class="summary">В отчетах считаем это Instagram bio, а не обычным referral.</p>
+          </article>
+          <article class="panel">
+            <div class="label-row"><span class="pill ok">пример</span><span class="pill">команда</span></div>
+            <h3>Внутренние визиты</h3>
+            <p class="summary">
+              Для сотрудников используем `traffic_type=internal`, иначе тесты команды будут раздувать переходы на оплату.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="staff-traffic">
+        <div class="section-head">
+          <h2>Staff-mode</h2>
+          <p class="section-note">Это способ отделять командные проверки от реальных пользователей без привязки к домашнему IP.</p>
+        </div>
+        <div class="grid">
+          <article class="panel wide">
+            <div class="label-row"><span class="pill ok">основной способ</span><span class="pill">cookie 180 дней</span></div>
+            <h3>Сотрудник открывает служебную ссылку один раз</h3>
+            <ul class="list">
+              <li><strong>AI Native:</strong> <code>https://ai-native.aimindset.org/?aim_staff=on</code></li>
+              <li><strong>Оплата:</strong> <code>https://staging.aimindset.org/pay/?product=ain3_mainearly&amp;aim_staff=on</code></li>
+              <li><strong>Выключить:</strong> заменить `on` на `off`.</li>
+              <li><strong>Повторить:</strong> для каждого браузера, профиля, телефона и после очистки cookies.</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <div class="label-row"><span class="pill ok">что пишет код</span></div>
+            <h3>traffic_type</h3>
+            <p class="summary">
+              В Метрику, цели оплаты и Surikat lead relay уходит `traffic_type=internal` или `external`.
+              В отчетах сначала исключаем `internal`.
+            </p>
+          </article>
+          <article class="panel">
+            <div class="label-row"><span class="pill">запасной слой</span></div>
+            <h3>Домашний IP</h3>
+            <ul class="list">
+              <li>Открыть <code>https://ipinfo.io/ip</code> из обычного домашнего Wi-Fi.</li>
+              <li>Скопировать внешний IPv4/IPv6, не адрес вида `192.168…`.</li>
+              <li>Прислать имя, город, сеть, IP и время проверки.</li>
+              <li>Отдельно отметить VPN, мобильный интернет или коворкинг.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="goals">
+        <div class="section-head">
+          <h2>Что смотреть</h2>
+          <p class="section-note">Цели оставлены техническими именами, потому что так они называются в Метрике и в коде.</p>
+        </div>
+        <div class="grid">
+          <article class="panel">
+            <div class="label-row"><span class="pill ok">воронка</span></div>
+            <h3>Путь к оплате</h3>
+            <ul class="list">
+              <li><strong>Визит:</strong> человек открыл страницу.</li>
+              <li><strong>Цена:</strong> `ain3_pricing_viewed`.</li>
+              <li><strong>Кнопка:</strong> `ain3_join_clicked`.</li>
+              <li><strong>Оплата:</strong> `ain3_payment_clicked`.</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <div class="label-row"><span class="pill ok">интерес</span></div>
+            <h3>Что читают и раскрывают</h3>
+            <ul class="list">
+              <li>`ain3_case_opened`</li>
+              <li>`ain3_case_more_clicked`</li>
+              <li>`ain3_faq_opened`</li>
+              <li>`ain3_program_details_opened`</li>
+              <li>`ain3_speaker_recordings_opened`</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <div class="label-row"><span class="pill ok">маршрут</span></div>
+            <h3>Что выбирают сами</h3>
+            <ul class="list">
+              <li>`ain3_role_manual_selected`</li>
+              <li>`ain3_route_step_clicked`</li>
+              <li>`ain3_schedule_tile_previewed`</li>
+              <li>`ain3_schedule_tile_clicked`</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="utm-table">
+        <div class="section-head">
+          <h2>UTM-таблица</h2>
+          <p class="section-note">
+            Это рабочий реестр ссылок. Если ссылки нет в таблице до публикации, потом мы снова получим “непонятный Direct”.
+          </p>
+        </div>
+
+        <div class="grid">
+          <article class="panel wide">
+            <div class="label-row"><span class="pill ok">правило публикации</span><span class="pill">AI Native</span></div>
+            <h3>Нет строки — не публикуем внешнюю ссылку</h3>
+            <p class="summary">
+              Любая новая ссылка на AI Native или оплату получает `utm_source`, `utm_medium`,
+              `utm_campaign` и `utm_content`. Поле “ответственный” означает человека или команду,
+              которые публикуют ссылку и смогут потом объяснить, что это было.
+            </p>
+            <div class="code-lines">
+              <span class="code-line">telegram post: utm_source=telegram&amp;utm_medium=post&amp;utm_campaign=ain3&amp;utm_content=&lt;post_id&gt;</span>
+              <span class="code-line">instagram story: utm_source=instagram&amp;utm_medium=story&amp;utm_campaign=ain3&amp;utm_content=&lt;story_id&gt;</span>
+              <span class="code-line">instagram bio: utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=ain3&amp;utm_content=bio_link</span>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="label-row"><span class="pill ok">названия</span></div>
+            <h3>Как заполнять</h3>
+            <ul class="list">
+              <li><strong>Кампания:</strong> `ain3`.</li>
+              <li><strong>Telegram:</strong> `post`, `bot`, `story`.</li>
+              <li><strong>Instagram:</strong> `bio`, `story`, `post`.</li>
+              <li><strong>Личные сторис:</strong> organic, не ads.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="table-wrap" style="margin-top: 10px;">
+          <table>
+            <thead>
+              <tr>
+                <th>дата</th>
+                <th>платформа</th>
+                <th>место</th>
+                <th>кампания</th>
+                <th>id публикации</th>
+                <th>куда ведет</th>
+                <th>UTM-ссылка</th>
+                <th>ответственный</th>
+                <th>заметки</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>шаблон</td>
+                <td>telegram</td>
+                <td>post</td>
+                <td><code>ain3</code></td>
+                <td><code>&lt;post_id&gt;</code></td>
+                <td><code>https://ai-native.aimindset.org/</code></td>
+                <td><code>?utm_source=telegram&amp;utm_medium=post&amp;utm_campaign=ain3&amp;utm_content=&lt;post_id&gt;</code></td>
+                <td>Анка</td>
+                <td>Пост или публикация в Telegram.</td>
+              </tr>
+              <tr>
+                <td>шаблон</td>
+                <td>telegram</td>
+                <td>bot</td>
+                <td><code>ain3</code></td>
+                <td><code>&lt;flow_id&gt;</code></td>
+                <td><code>https://ai-native.aimindset.org/</code></td>
+                <td><code>?utm_source=telegram&amp;utm_medium=bot&amp;utm_campaign=ain3&amp;utm_content=&lt;flow_id&gt;</code></td>
+                <td>Анка</td>
+                <td>Ссылка из бота, меню или deeplink-сценария.</td>
+              </tr>
+              <tr>
+                <td>шаблон</td>
+                <td>instagram</td>
+                <td>bio</td>
+                <td><code>ain3</code></td>
+                <td><code>bio_link</code></td>
+                <td><code>https://ai-native.aimindset.org/</code></td>
+                <td><code>?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=ain3&amp;utm_content=bio_link</code></td>
+                <td>Анка</td>
+                <td>`bio.aimindset.org` в отчетах считаем Instagram bio.</td>
+              </tr>
+              <tr>
+                <td>шаблон</td>
+                <td>instagram</td>
+                <td>story</td>
+                <td><code>ain3</code></td>
+                <td><code>&lt;story_id&gt;</code></td>
+                <td><code>https://ai-native.aimindset.org/</code></td>
+                <td><code>?utm_source=instagram&amp;utm_medium=story&amp;utm_campaign=ain3&amp;utm_content=&lt;story_id&gt;</code></td>
+                <td>Анка</td>
+                <td>Личная/органическая сторис, не реклама.</td>
+              </tr>
+              <tr>
+                <td>шаблон</td>
+                <td>instagram</td>
+                <td>post</td>
+                <td><code>ain3</code></td>
+                <td><code>&lt;post_id&gt;</code></td>
+                <td><code>https://ai-native.aimindset.org/</code></td>
+                <td><code>?utm_source=instagram&amp;utm_medium=post&amp;utm_campaign=ain3&amp;utm_content=&lt;post_id&gt;</code></td>
+                <td>Анка</td>
+                <td>Пост или ссылка из описания reels.</td>
+              </tr>
+              <tr>
+                <td>шаблон</td>
+                <td>email</td>
+                <td>mailing</td>
+                <td><code>ain3</code></td>
+                <td><code>&lt;mailing_id&gt;</code></td>
+                <td><code>https://ai-native.aimindset.org/</code></td>
+                <td><code>?utm_source=email&amp;utm_medium=email&amp;utm_campaign=ain3&amp;utm_content=&lt;mailing_id&gt;</code></td>
+                <td>AIM</td>
+                <td>Email-рассылка.</td>
+              </tr>
+              <tr>
+                <td>шаблон</td>
+                <td>substack</td>
+                <td>mailing</td>
+                <td><code>ain3</code></td>
+                <td><code>&lt;post_id&gt;</code></td>
+                <td><code>https://ai-native.aimindset.org/</code></td>
+                <td><code>?utm_source=substack&amp;utm_medium=email&amp;utm_campaign=ain3&amp;utm_content=&lt;post_id&gt;</code></td>
+                <td>AIM</td>
+                <td>Пост в рассылке/newsletter.</td>
+              </tr>
+              <tr>
+                <td>шаблон</td>
+                <td>partner</td>
+                <td>referral</td>
+                <td><code>ain3</code></td>
+                <td><code>&lt;partner_or_slot&gt;</code></td>
+                <td><code>https://ai-native.aimindset.org/</code></td>
+                <td><code>?utm_source=&lt;partner&gt;&amp;utm_medium=referral&amp;utm_campaign=ain3&amp;utm_content=&lt;partner_or_slot&gt;</code></td>
+                <td>AIM</td>
+                <td>Партнерская публикация, ссылка от спикера или внешний слот.</td>
+              </tr>
+              <tr>
+                <td>шаблон</td>
+                <td>youtube</td>
+                <td>video</td>
+                <td><code>ain3</code></td>
+                <td><code>&lt;video_id_or_description&gt;</code></td>
+                <td><code>https://ai-native.aimindset.org/</code></td>
+                <td><code>?utm_source=youtube&amp;utm_medium=video&amp;utm_campaign=ain3&amp;utm_content=&lt;video_id_or_description&gt;</code></td>
+                <td>AIM</td>
+                <td>Органическая ссылка из описания видео или закрепленного комментария.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="api">
+        <div class="section-head">
+          <h2>Подключение</h2>
+          <p class="section-note">Технические команды нужны разработчику или агенту, который собирает отчет через API Метрики.</p>
+        </div>
+        <div class="grid">
+          <article class="panel wide">
+            <div class="label-row"><span class="pill ok">API</span><span class="pill">отчет</span></div>
+            <h3>Как получить отчет локально</h3>
+            <div class="code-lines">
+              <span class="code-line">security find-generic-password -w -s aim-yandex-metrika-ym-token</span>
+              <span class="code-line">cd "AI Native Landing Repo - ai-native-landing"</span>
+              <span class="code-line">node scripts/aim-metrika-attribution-report.mjs --date1=7daysAgo --date2=today</span>
+              <span class="code-line">node scripts/aim-metrika-attribution-report.mjs --date1=7daysAgo --date2=today --json=true</span>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="label-row"><span class="pill ok">отладка</span></div>
+            <h3>Когда что-то не видно</h3>
+            <ul class="list">
+              <li>Открыть URL с `ym_debug=2`.</li>
+              <li>Проверить Network/Console.</li>
+              <li>Сравнить цели Метрики, Вебвизор и логи Суриката.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

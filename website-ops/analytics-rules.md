@@ -1,40 +1,72 @@
-# AI Native / Payment Analytics Rules
+# Правила аналитики AIM Website
 
 Updated: 2026-06-30
 
-These are the reporting rules for AI Native, payment, and staging analytics.
+Это правила чтения отчетов по AI Native, payment flow и staging-зеркалу. Не использовать их как карту всей production-аналитики AIM, пока такой workstream явно не открыт.
 
-## Reporting Rule
+## Главное правило отчета
 
-Do not report raw `Direct` as the primary answer.
+Не показывать сырой `Direct` как главный ответ.
 
-Before interpreting direct traffic, reclassify visits using:
+Перед интерпретацией direct traffic сначала переклассифицировать визиты через:
 
-1. UTM params;
-2. referrer host;
-3. Metrika messenger/social/search dimensions;
-4. AIM-specific mappings below.
+1. `traffic_type` (`internal` исключаем для продуктовых выводов);
+2. UTM params;
+3. referrer host;
+4. Metrika messenger/social/search dimensions;
+5. AIM-specific mappings below.
 
-Only the remainder should be called `Unknown direct`.
+Только остаток без usable signal можно называть `Unknown direct`.
 
-## AIM Channel Mapping
+## AIM-классификация каналов
 
-| AIM channel | Include |
+| AIM-канал | Что включать |
 | --- | --- |
 | Telegram | `utm_source=telegram`, historical `tg`/`Tg`, or Metrika messenger Telegram |
 | Instagram bio | `bio.aimindset.org`, `utm_source=bio`, or `utm_source=instagram&utm_medium=bio` |
 | Instagram organic | `utm_source=instagram`, historical `ig`/`inst`, organic story/post links |
 | Email / Substack | `utm_source=email`, `e-mail`, `substack`, or raw Mailing traffic |
 | YouTube organic | `utm_source=youtube` unless paid medium is explicit |
-| AIM internal | referrer under `*.aimindset.org` or raw Internal traffic |
+| AIM staff/internal | `traffic_type=internal`, referrer under `*.aimindset.org`, or raw Internal traffic |
 | Partner/referral link | other referrers and raw Link traffic |
 | Search | raw Search engine traffic |
 | Paid | `utm_medium=cpc`, `ppc`, `paid`, `paid_social`, `cpm`, `cpv` |
 | Unknown direct | direct traffic with no usable UTM/referrer/social/messenger signal |
 
-Historical `tg/ads` and `ig/stories` are organic for AIM unless a real paid medium is used.
+Historical `tg/ads` and `ig/stories` считаем organic для AIM, если явно не используется настоящий paid medium.
 
-## UTM Scheme
+## Staff-mode
+
+Командные проверки помечаем cookie-маркером:
+
+```text
+https://ai-native.aimindset.org/?aim_staff=on
+https://staging.aimindset.org/pay/?product=ain3_mainearly&aim_staff=on
+```
+
+Выключение:
+
+```text
+?aim_staff=off
+```
+
+Cookie живет 180 дней на браузер/профиль/устройство. После очистки cookies,
+нового браузера, нового профиля или инкогнито сотрудник должен открыть служебную
+ссылку снова. IP-фильтр можно использовать только как запасной слой: домашние IP
+часто меняются и не должны быть главным способом исключения команды.
+
+Если все же собираем домашний IP для дополнительного фильтра, инструкция
+сотруднику:
+
+1. Открыть `https://ipinfo.io/ip` из обычного домашнего Wi-Fi.
+2. Скопировать внешний IPv4/IPv6. Не присылать локальный адрес вида
+   `192.168.x.x`, `10.x.x.x` или `172.16-31.x.x`.
+3. Прислать: имя, город, тип сети (дом/офис/коворкинг/мобильная/VPN), IP,
+   дату и время проверки.
+4. Повторить отдельно для каждого регулярного места работы. Мобильный/VPN IP
+   включать только если человек реально всегда работает через него.
+
+## UTM-схема
 
 Use lowercase values.
 
@@ -83,9 +115,11 @@ utm_campaign=ain3
 utm_content=<mailing_id>
 ```
 
-## UTM Table
+## UTM-таблица
 
-Keep a human-maintained table for published links. Minimum columns:
+Рабочий реестр: `website-ops/utm-link-table.md`.
+
+Поддерживаем таблицу опубликованных ссылок руками. Минимальные колонки:
 
 - `date`
 - `platform`
@@ -94,15 +128,18 @@ Keep a human-maintained table for published links. Minimum columns:
 - `content_id`
 - `final_url`
 - `utm_url`
-- `owner`
-- `notes`
+- `ответственный`
+- `заметки`
 
-`utm_content` should identify the exact post, story, bio link, bot flow, partner placement, or mailing.
+`utm_content` должен указывать на конкретный пост, сторис, bio link, bot flow, partner placement или mailing.
 
-## Interpretation Notes
+Нет строки — не публикуем внешнюю ссылку. Строка должна появиться до публикации Telegram, Instagram, email, partner, YouTube, bio, bot или direct payment ссылки.
 
-- If `pricing viewed` is high but `payment clicked` is low, compare by traffic source before changing pricing copy.
-- If `Unknown direct` is high, fix publishing discipline first: UTM links in Telegram, Instagram, email, partner posts, and bio routers.
-- If Webvisor shows blank screens, inspect assets, fonts, CDN availability, and regional/network constraints before changing page copy.
-- If Surikat catches a payment contact but Metrika does not, debug Metrika/browser blocking separately. Surikat is a contact fallback, not analytics truth.
-- If Metrika catches behavior but Surikat does not send a DM, debug relay delivery/allowlist separately.
+## Как интерпретировать
+
+- Если `pricing viewed` высокий, а `payment clicked` низкий, сначала сравнить по traffic source, а не сразу менять pricing copy.
+- Если `Unknown direct` высокий, сначала чинить publishing discipline: UTM links в Telegram, Instagram, email, partner posts и bio routers.
+- Если отчет про реальных пользователей, сначала убрать `traffic_type=internal`.
+- Если Webvisor показывает blank screens, проверить assets, fonts, CDN availability и regional/network constraints до изменения page copy.
+- Если Surikat catches payment contact, но Metrika does not, debug Metrika/browser blocking separately. Surikat is a contact fallback, not analytics truth.
+- Если Metrika catches behavior, но Surikat does not send DM, debug relay delivery/allowlist separately.

@@ -65,6 +65,10 @@ Payment checks should cover:
 - promo + crypto/USDT;
 - Alumni + promo + crypto/USDT.
 
+Website Hub should expose this rule in Product Rules and Pipelines.
+
+Surikat docs should link to this rule before answering payment-rule questions.
+
 ## Case Source Fidelity
 
 Status: active  

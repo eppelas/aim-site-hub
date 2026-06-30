@@ -12,7 +12,7 @@
       "summary": "@aim_surikat_bot is served by Cloud Run service aim-surikat-vasily in dedicated Google Cloud project aim-surikat-vasily, separate from Surikat Sonya's project. Telegram webhook delivery goes to /telegram with max_connections=1; the local launchd poller must stay disabled while the webhook is set. The old Sonya-project Vasily Cloud Run services are rollback only unless the webhook/site secrets are intentionally moved back.",
       "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/cloud-run/README.md",
       "checks": [
-        "Health endpoint https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/health must report mode=webhook, genaiProvider=vertex, vertexProjectConfigured=true, stateGcsEnabled=true, and linearConfigured=true.",
+        "Health endpoint https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/health must report mode=webhook, genaiProvider=vertex, vertexProjectConfigured=true, audioTranscriptionEnabled=true, stateGcsEnabled=true, linearConfigured=true, metrikaLeadDmAllowlistConfigured=true, metrikaLeadDmAllowlistCount=3, metrikaLeadDmManagerCount=4, and metrikaLeadDmDeliveryPaused=false in normal delivery mode.",
         "Telegram getWebhookInfo must point to https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/telegram and pending_update_count should normally be 0.",
         "Rollback is deleteWebhook, then launchctl enable/bootstrap ai.aim.surikat.bot."
       ]
@@ -113,20 +113,21 @@
       "bot": "Surikat Vasily",
       "area": "privacy",
       "status": "active",
-      "summary": "Metrika/form/payment leads may be sent to personal Telegram messages only for explicit owner-approved recipients. The allowlist and delivery map are separate: @stavenski, @Irhen_N, and @dan_named are approved usernames, but the live relay sends only to active username=chat_id targets. Normal live staging/payment delivery is active for @stavenski / 75263878 and @Irhen_N / 125291022. Owner-approved night tests may temporarily narrow delivery to owner-only stavenski=75263878, but the normal map must be restored after the test window. Successful deliveries must be traceable through lead_relay_delivered logs with masked contact and Telegram messageId. This is not a blanket permission to DM anyone. Recipient expansion remains owner-approved; payment lead notification pause/resume may also be controlled by configured notification managers, currently Anca / @stavenski and Ira / @Irhen_N, through the durable metrikaLeadDmDeliveryPaused state.",
+      "summary": "Metrika/form/payment leads may be sent to personal Telegram messages only for explicit owner-approved recipients. The allowlist and delivery map are separate: @stavenski, @Irhen_N, and @dan_named are approved usernames, but the live relay sends only to confirmed username=chat_id targets. Normal live staging/payment delivery has two active confirmed recipients; owner-approved night tests may temporarily narrow delivery to owner-only mode, but the normal map must be restored after the test window. Successful deliveries must be traceable through lead_relay_delivered logs with masked contact and Telegram messageId. This is not a blanket permission to DM anyone. Recipient expansion remains owner-approved; payment lead notification pause/resume may also be controlled by configured notification managers, currently Anca / @stavenski and Ira / @Irhen_N, through the durable metrikaLeadDmDeliveryPaused state.",
       "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/runtime-options.md; Site Repo - ai-mindset-website/cloud-run/telegram-lead-relay/README.md",
       "checks": [
         "Use SURIKAT_METRIKA_LEAD_DM_ALLOWED_USERNAMES or owner-updated metrikaLeadDmAllowedUsernames as the source of truth.",
+        "aim-pay-lead-relay /readyz must expose leadDmDeliveryMode=dm_recipient_map, leadDmAllowlistCount=3, leadDmRecipientMapCount=2, leadDmActiveRecipientCount=2, leadDmDeliveryPaused=false, leadDmDeliveryControlSource=vasily/state/bot-rules.local.json, stateGcsEnabled=true, and legacyTelegramChatConfigured=false in normal delivery mode.",
         "The browser-facing staging service is aim-pay-lead-relay in project aim-surikat-vasily for https://staging.aimindset.org form/payment leads.",
-        "Use SURIKAT_METRIKA_LEAD_DM_RECIPIENTS as the concrete username=chat_id delivery map; normal active production value is stavenski=75263878,Irhen_N=125291022 unless the owner adds more confirmed DM recipients.",
-        "Use SURIKAT_METRIKA_LEAD_DM_MANAGER_USER_IDS=75263878,125291022 and SURIKAT_METRIKA_LEAD_DM_MANAGER_USERNAMES=stavenski,Irhen_N so Ira can ask Surikat to pause/resume payment lead notifications without becoming a full bot owner.",
+        "Use SURIKAT_METRIKA_LEAD_DM_RECIPIENTS as the concrete username=chat_id delivery map; normal active production mode has two confirmed DM recipients unless the owner adds more confirmed recipients.",
+        "Use configured manager IDs plus SURIKAT_METRIKA_LEAD_DM_MANAGER_USERNAMES=stavenski,Irhen_N so Ira can ask Surikat to pause/resume payment lead notifications without becoming a full bot owner.",
         "When a notification manager pauses delivery, Vasily writes metrikaLeadDmDeliveryPaused=true to vasily/state/bot-rules.local.json; aim-pay-lead-relay must read that GCS state and log lead_relay_delivery_paused instead of sending personal Telegram DMs.",
         "Successful aim-pay-lead-relay deliveries must write lead_relay_delivered logs with masked contact, contact hash, delivered usernames, and Telegram messageId for diagnostics and precise cleanup.",
-        "For owner-approved live/night test windows, temporarily narrow SURIKAT_METRIKA_LEAD_DM_RECIPIENTS to stavenski=75263878 and verify aim-pay-lead-relay /readyz reports leadDmActiveRecipientCount=1 before sending test leads.",
+        "For owner-approved live/night test windows, temporarily narrow SURIKAT_METRIKA_LEAD_DM_RECIPIENTS to owner-only delivery and verify aim-pay-lead-relay /readyz reports leadDmActiveRecipientCount=1 before sending test leads.",
         "When the allowlist is configured, aim-pay-lead-relay must not fall back to a generic TELEGRAM_CHAT_ID.",
         "Future Metrika delivery code must call canSendMetrikaLeadDmTo() before sending any personal message.",
         "Non-owner Telegram attempts to change the allowlist are rejected; owner commands without concrete @usernames ask for exact recipients.",
-        "Vasily /health must expose metrikaLeadDmAllowlistConfigured=true and a non-zero metrikaLeadDmAllowlistCount; aim-pay-lead-relay /readyz must expose leadDmDeliveryMode=dm_recipient_map and leadDmActiveRecipientCount=1 during owner-only test windows or leadDmActiveRecipientCount=2+ after Ira is restored."
+        "Vasily /health must expose metrikaLeadDmAllowlistConfigured=true, metrikaLeadDmAllowlistCount=3, metrikaLeadDmManagerCount=4, and metrikaLeadDmDeliveryPaused=false in normal delivery mode."
       ]
     },
     {
@@ -135,12 +136,17 @@
       "bot": "Surikat Sonya",
       "area": "runtime",
       "status": "active",
-      "summary": "@aim_surikat_sonya_bot runs as Cloud Run webhook aim-surikat-sonya in the Sonya Google Cloud project project-f40c3e3c-0fca-49de-96d. Local polling should not run while webhook mode is active. Sonya uses Vertex AI for the Google Cloud credits path and Cloud Storage for media/state surfaces. Vasily must not be deployed into this project except as an explicit rollback.",
+      "summary": "@aim_surikat_sonya_bot runs as Cloud Run webhook aim-surikat-sonya in the Sonya Google Cloud project project-f40c3e3c-0fca-49de-96d. Local polling should not run while webhook mode is active. Sonya uses Vertex AI for the Google Cloud credits path and Cloud Storage for media/state/catalog surfaces. Cloud Run can answer in groups when addressed, but auto-review remains off and send approval remains required. Runtime Veo is configured but currently disabled/expired; the repo Dockerfile runtime has ffmpeg available for real Telegram video_note output if the owner explicitly re-enables that mode. Vasily must not be deployed into this project except as an explicit rollback.",
       "sourceOfTruth": "Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md",
       "checks": [
+        "Live health should report mode=webhook, genaiProvider=vertex, groupChatEnabled=true, groupVideoReplyEnabled=true, autoReviewEnabled=false, requireSendApproval=true, and sashaProactiveDmEnabled=false.",
+        "runtimeVeo should remain enabled=false and expired=true unless the owner explicitly reopens the paid media-generation window; if reopened with sendAsVideoNote=true, health must report ffmpegAvailable=true.",
+        "Cloud Run reads review cards from GCS catalog.json/inventory.json; the local catalog publisher owns candidate scoring, bounded missing-preview capture, stale-lock cleanup, and GCS catalog publication.",
         "Cloud Run exposes GET /health and POST /telegram protected by TELEGRAM_WEBHOOK_SECRET.",
         "Use SONYA_LLM_PROVIDER=vertex with the credit-linked VERTEX_PROJECT_ID for Cloud Run.",
-        "Do not mix local getUpdates polling with Telegram webhook mode."
+        "Do not mix local getUpdates polling with Telegram webhook mode.",
+        "Webhook idempotency must suppress duplicate Telegram update retries; if GCS state hydration fails, the webhook acknowledges and skips side effects instead of retrying a half-processed action loop.",
+        "Protected admin/helper endpoints include /review-queue, /agent-link, /group-intro, /scan-candidates, and /conversation-log."
       ]
     },
     {
@@ -149,12 +155,15 @@
       "bot": "Surikat Sonya",
       "area": "design-feedback",
       "status": "active",
-      "summary": "Sonya sends review-only homepage/payment/element screenshots, collects 0-10 owner ratings, writes the design feedback registry, and appends keep/change/avoid/promote instructions for future generators.",
+      "summary": "Sonya sends review-only homepage/payment/element screenshots, collects 0-10 owner ratings, writes the design feedback registry, mirrors fresh state/catalog surfaces to GCS for Cloud Run, and appends keep/change/avoid/promote instructions for future generators.",
       "sourceOfTruth": "website-ops/design-feedback-rules.md",
       "checks": [
         "0 is hard reject; 1-3 rejected; 4-6 weak; 7-8 promising; 9-10 strong.",
+        "catalog.json is the curated top selection for normal/scheduled Sonya review; inventory.json is the full screenshot-ready review inventory for owner broad review requests.",
+        "SONYA_PAGES_LINK_MODE=published-only guards public links: untracked/local-only review labs may be evaluated and screenshotted but must not be advertised as GitHub Pages URLs.",
         "Explicit low owner ratings override cached Sonya self-scores.",
-        "Bug-like design/page feedback is handed to Vasily instead of creating Linear issues directly."
+        "Bug-like design/page feedback is handed to Vasily instead of creating Linear issues directly.",
+        "Manual broad review means all unrated candidates for the requesting reviewer, paced by per-person limits; it does not dump the entire inventory or bypass already-rated filtering."
       ]
     },
     {

@@ -1,10 +1,10 @@
-# AI Native / Payment Analytics Surface Map
+# AIM Website Analytics Surface Map
 
 Updated: 2026-06-30
 
 This is the source-of-truth map for the analytics surfaces currently in scope for the AI Native / payment / staging work.
 
-Out of scope for this map: other/unrelated production analytics surfaces. Do not add unrelated counters here until the owner explicitly asks for that workstream.
+Out of scope for this map: other production analytics surfaces. Do not add unrelated counters here until the owner explicitly asks for that workstream.
 
 ## Surface Map
 
@@ -18,6 +18,14 @@ Out of scope for this map: other/unrelated production analytics surfaces. Do not
 | QA / reports | `eppelas.github.io/aim-site-agent-evaluation/*`, `eppelas.github.io/aim-report/*` | Metrika counter `106376865` exists for `eppelas.github.io/aim-report/` | Yes, `own` | QA/report tooling | Separate reporting surface, not AI Native or payment funnel |
 | Yandex form counter | `forms.yandex.ru/cloud/68626950e010db17bd280f08` | Metrika `103133203` | Yes, `own` | Yandex Forms | Not website funnel traffic |
 | Miniapp counter | `app.mitrohinayulya.ru` | Metrika `102352499` | Yes, `edit` | External miniapp | Not AI Native or payment funnel traffic |
+
+## Staff Traffic
+
+For AI Native/payment reports, team checks should be marked with
+`traffic_type=internal` through the private `?aim_staff=on` link. The marker is
+stored for 180 days per browser/profile/device and can be cleared with
+`?aim_staff=off`. Home IP filters are optional backup only, not the primary
+exclusion mechanism.
 
 ## Current API Token
 
