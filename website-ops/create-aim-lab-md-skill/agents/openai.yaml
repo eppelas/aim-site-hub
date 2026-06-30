@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create AIM Lab MD"
+  short_description: "Build AIM Sanity lab import Markdown"
+  default_prompt: "Use $create-aim-lab-md to create a Sanity-ready AIM lab Markdown file from a brief or previous lab."
