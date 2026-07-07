@@ -55,7 +55,7 @@
         top: 0;
         z-index: 20;
         display: grid;
-        grid-template-columns: 1fr auto;
+        grid-template-columns: auto minmax(0, 1fr) auto;
         gap: 24px;
         align-items: center;
         padding: 14px 22px;
@@ -957,9 +957,46 @@
       }
 
       .domain-tabs {
+        position: sticky;
+        top: 57px;
+        z-index: 15;
         margin: 18px 0 6px;
-        padding: 0 0 16px;
+        padding: 12px 0 14px;
         border-bottom: var(--frame) solid var(--hair);
+        background: rgba(5, 5, 5, 0.82);
+        backdrop-filter: blur(10px);
+      }
+
+      main.search-mode section[data-tab][hidden],
+      main.search-mode .dark-band[hidden] {
+        display: block !important;
+      }
+
+      .search-hidden {
+        display: none !important;
+      }
+
+      .search-empty {
+        margin: 40px 0;
+        padding: 26px;
+        border: var(--frame) dashed var(--soft);
+        border-radius: 18px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .hub-footer {
+        width: min(1480px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 26px 0 60px;
+        border-top: var(--frame) solid var(--hair);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 11px;
       }
 
       .domain-tabs .action {
@@ -1438,6 +1475,14 @@
           align-items: start;
         }
 
+        .top .meta {
+          display: none;
+        }
+
+        .domain-tabs {
+          position: static;
+        }
+
         .hero,
         .rail,
         .style-notes,
@@ -1610,11 +1655,15 @@
         <div class="brand-mark">AIM</div>
         <div class="brand-word">Гайдлайн AIM Website</div>
       </div>
+      <div class="search">
+        <input id="hub-search" type="search" placeholder="поиск по хабу: ссылки, правила, боты, дашборды…" autocomplete="off" />
+        <span class="counter" id="hub-search-counter"></span>
+      </div>
       <div class="meta">минимальный гайдлайн</div>
     </header>
 
     <main>
-      <section class="hero" id="overview" data-search-item>
+      <section class="hero" id="overview" data-tab="overview" data-search-item>
         <div class="hero-panel hero-copy">
           <div>
             <p class="kicker">минимум / ссылки + контекст</p>
@@ -1858,16 +1907,18 @@
         </div>
       </section>
 
-      <nav class="actions domain-tabs" aria-label="Домены AIM Website">
-        <a class="action active" href="#current">обзор</a>
-        <a class="action" href="sanity-cms.html">Sanity CMS</a>
-        <a class="action" href="#rules-pipelines">мелкие правила</a>
-        <a class="action" href="#qa">сурикаты и QA</a>
-        <a class="action" href="#review-tools">мастерские</a>
-        <a class="action" href="#analytics">аналитика</a>
+      <nav class="actions domain-tabs" id="domain-tabs" aria-label="Домены AIM Website">
+        <a class="action active" data-tab-link="overview" href="#tab-overview">обзор</a>
+        <a class="action" data-tab-link="analytics" href="#tab-analytics">аналитика</a>
+        <a class="action" data-tab-link="tools" href="#tab-tools">мастерские</a>
+        <a class="action" data-tab-link="rules" href="#tab-rules">правила</a>
+        <a class="action" data-tab-link="qa" href="#tab-qa">сурикаты и QA</a>
+        <a class="action" data-tab-link="design" href="#tab-design">дизайн-индекс</a>
+        <a class="action" href="sanity-cms.html">Sanity CMS ↗</a>
+        <a class="action" href="analytics.html">Метрика ↗</a>
       </nav>
 
-      <section class="section" id="styles">
+      <section class="section" id="styles" data-tab="overview">
         <div class="section-head">
           <h2>Стилевой ориентир</h2>
           <p class="section-note">Три источника, которые смешаны здесь, без подробного разбора.</p>
@@ -1897,7 +1948,7 @@
         </div>
       </section>
 
-      <section class="section" id="current">
+      <section class="section" id="current" data-tab="overview">
         <div class="section-head">
           <h2>Основные ссылки</h2>
           <p class="section-note">Только то, что нужно открыть в первую очередь.</p>
@@ -1967,11 +2018,27 @@
             </div>
             <span class="path">/ai-mindset-blocks/</span>
           </a>
+          <a class="card dark" data-search-item href="website-ops/qa-weekly-digest.md">
+            <div class="label-row"><span class="pill ok">еженедельно</span><span class="pill">идеи</span></div>
+            <div>
+              <h3>QA-дайджест недели</h3>
+              <p class="summary">Свежий прогон QA + 3–5 идей по улучшению сайта. Обновляется сам по понедельникам в 12:00 (задача aim-qa-weekly-digest).</p>
+            </div>
+            <span class="path">website-ops/qa-weekly-digest.md · архив в website-ops/qa-digests/</span>
+          </a>
+          <a class="card" data-search-item href="website-ops/site-work-history-2025-2026.md">
+            <div class="label-row"><span class="pill">хроника</span></div>
+            <div>
+              <h3>История работы за год</h3>
+              <p class="summary">Июль 2025 → июль 2026: таймлайн по git-репозиториям + темы Telegram-чатов по данным Василия.</p>
+            </div>
+            <span class="path">website-ops/site-work-history-2025-2026.md</span>
+          </a>
         </div>
       </section>
 
 
-      <section class="section" id="analytics">
+      <section class="section" id="analytics" data-tab="analytics">
         <div class="section-head">
           <h2>Аналитика</h2>
           <p class="section-note">Коротко: здесь мы отделяем поведение людей на сайте от наших тестов, смотрим путь до оплаты и не верим сырому Direct без проверки источников.</p>
@@ -2032,7 +2099,7 @@
         </div>
       </section>
 
-      <section class="section" id="review-tools">
+      <section class="section" id="review-tools" data-tab="tools">
         <div class="section-head">
           <h2>Инструменты</h2>
           <p class="section-note">Сюда дозаписываем рабочие инструменты сайта: отдельно ревью-поверхности и дизайнерские генераторы/референсы.</p>
@@ -2156,7 +2223,7 @@
         <p class="section-note">Источник: `website-ops/tool-registry.json`; синхронизация: `node local-preview/sync-tool-registry-summary.mjs`.</p>
       </section>
 
-      <section class="section" id="rules-pipelines">
+      <section class="section" id="rules-pipelines" data-tab="rules">
         <div class="section-head">
           <h2>Правила и пайплайны</h2>
           <p class="section-note">Продуктовые правила, правила работы ботов и update-пайплайны, которые должны быть синхронизированы между сайтом, Сурикатами, QA и этой страницей.</p>
@@ -2180,8 +2247,8 @@
               <a class="action" href="website-ops/bot-operating-rules.md">боты</a>
               <a class="action" href="website-ops/case-source-fidelity-reviewer.md">case reviewer</a>
               <a class="action" href="website-ops/rules-and-pipelines.md">пайплайн</a>
-              <a class="action" href="website-ops/product-rules.json">json</a>
-              <a class="action" href="website-ops/bot-operating-rules.json">bot json</a>
+              <a class="action" href="website-ops/product-rules.json" download>⬇ json</a>
+              <a class="action" href="website-ops/bot-operating-rules.json" download>⬇ bot json</a>
               <a class="action" href="website-ops/update-rules.md">обновления</a>
               <a class="action" href="website-ops/ops-system-smoke-tests.md">smoke</a>
             </div>
@@ -2423,7 +2490,7 @@
         </div>
       </section>
 
-      <section class="section" id="qa">
+      <section class="section" id="qa" data-tab="qa">
         <div class="section-head">
           <h2>Сурикат и QA-агенты</h2>
           <p class="section-note">Операционная карта: Василий принимает QA-сигналы из Telegram и докладывает людям, Соня принимает дизайн-сигналы и оценки, а автоматические workers проверяют сайт и готовят новые варианты страниц/элементов.</p>
@@ -2668,6 +2735,9 @@
           <div class="section-head">
             <h2>Как работает Сурикат</h2>
             <p class="section-note">Это не отдельный ChatGPT в чате, а тревожный диспетчер QA-контура: он принимает сигналы, решает что является багом, и связывает людей, Linear и автоматические проверки.</p>
+            <button class="card-media" type="button" data-src="local-preview/site-hub-assets/surikat-two-modes-diptych.png" data-title="Сурикат Василий: день и ночь" data-caption="Два режима Василия: дневной intake и ночной диспетчер QA-агентов.">
+              <img src="local-preview/site-hub-assets/surikat-two-modes-diptych.png" alt="Диптих: два режима Суриката Василия" loading="lazy" />
+            </button>
           </div>
           <div class="ops-board">
             <article class="ops-panel" data-search-item>
@@ -2777,7 +2847,7 @@
         </div>
       </section>
 
-      <section class="section" id="legacy">
+      <section class="section" id="legacy" data-tab="design">
         <div class="section-head">
           <h2>Дизайн-индекс</h2>
           <p class="section-note">Оставляем только главный вход в legacy-дизайны. Подробную галерею здесь не дублируем.</p>
@@ -2827,6 +2897,16 @@
       </section>
 
     </main>
+
+    <footer class="hub-footer">
+      <span>AIM Site Hub · обновлено 2026-07-07 · <a href="https://eppelas.github.io/aim-site-hub/" target="_blank" rel="noopener noreferrer">pages</a> · <a href="https://github.com/eppelas/aim-site-hub" target="_blank" rel="noopener noreferrer">repo</a></span>
+      <span class="actions">
+        <a class="action" href="website-ops/product-rules.json" download>⬇ правила (json)</a>
+        <a class="action" href="website-ops/bot-operating-rules.json" download>⬇ правила ботов (json)</a>
+        <a class="action" href="website-ops/rules-and-pipelines.md" download>⬇ пайплайны (md)</a>
+        <a class="action" href="website-ops/update-rules.md" download>⬇ кейденсы (md)</a>
+      </span>
+    </footer>
 
     <dialog id="lightbox">
       <div class="dialog-head">
@@ -2920,6 +3000,126 @@
       }
 
       applyCurrentSurikatMode();
+
+      // --- Tab router -------------------------------------------------------
+      const TAB_NAMES = ['overview', 'analytics', 'tools', 'rules', 'qa', 'design'];
+      const ANCHOR_TO_TAB = {
+        overview: 'overview',
+        styles: 'overview',
+        current: 'overview',
+        analytics: 'analytics',
+        'review-tools': 'tools',
+        'rules-pipelines': 'rules',
+        qa: 'qa',
+        sonya: 'qa',
+        surikat: 'qa',
+        legacy: 'design',
+        'design-archive': 'design',
+      };
+
+      const mainEl = document.querySelector('main');
+      const tabSections = Array.from(document.querySelectorAll('section[data-tab]'));
+      const tabLinks = Array.from(document.querySelectorAll('[data-tab-link]'));
+
+      function activateTab(name, { updateHash = true, scrollTarget = null } = {}) {
+        if (!TAB_NAMES.includes(name)) name = 'overview';
+        tabSections.forEach((section) => {
+          section.hidden = section.dataset.tab !== name;
+        });
+        tabLinks.forEach((link) => {
+          link.classList.toggle('active', link.dataset.tabLink === name);
+        });
+        if (updateHash) {
+          const hash = scrollTarget ? `#${scrollTarget}` : `#tab-${name}`;
+          if (location.hash !== hash) history.replaceState(null, '', hash);
+        }
+        if (scrollTarget) {
+          const el = document.getElementById(scrollTarget);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 0 });
+        }
+      }
+
+      function routeFromHash() {
+        const raw = decodeURIComponent(location.hash.replace(/^#/, ''));
+        if (!raw) return activateTab('overview', { updateHash: false });
+        if (raw.startsWith('tab-')) return activateTab(raw.slice(4), { updateHash: false });
+        const tab = ANCHOR_TO_TAB[raw];
+        if (tab) return activateTab(tab, { updateHash: false, scrollTarget: raw });
+        // Unknown anchor: try to find the element and open its tab.
+        const el = document.getElementById(raw);
+        const host = el ? el.closest('section[data-tab]') : null;
+        if (host) return activateTab(host.dataset.tab, { updateHash: false, scrollTarget: raw });
+        activateTab('overview', { updateHash: false });
+      }
+
+      document.addEventListener('click', (event) => {
+        const link = event.target.closest('a[href^="#"]');
+        if (!link) return;
+        const raw = decodeURIComponent(link.getAttribute('href').slice(1));
+        if (!raw) return;
+        event.preventDefault();
+        if (raw.startsWith('tab-')) {
+          activateTab(raw.slice(4));
+        } else {
+          const tab = ANCHOR_TO_TAB[raw] || (document.getElementById(raw)?.closest('section[data-tab]')?.dataset.tab);
+          if (tab) {
+            activateTab(tab, { scrollTarget: raw });
+          }
+        }
+      });
+
+      window.addEventListener('hashchange', routeFromHash);
+      routeFromHash();
+
+      // --- Hub search -------------------------------------------------------
+      const searchInput = document.querySelector('#hub-search');
+      const searchCounter = document.querySelector('#hub-search-counter');
+      const searchItems = Array.from(document.querySelectorAll('[data-search-item]'));
+
+      function applySearch(query) {
+        const q = query.trim().toLowerCase();
+        if (!q) {
+          mainEl.classList.remove('search-mode');
+          searchItems.forEach((item) => item.classList.remove('search-hidden'));
+          tabSections.forEach((section) => section.classList.remove('search-hidden'));
+          searchCounter.textContent = '';
+          routeFromHash();
+          return;
+        }
+        mainEl.classList.add('search-mode');
+        let matches = 0;
+        searchItems.forEach((item) => {
+          const hit = item.textContent.toLowerCase().includes(q);
+          item.classList.toggle('search-hidden', !hit);
+          if (hit) matches += 1;
+        });
+        tabSections.forEach((section) => {
+          const hasVisible = section.querySelector('[data-search-item]:not(.search-hidden)') ||
+            (section.matches('[data-search-item]') && !section.classList.contains('search-hidden'));
+          section.hidden = false;
+          section.classList.toggle('search-hidden', !hasVisible);
+        });
+        searchCounter.innerHTML = `<b>${matches}</b> совпад.`;
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('input', () => applySearch(searchInput.value));
+        searchInput.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            searchInput.value = '';
+            applySearch('');
+            searchInput.blur();
+          }
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === '/' && document.activeElement !== searchInput) {
+            event.preventDefault();
+            searchInput.focus();
+          }
+        });
+      }
     </script>
   </body>
 </html>
