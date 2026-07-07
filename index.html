@@ -2523,8 +2523,9 @@
               <h3>Как часто работает</h3>
               <ul class="ops-list">
                 <li><strong>Вручную:</strong> GitHub Actions `workflow_dispatch` для health / biweekly / monthly.</li>
-                <li><strong>Раз в 2 недели:</strong> понедельник 07:00 UTC, guard по четной ISO-неделе.</li>
+                <li><strong>Раз в 2 недели:</strong> понедельник 07:00 UTC, guard по четной ISO-неделе; GitHub может задержать фактический старт до ~11–13 UTC, а прогоны длиной ~1 минута — это скип нечётной недели, не ошибка.</li>
                 <li><strong>Раз в месяц:</strong> 1-е число 08:00 UTC, широкий прогон экранов и скриншотов.</li>
+                <li><strong>Локальный дайджест:</strong> понедельник 12:00 — задача `aim-qa-weekly-digest` подтягивает свежий прогон из Actions, обновляет `reports/latest/` и шлет короткую сводку в группу сайта через Василия.</li>
                 <li><strong>DeviceCloud:</strong> ручной или месячный прогон, включается после секретов провайдера.</li>
               </ul>
             </article>
