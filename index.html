@@ -1055,18 +1055,30 @@
       }
 
       .style-card {
-        min-height: 250px;
         border: var(--frame) solid var(--soft);
-        border-radius: 28px;
+        border-radius: 20px;
         background: var(--panel);
         padding: 16px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        gap: 20px;
+        gap: 14px;
+        text-decoration: none;
         box-shadow: 0 18px 46px rgba(0, 0, 0, 0.2);
         backdrop-filter: blur(12px);
         transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+      }
+
+      .style-card .style-go {
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .style-card:hover .style-go {
+        color: var(--ink);
       }
 
       .style-card:hover {
@@ -1921,30 +1933,33 @@
       <section class="section" id="styles" data-tab="overview">
         <div class="section-head">
           <h2>Стилевой ориентир</h2>
-          <p class="section-note">Три источника, которые смешаны здесь, без подробного разбора.</p>
+          <p class="section-note">Из каких трёх источников смешан стиль этой страницы — каждый можно открыть.</p>
         </div>
         <div class="style-notes">
-          <article class="style-card" data-search-item>
+          <a class="style-card" data-search-item href="../style-index/">
             <div>
               <span class="pill">1</span>
               <strong>Галерея проектов</strong>
-              <p class="summary">Карточки и быстрые переходы к материалам.</p>
+              <p class="summary">Карточки и быстрые переходы к материалам — как в опубликованном дизайн-индексе.</p>
             </div>
-          </article>
-          <article class="style-card" data-search-item>
+            <span class="style-go">открыть дизайн-индекс →</span>
+          </a>
+          <a class="style-card" data-search-item href="#current">
             <div>
               <span class="pill">2</span>
               <strong>Рабочий архив AIM Website</strong>
-              <p class="summary">Ссылки на сайт, QA, документы и дизайн-индекс.</p>
+              <p class="summary">Ссылки на сайт, QA, документы и дизайн-индекс — это сам хаб, вы на нём.</p>
             </div>
-          </article>
-          <article class="style-card" data-search-item>
+            <span class="style-go">к основным ссылкам →</span>
+          </a>
+          <a class="style-card" data-search-item href="https://aim-os.netlify.app" target="_blank" rel="noopener noreferrer">
             <div>
               <span class="pill ok">3</span>
               <strong>Бренд-индекс в стиле OS</strong>
-              <p class="summary">Моноширинность, сетка и спокойная системная подача.</p>
+              <p class="summary">Моноширинность, сетка и спокойная системная подача — канон бренда aim-os (Brand OS v5).</p>
             </div>
-          </article>
+            <span class="style-go">открыть aim-os →</span>
+          </a>
         </div>
       </section>
 
