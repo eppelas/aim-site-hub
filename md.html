@@ -57,29 +57,119 @@
         margin: 1.6em 0 0.5em;
       }
       #content h1 { font-size: 24px; margin-top: 0.4em; }
-      #content h2 { font-size: 17px; border-bottom: 1px solid var(--hair); padding-bottom: 6px; }
+      #content h2 { font-size: 17px; border-bottom: 1px solid var(--hair); padding-bottom: 6px; margin-top: 3.2em; scroll-margin-top: 76px; }
       #content h3 { font-size: 14px; color: var(--ok); }
       #content a { color: #8fb8ff; }
+      #content a[href^="#"] {
+        display: inline-block; margin: 0.35em 0; padding: 8px 12px;
+        border: 1px solid #8fb8ff; border-radius: 999px;
+        font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+        text-decoration: none;
+      }
+      #content a[href^="#"]:hover,
+      #content a[href^="#"]:focus-visible { background: #8fb8ff; color: var(--bg); }
       #content code {
         background: var(--pale); border: 1px solid var(--hair);
         border-radius: 4px; padding: 1px 5px; font-size: 12px;
       }
       #content pre {
         background: var(--pale); border: 1px solid var(--hair);
-        border-radius: 10px; padding: 14px; overflow-x: auto;
+        border-radius: 10px; padding: 48px 14px 14px; overflow-x: auto;
+        position: relative;
       }
-      #content pre code { background: none; border: 0; padding: 0; }
+      #content pre code { background: none; border: 0; padding: 0; display: block; }
+      #content strong code {
+        background: #9be33a; border-color: #9be33a; color: #050505;
+        padding: 3px 7px;
+      }
+      #content .product-code-highlight {
+        background: #9be33a; color: #050505; border-radius: 3px;
+        padding: 1px 3px;
+      }
+      #content .code-copy {
+        border: 1px solid var(--soft); border-radius: 999px;
+        background: var(--bg); color: var(--ink); cursor: pointer;
+        font: 700 10px/1.1 ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.04em; padding: 7px 10px;
+      }
+      #content pre > .code-copy { position: absolute; top: 10px; right: 10px; }
+      #content td > .code-copy { margin-left: 8px; padding: 5px 8px; }
+      #content .code-copy:hover,
+      #content .code-copy:focus-visible { border-color: #9be33a; color: #9be33a; }
+      #content img {
+        display: block; width: 100%; height: auto; margin: 14px 0 28px;
+        border: 1px solid var(--soft); border-radius: 12px;
+        background: var(--pale);
+      }
+      #content img[alt*="Попап"] { max-width: 680px; margin-left: auto; margin-right: auto; }
       #content blockquote {
         margin: 1em 0; padding: 4px 16px; border-left: 3px solid var(--accent);
         color: var(--muted);
       }
+      #content blockquote strong { color: var(--accent); }
       #content table { border-collapse: collapse; width: 100%; margin: 1em 0; display: block; overflow-x: auto; }
       #content th, #content td { border: 1px solid var(--hair); padding: 6px 10px; text-align: left; vertical-align: top; }
       #content th { background: var(--pale); }
+      #content #коды-тарифов {
+        border-top: 2px solid #9be33a;
+      }
+      #content #коды-тарифов + p { margin: 18px 0 24px; font-size: 14px; line-height: 1.7; }
+      #content .tariff-code-table {
+        box-sizing: border-box; margin: 24px 0 40px; padding: 14px;
+        border: 1px solid #9be33a; border-radius: 12px;
+        background: rgba(155, 227, 58, 0.035);
+      }
       #content hr { border: 0; border-top: 1px solid var(--hair); margin: 2em 0; }
       #content ul, #content ol { padding-left: 22px; }
       #content li { margin: 3px 0; }
+      body.payment-guide-page { font-size: 15px; line-height: 1.75; }
+      body.payment-guide-page main { max-width: 1000px; padding: 48px 28px 120px; }
+      body.payment-guide-page .doc-path { margin-bottom: 26px; }
+      #content.payment-guide > p { max-width: 78ch; }
+      #content.payment-guide p { margin: 0 0 1.35em; }
+      #content.payment-guide h1,
+      #content.payment-guide h2,
+      #content.payment-guide h3 { text-wrap: balance; }
+      #content.payment-guide h1 { font-size: 34px; line-height: 1.08; margin: 0.35em 0 0.8em; }
+      #content.payment-guide h2 {
+        font-size: 24px; line-height: 1.15;
+        border: 0; border-top: 1px solid var(--soft); padding: 28px 0 0;
+        margin: 4.6em 0 1em; scroll-margin-top: 104px;
+      }
+      #content.payment-guide h2[id^="способ-"] {
+        font-size: 30px; border-top: 3px solid #9be33a;
+        padding-top: 32px; margin-top: 3.6em;
+      }
+      #content.payment-guide h3 {
+        font-size: 17px; color: var(--ink);
+        border-left: 3px solid var(--ok); padding-left: 12px;
+        margin: 3.2em 0 1em;
+      }
+      #content.payment-guide pre { margin: 22px 0 34px; }
+      #content.payment-guide img { margin: 24px 0 52px; }
+      #content.payment-guide blockquote { margin: 24px 0 34px; padding: 14px 18px; }
+      #content.payment-guide table { margin: 24px 0 40px; }
+      #content.payment-guide th,
+      #content.payment-guide td { padding: 10px 12px; line-height: 1.55; }
+      #content.payment-guide hr { border: 0; margin: 72px 0 0; }
+      #content.payment-guide hr + h2 { margin-top: 0; }
+      #content.payment-guide td > .code-copy { min-height: 36px; }
       .err { color: var(--accent); }
+      @media (max-width: 640px) {
+        main { padding: 22px 14px 64px; }
+        #content h2 { margin-top: 2.8em; }
+        #content img { border-radius: 8px; margin-bottom: 22px; }
+        body.payment-guide-page { font-size: 14px; line-height: 1.72; }
+        body.payment-guide-page main { padding: 28px 14px 80px; }
+        #content.payment-guide h1 { font-size: 28px; }
+        #content.payment-guide h2 { font-size: 21px; margin-top: 3.8em; padding-top: 22px; scroll-margin-top: 120px; }
+        #content.payment-guide h2[id^="способ-"] { font-size: 24px; padding-top: 26px; margin-top: 3.2em; }
+        #content.payment-guide h3 { font-size: 16px; margin-top: 2.8em; }
+        #content.payment-guide hr { margin-top: 54px; }
+        #content.payment-guide img { margin: 22px 0 40px; }
+        #content.payment-guide th, #content.payment-guide td { padding: 9px 10px; }
+        #content.payment-guide td > .code-copy { min-height: 40px; }
+      }
     </style>
   </head>
   <body>
@@ -99,9 +189,16 @@
 
       function inline(s) {
         return s
+          .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (m, alt, u) => {
+            if (/^\s*(?:javascript:|data:)/i.test(u)) return alt;
+            const dir = file.includes('/') ? file.slice(0, file.lastIndexOf('/') + 1) : '';
+            const src = /^(?:[a-z]+:|\/)/i.test(u) ? u : `${dir}${u}`;
+            return `<img src="${src.replace(/"/g, '&quot;')}" alt="${alt.replace(/"/g, '&quot;')}" loading="lazy" />`;
+          })
           .replace(/`([^`]+)`/g, (m, c) => `<code>${c}</code>`)
           .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, t, u) => {
             if (/^\s*javascript:/i.test(u)) return t;
+            if (u.startsWith('#')) return `<a href="${u}">${t}</a>`;
             return `<a href="${u}" target="_blank" rel="noopener noreferrer">${t}</a>`;
           })
           .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
@@ -111,7 +208,17 @@
       function renderMd(src) {
         const lines = esc(src.replace(/\r\n/g, '\n')).split('\n');
         const out = [];
+        const headingIds = new Map();
         let i = 0, list = null, para = [];
+        const headingId = (text) => {
+          const base = text.toLowerCase()
+            .replace(/[`*\[\]]/g, '')
+            .replace(/[^\p{L}\p{N}]+/gu, '-')
+            .replace(/^-|-$/g, '') || 'section';
+          const count = headingIds.get(base) || 0;
+          headingIds.set(base, count + 1);
+          return count ? `${base}-${count + 1}` : base;
+        };
         const flushPara = () => { if (para.length) { out.push(`<p>${inline(para.join(' '))}</p>`); para = []; } };
         const flushList = () => { if (list) { out.push(`</${list}>`); list = null; } };
 
@@ -123,7 +230,8 @@
             const buf = []; i++;
             while (i < lines.length && !/^```/.test(lines[i])) buf.push(lines[i++]);
             i++;
-            out.push(`<pre><code>${buf.join('\n')}</code></pre>`);
+            const code = buf.join('\n').replace(/\bs26_main\b/g, '<mark class="product-code-highlight">s26_main</mark>');
+            out.push(`<pre><code>${code}</code></pre>`);
             continue;
           }
           if (/^\|/.test(line)) {
@@ -143,16 +251,17 @@
           const h = line.match(/^(#{1,4})\s+(.*)/);
           if (h) {
             flushPara(); flushList();
-            out.push(`<h${h[1].length}>${inline(h[2])}</h${h[1].length}>`);
+            const id = headingId(h[2]);
+            out.push(`<h${h[1].length} id="${id}">${inline(h[2])}</h${h[1].length}>`);
             i++; continue;
           }
           if (/^(-{3,}|\*{3,})\s*$/.test(line)) { flushPara(); flushList(); out.push('<hr />'); i++; continue; }
-          const q = line.match(/^>\s?(.*)/);
+          const q = line.match(/^&gt;\s?(.*)/);
           if (q) {
             flushPara(); flushList();
             const buf = [q[1]];
             i++;
-            while (i < lines.length && /^>\s?/.test(lines[i])) buf.push(lines[i++].replace(/^>\s?/, ''));
+            while (i < lines.length && /^&gt;\s?/.test(lines[i])) buf.push(lines[i++].replace(/^&gt;\s?/, ''));
             out.push(`<blockquote><p>${inline(buf.join(' '))}</p></blockquote>`);
             continue;
           }
@@ -176,6 +285,10 @@
       const params = new URLSearchParams(location.search);
       const file = params.get('f') || '';
       const content = document.querySelector('#content');
+      if (/(?:^|\/)payment-embed-guide\.md$/.test(file)) {
+        document.body.classList.add('payment-guide-page');
+        content.classList.add('payment-guide');
+      }
       const safe = file && !/^([a-z]+:)?\/\//i.test(file) && !file.includes('..');
       if (!safe) {
         content.innerHTML = '<p class="err">Не указан файл или путь недопустим. Пример: md.html?f=website-ops/qa-weekly-digest.md</p>';
@@ -188,10 +301,60 @@
           .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.text(); })
           .then((text) => {
             content.innerHTML = renderMd(text);
+            const tariffHeading = content.querySelector('#коды-тарифов');
+            let tariffTable = tariffHeading?.nextElementSibling || null;
+            while (tariffTable && tariffTable.tagName !== 'TABLE') tariffTable = tariffTable.nextElementSibling;
+            tariffTable?.classList.add('tariff-code-table');
+            const copyExact = async (value, button) => {
+              const area = document.createElement('textarea');
+              area.value = value;
+              area.style.position = 'fixed';
+              area.style.opacity = '0';
+              document.body.appendChild(area);
+              area.select();
+              const legacyCopied = document.execCommand('copy');
+              area.remove();
+              try {
+                await navigator.clipboard.writeText(value);
+              } catch (_) {
+                if (!legacyCopied) {
+                  button.textContent = 'Не скопировано';
+                  setTimeout(() => { button.textContent = 'Копировать'; }, 1600);
+                  return;
+                }
+              }
+              const label = button.textContent;
+              button.textContent = 'Скопировано';
+              setTimeout(() => { button.textContent = label; }, 1200);
+            };
+            content.querySelectorAll('pre').forEach((pre) => {
+              const code = pre.querySelector('code');
+              if (!code) return;
+              const button = document.createElement('button');
+              button.type = 'button';
+              button.className = 'code-copy';
+              button.textContent = 'Копировать код';
+              button.addEventListener('click', () => copyExact(code.textContent, button));
+              pre.appendChild(button);
+            });
+            content.querySelectorAll('table td:nth-child(2) code').forEach((code) => {
+              const value = code.textContent.trim();
+              if (!/^[a-z0-9]+(?:[-_][a-z0-9]+)+$/.test(value)) return;
+              const button = document.createElement('button');
+              button.type = 'button';
+              button.className = 'code-copy';
+              button.textContent = 'Копировать';
+              button.setAttribute('aria-label', `Копировать код ${value}`);
+              button.addEventListener('click', () => copyExact(value, button));
+              code.parentElement.appendChild(button);
+            });
             const h1 = content.querySelector('h1');
             const name = h1 ? h1.textContent : file.split('/').pop();
             document.querySelector('#doc-title').textContent = name;
             document.title = `${name} | AIM Site Hub`;
+            if (location.hash) {
+              requestAnimationFrame(() => document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView());
+            }
           })
           .catch((e) => { content.innerHTML = `<p class="err">Не удалось загрузить ${esc(file)}: ${esc(String(e.message || e))}</p>`; });
       }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-05-26",
+  "updatedAt": "2026-07-16",
   "sourceOfTruth": "website-ops/product-rules.json",
   "rules": [
     {
@@ -15,13 +15,18 @@
           "label": "Alumni discount",
           "rate": 0.2,
           "currentCodeEvidence": "TELEGRAM_ALUMNI_DISCOUNT_HANDLES",
-          "currentAcceptedHandles": ["aim", "@aim"]
+          "currentAcceptedHandles": [
+            "aim",
+            "@aim"
+          ]
         },
         "promoCodeDiscount": {
           "label": "Promo-code discount",
           "rate": 0.05,
           "currentCodeEvidence": "PROMO_CODE_DISCOUNTS",
-          "currentAcceptedCodes": ["ponchik"]
+          "currentAcceptedCodes": [
+            "ponchik"
+          ]
         },
         "cryptoPaymentDiscount": {
           "label": "Crypto/USDT payment discount",
@@ -32,34 +37,53 @@
       "stackingPolicy": [
         {
           "case": "alumni_only",
-          "expectedDiscounts": ["alumniDiscount"],
+          "expectedDiscounts": [
+            "alumniDiscount"
+          ],
           "expectedTotalFormula": "basePrice * 0.80"
         },
         {
           "case": "promo_only",
-          "expectedDiscounts": ["promoCodeDiscount"],
+          "expectedDiscounts": [
+            "promoCodeDiscount"
+          ],
           "expectedTotalFormula": "basePrice * 0.95"
         },
         {
           "case": "alumni_and_promo",
-          "expectedDiscounts": ["alumniDiscount"],
-          "excludedDiscounts": ["promoCodeDiscount"],
+          "expectedDiscounts": [
+            "alumniDiscount"
+          ],
+          "excludedDiscounts": [
+            "promoCodeDiscount"
+          ],
           "expectedTotalFormula": "basePrice * 0.80"
         },
         {
           "case": "alumni_and_crypto",
-          "expectedDiscounts": ["alumniDiscount", "cryptoPaymentDiscount"],
+          "expectedDiscounts": [
+            "alumniDiscount",
+            "cryptoPaymentDiscount"
+          ],
           "expectedTotalFormula": "basePrice * 0.80 * 0.95"
         },
         {
           "case": "promo_and_crypto",
-          "expectedDiscounts": ["promoCodeDiscount", "cryptoPaymentDiscount"],
+          "expectedDiscounts": [
+            "promoCodeDiscount",
+            "cryptoPaymentDiscount"
+          ],
           "expectedTotalFormula": "basePrice * 0.95 * 0.95"
         },
         {
           "case": "alumni_promo_and_crypto",
-          "expectedDiscounts": ["alumniDiscount", "cryptoPaymentDiscount"],
-          "excludedDiscounts": ["promoCodeDiscount"],
+          "expectedDiscounts": [
+            "alumniDiscount",
+            "cryptoPaymentDiscount"
+          ],
+          "excludedDiscounts": [
+            "promoCodeDiscount"
+          ],
           "expectedTotalFormula": "basePrice * 0.80 * 0.95"
         }
       ],
@@ -146,6 +170,111 @@
         "For YouTube-sourced cases, reviewer notes should explicitly confirm screenshots, speaker portrait, transcript/video claims, and technology list evidence.",
         "Website Hub should expose this rule in Product Rules and Pipelines so future agents can find it."
       ]
+    },
+    {
+      "id": "payment-display-equals-charge",
+      "title": "Payment display equals charge",
+      "status": "active",
+      "area": "payment",
+      "owner": "product",
+      "summary": "The price shown in the discount-check preview and the amount actually charged by checkout-init/invoice must be computed from the same FX rate and the same discount chain. Rounding happens once, at the very end (RUB and USDT to whole units). RUB is derived at runtime as price_eur × eur_rub_rate from NocoDB config (no price_rub in the catalog); USDT is indicative (shown with ≈) because OxaPay converts EUR to crypto at invoice time. Providers: Stripe (EUR), Moneta/PayAnyWay (RUB, SBP/QR), OxaPay (USDT crypto), plus manual invoice for custom deals.",
+      "decidedAt": "2026-06-05",
+      "decidedBy": "Sergei Rakitin + Dan (aim payment gates chat, 2026-06-05/06)",
+      "qaExpectations": [
+        "For any product code, discount-check amounts {eur, rub, usdt} must match what each provider actually charges after the same discounts.",
+        "Rounded values appear only once at the end of the chain: RUB integer, USDT integer, no intermediate rounding."
+      ],
+      "sourceOfTruth": "website-ops/product-rules.json"
+    },
+    {
+      "id": "payment-tariff-overlap-switchover",
+      "title": "Tariff switchover keeps both tariffs live",
+      "status": "active",
+      "area": "payment",
+      "owner": "product",
+      "summary": "When switching a lab from an early tariff to the main tariff, enable the new tariff and keep the old one enabled in parallel; never disable the old tariff before the new one is confirmed working. Early tariffs may stay enabled indefinitely — latecomers who deserve early pricing are handled manually by Ira. Adopted after the 2026-07-07 incident when payments went down during an early→main switch while ads were running.",
+      "decidedAt": "2026-07-07",
+      "decidedBy": "Anya + Dan (aim payment gates chat)",
+      "qaExpectations": [
+        "During any tariff switch, at least one payable tariff for the lab must return a valid price from discount-check at all times.",
+        "Payment QA should re-run the purchase path immediately after any tariff config change in NocoDB."
+      ],
+      "sourceOfTruth": "website-ops/product-rules.json"
+    },
+    {
+      "id": "product-code-source-of-truth",
+      "title": "Product codes come from NocoDB, not Sanity",
+      "status": "active",
+      "area": "payment",
+      "owner": "product",
+      "summary": "product_code is {lab_slug}_{tariff} in lowercase (e.g. s26_main, ain3_mainearly). The source of truth for prices, tariffs, and validity windows is the NocoDB LMS Lab Config table (Dan), not Sanity and not the page slug — codes are never derived or invented. Early-bird is a tariff with valid_until, not a promo code. Corporate/team deals are not automated on the site: the button leads to Telegram and Ira handles contracts and transfers manually.",
+      "decidedAt": "2026-05-27",
+      "decidedBy": "Dan + Anya (aim payment gates chat, 2026-05-27 / 2026-06-18)",
+      "qaExpectations": [
+        "Every product_code used on a page or in a lab MD import must exist in NocoDB Lab Config (site-list-products / discount-check confirm it).",
+        "Tariff-code lookup should be case-insensitive end to end; until the n8n root fix is confirmed, keep catalog keys lowercase."
+      ],
+      "sourceOfTruth": "website-ops/product-rules.json"
+    },
+    {
+      "id": "testimonials-consent-scope",
+      "title": "Testimonial consent is site-only",
+      "status": "active",
+      "area": "content",
+      "owner": "content",
+      "summary": "Testimonials collected in 2026 are approved for the website only (ai-native set); using them anywhere else requires fresh consent from the person. Case studies were cleared by Vlada for marketing in general and may be used more widely. Raiffeisen must not be named in a testimonial — describe as 'Financing + company size'; the logo may appear on the site only without matching it to a testimonial or a person's name.",
+      "decidedAt": "2026-06-10",
+      "decidedBy": "Irina N. (AI Mindset {site} chat)",
+      "qaExpectations": [
+        "No testimonial from the site set appears in emails, decks, or ads without recorded new consent.",
+        "No page visually links the Raiffeisen logo to a specific testimonial or employee name."
+      ],
+      "sourceOfTruth": "website-ops/product-rules.json"
+    },
+    {
+      "id": "staff-analytics-exclusion",
+      "title": "Staff and agents excluded from analytics",
+      "status": "active",
+      "area": "analytics",
+      "owner": "product",
+      "summary": "Everyone working on the site — and every browser their agents drive (including Playwright profiles) — must self-exclude from analytics by opening the staff links once: https://ai-native.aimindset.org/?aim_staff=on and https://staging.aimindset.org/pay/?product=ain3_mainearly&aim_staff=on. The cookie lasts 180 days and must be refreshed after profile resets.",
+      "decidedAt": "2026-07-01",
+      "decidedBy": "Anya (AI Mindset {site} chat)",
+      "qaExpectations": [
+        "QA/bot browser profiles set aim_staff=on before crawling production or staging.",
+        "Metrika sessions from team devices and agent runs do not appear in funnel numbers."
+      ],
+      "sourceOfTruth": "website-ops/product-rules.json"
+    },
+    {
+      "id": "sanity-agent-access",
+      "title": "Agents get read-only Sanity access",
+      "status": "active",
+      "area": "cms",
+      "owner": "tech",
+      "summary": "AI agents working with Sanity receive read-only tokens so they cannot change schema or data; Admin roles are held only by Sergei Rakitin and the team account. Agents must never modify the Sanity schema (guardrails doc: docs/guides/vibecode-lab-site-guardrails.md). Vibecode lab sites bound to Sanity data live inside the ai-mindset-website repo under src/pages/labs-custom — not in separate repos — so publish webhooks keep working; free-standing vibecode sites stay out of the main site repo.",
+      "decidedAt": "2026-07-09",
+      "decidedBy": "Sergei Rakitin (AI Mindset {site} chat, 2026-07-01/02/09)",
+      "qaExpectations": [
+        "Sanity access review: only Rakitin + team account hold Admin; agent tokens are Viewer/read-only.",
+        "New vibecode lab pages appear under staging.aimindset.org/labs-custom/* and update on Sanity publish."
+      ],
+      "sourceOfTruth": "website-ops/product-rules.json"
+    },
+    {
+      "id": "site-entities-notification",
+      "title": "New site people and entities are announced",
+      "status": "active",
+      "area": "process",
+      "owner": "team",
+      "summary": "Any new person, agent, repo, service, or input that touches the site surface (staging, Sanity, aimindset.org, analytics, QA tests, payments, branding) must be announced in the site chat before or as it appears. Adopted after agent OXI-717 (Ilya Golubev) was discovered in the staging repo without prior introduction.",
+      "decidedAt": "2026-06-30",
+      "decidedBy": "Anya (AI Mindset {site} chat); Ilya↔Rakitin sync held 2026-07-09",
+      "qaExpectations": [
+        "Every new collaborator or agent with repo/Sanity/analytics access maps to an introduction message in the site chat.",
+        "Hub registries (bots, tools, rules) are updated when such an entity becomes permanent."
+      ],
+      "sourceOfTruth": "website-ops/product-rules.json"
     }
   ]
 }

@@ -371,7 +371,7 @@
       </a>
       <nav class="nav" aria-label="Навигация по аналитике">
         <a class="action" href="index.html">назад в хаб</a>
-        <a class="action" href="#staff-traffic">staff-mode</a>
+        <a class="action" href="metrika-report.html">выводы и графики</a>
         <a class="action" href="#utm-table">UTM-таблица</a>
         <a class="action" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">открыть Метрику</a>
       </nav>
@@ -385,11 +385,12 @@
         </div>
         <div>
           <p class="lead">
-            Эта страница нужна, чтобы не смешивать реальные визиты, командные проверки,
-            Telegram-ники из оплаты и сырые отчеты Метрики. Главный счетчик сейчас относится
-            к AI Native, странице оплаты и staging-зеркалу, а не ко всем сайтам AIM.
+            Счётчик 106857835 охватывает AI Native, оплату и staging. В отчётах отдельно
+            учитываются реальные посетители, командные проверки, источники трафика
+            и контакты из формы оплаты.
           </p>
           <div class="actions">
+            <a class="action" href="metrika-report.html">открыть аналитический отчёт</a>
             <a class="action" href="website-ops/analytics-current-setup.md">текущая настройка</a>
             <a class="action" href="website-ops/analytics-rules.md">правила отчетов</a>
             <a class="action" href="website-ops/analytics-surface-map.md">карта счетчиков</a>
@@ -400,32 +401,31 @@
 
       <section class="section" id="overview">
         <div class="section-head">
-          <h2>Как это работает</h2>
-          <p class="section-note">Короткая человеческая карта: что чем является и где не надо делать ложные выводы.</p>
+          <h2>Охват и данные</h2>
         </div>
         <div class="grid">
           <article class="card dark">
             <div class="label-row"><span class="pill ok">счетчик</span><span class="pill">106857835</span></div>
             <h3>AI Native + оплата</h3>
             <p class="summary">
-              Этот счетчик смотрит `ai-native.aimindset.org` и payment flow на `staging.aimindset.org`.
-              Его не считаем общим счетчиком всех AIM-поверхностей.
+              Счётчик 106857835 собирает данные с `ai-native.aimindset.org` и payment flow
+              на `staging.aimindset.org`. Другие AIM-поверхности в этот охват не входят.
             </p>
           </article>
           <article class="card">
             <div class="label-row"><span class="pill ok">поведение</span><span class="pill">Вебвизор</span></div>
-            <h3>Что люди делают на сайте</h3>
+            <h3>Поведение посетителей</h3>
             <p class="summary">
-              Смотрим скролл, клики, раскрытие кейсов, FAQ, маршрут до цены и переход на оплату.
-              Это надежнее, чем угадывать источник по сырому Direct.
+              Вебвизор фиксирует скролл, клики, раскрытие кейсов и FAQ, маршрут до цены
+              и переход на оплату.
             </p>
           </article>
           <article class="card">
             <div class="label-row"><span class="pill ok">страховка</span><span class="pill">Сурикат</span></div>
             <h3>Контакты из оплаты</h3>
             <p class="summary">
-              Сурикат страхует ввод Telegram/contact на странице оплаты. Это полезно для контактов,
-              но не заменяет Метрику как источник данных о трафике.
+              Сурикат сохраняет Telegram/contact со страницы оплаты. Метрика остаётся
+              источником данных о поведении и трафике.
             </p>
           </article>
         </div>
@@ -434,28 +434,28 @@
       <section class="section" id="source-rules">
         <div class="section-head">
           <h2>Источники</h2>
-          <p class="section-note">Direct читаем осторожно: часто это мессенджеры, Instagram bio, email, приватные браузеры или редиректы.</p>
+          <p class="section-note">Direct может включать переходы из мессенджеров, Instagram bio, email, приватных браузеров и редиректов.</p>
         </div>
         <div class="grid">
           <article class="panel wide">
             <div class="label-row"><span class="pill ok">правило</span><span class="pill">Direct</span></div>
-            <h3>Не показываем сырой Direct как главный ответ</h3>
+            <h3>Классификация Direct</h3>
             <ul class="list">
-              <li><strong>Сначала:</strong> проверяем UTM-параметры.</li>
-              <li><strong>Потом:</strong> смотрим referrer, messenger/social/search признаки Метрики и наши правила.</li>
-              <li><strong>Только остаток:</strong> называем неизвестным Direct.</li>
+              <li><strong>1.</strong> Проверить UTM-параметры.</li>
+              <li><strong>2.</strong> Проверить referrer и признаки messenger, social и search в Метрике.</li>
+              <li><strong>3.</strong> Оставшийся трафик классифицировать как неизвестный Direct.</li>
             </ul>
           </article>
           <article class="panel">
             <div class="label-row"><span class="pill ok">пример</span><span class="pill">Instagram</span></div>
             <h3>bio.aimindset.org</h3>
-            <p class="summary">В отчетах считаем это Instagram bio, а не обычным referral.</p>
+            <p class="summary">В отчётах `bio.aimindset.org` классифицируется как Instagram bio, а не referral.</p>
           </article>
           <article class="panel">
             <div class="label-row"><span class="pill ok">пример</span><span class="pill">команда</span></div>
             <h3>Внутренние визиты</h3>
             <p class="summary">
-              Для сотрудников используем `traffic_type=internal`, иначе тесты команды будут раздувать переходы на оплату.
+              Внутренние визиты получают `traffic_type=internal` и исключаются из конверсии оплаты.
             </p>
           </article>
         </div>
@@ -463,13 +463,13 @@
 
       <section class="section" id="staff-traffic">
         <div class="section-head">
-          <h2>Staff-mode</h2>
-          <p class="section-note">Это способ отделять командные проверки от реальных пользователей без привязки к домашнему IP.</p>
+          <h2>Внутренний трафик</h2>
+          <p class="section-note">Cookie staff-mode маркирует командные проверки отдельно от пользовательских визитов и не зависит от домашнего IP.</p>
         </div>
         <div class="grid">
           <article class="panel wide">
             <div class="label-row"><span class="pill ok">основной способ</span><span class="pill">cookie 180 дней</span></div>
-            <h3>Сотрудник открывает служебную ссылку один раз</h3>
+            <h3>Служебная ссылка</h3>
             <ul class="list">
               <li><strong>AI Native:</strong> <code>https://ai-native.aimindset.org/?aim_staff=on</code></li>
               <li><strong>Оплата:</strong> <code>https://staging.aimindset.org/pay/?product=ain3_mainearly&amp;aim_staff=on</code></li>
@@ -478,20 +478,17 @@
             </ul>
           </article>
           <article class="panel">
-            <div class="label-row"><span class="pill ok">что пишет код</span></div>
+            <div class="label-row"><span class="pill ok">передача данных</span></div>
             <h3>traffic_type</h3>
-            <p class="summary">
-              В Метрику, цели оплаты и Surikat lead relay уходит `traffic_type=internal` или `external`.
-              В отчетах сначала исключаем `internal`.
-            </p>
+            <p class="summary">Метрика, цели оплаты и Surikat lead relay получают `traffic_type=internal` или `external`; отчёты исключают `internal`.</p>
           </article>
           <article class="panel">
-            <div class="label-row"><span class="pill">запасной слой</span></div>
+            <div class="label-row"><span class="pill">резервный способ</span></div>
             <h3>Домашний IP</h3>
             <ul class="list">
               <li>Открыть <code>https://ipinfo.io/ip</code> из обычного домашнего Wi-Fi.</li>
               <li>Скопировать внешний IPv4/IPv6, не адрес вида `192.168…`.</li>
-              <li>Прислать имя, город, сеть, IP и время проверки.</li>
+              <li>Записать имя, город, сеть, IP и время проверки.</li>
               <li>Отдельно отметить VPN, мобильный интернет или коворкинг.</li>
             </ul>
           </article>
@@ -500,8 +497,8 @@
 
       <section class="section" id="goals">
         <div class="section-head">
-          <h2>Что смотреть</h2>
-          <p class="section-note">Цели оставлены техническими именами, потому что так они называются в Метрике и в коде.</p>
+          <h2>События и воронка</h2>
+          <p class="section-note">Названия целей совпадают с идентификаторами в Метрике и коде.</p>
         </div>
         <div class="grid">
           <article class="panel">
@@ -516,7 +513,7 @@
           </article>
           <article class="panel">
             <div class="label-row"><span class="pill ok">интерес</span></div>
-            <h3>Что читают и раскрывают</h3>
+            <h3>Чтение и раскрытие блоков</h3>
             <ul class="list">
               <li>`ain3_case_opened`</li>
               <li>`ain3_case_more_clicked`</li>
@@ -527,7 +524,7 @@
           </article>
           <article class="panel">
             <div class="label-row"><span class="pill ok">маршрут</span></div>
-            <h3>Что выбирают сами</h3>
+            <h3>Самостоятельный выбор</h3>
             <ul class="list">
               <li>`ain3_role_manual_selected`</li>
               <li>`ain3_route_step_clicked`</li>
@@ -541,24 +538,22 @@
       <section class="section" id="utm-table">
         <div class="section-head">
           <h2>UTM-таблица</h2>
-          <p class="section-note">
-            Это рабочий реестр ссылок. Если ссылки нет в таблице до публикации, потом мы снова получим “непонятный Direct”.
-          </p>
+          <p class="section-note">Каждая внешняя ссылка регистрируется до публикации, чтобы источник не попадал в неизвестный Direct.</p>
         </div>
 
         <div class="grid">
           <article class="panel wide">
             <div class="label-row"><span class="pill ok">правило публикации</span><span class="pill">AI Native</span></div>
-            <h3>Нет строки — не публикуем внешнюю ссылку</h3>
+            <h3>UTM обязательна перед публикацией</h3>
             <p class="summary">
-              Любая новая ссылка на AI Native или оплату получает `utm_source`, `utm_medium`,
-              `utm_campaign` и `utm_content`. Поле “ответственный” означает человека или команду,
-              которые публикуют ссылку и смогут потом объяснить, что это было.
+              Каждая новая ссылка на AI Native или оплату получает `utm_source`, `utm_medium`,
+              `utm_campaign` и `utm_content`. Поле «ответственный» содержит имя человека
+              или команды, публикующих ссылку.
             </p>
             <div class="code-lines">
-              <span class="code-line">telegram post: utm_source=telegram&amp;utm_medium=post&amp;utm_campaign=ain3&amp;utm_content=&lt;post_id&gt;</span>
-              <span class="code-line">instagram story: utm_source=instagram&amp;utm_medium=story&amp;utm_campaign=ain3&amp;utm_content=&lt;story_id&gt;</span>
-              <span class="code-line">instagram bio: utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=ain3&amp;utm_content=bio_link</span>
+              <span class="code-line">telegram post: utm_source=telegram&utm_medium=post&utm_campaign=ain3&utm_content=&lt;post_id&gt;</span>
+              <span class="code-line">instagram story: utm_source=instagram&utm_medium=story&utm_campaign=ain3&utm_content=&lt;story_id&gt;</span>
+              <span class="code-line">instagram bio: utm_source=instagram&utm_medium=bio&utm_campaign=ain3&utm_content=bio_link</span>
             </div>
           </article>
           <article class="panel">
@@ -696,12 +691,12 @@
       <section class="section" id="api">
         <div class="section-head">
           <h2>Подключение</h2>
-          <p class="section-note">Технические команды нужны разработчику или агенту, который собирает отчет через API Метрики.</p>
+          <p class="section-note">Команды для локального отчёта через API Метрики.</p>
         </div>
         <div class="grid">
           <article class="panel wide">
             <div class="label-row"><span class="pill ok">API</span><span class="pill">отчет</span></div>
-            <h3>Как получить отчет локально</h3>
+            <h3>Локальный API-отчёт</h3>
             <div class="code-lines">
               <span class="code-line">security find-generic-password -w -s aim-yandex-metrika-ym-token</span>
               <span class="code-line">cd "AI Native Landing Repo - ai-native-landing"</span>
@@ -711,7 +706,7 @@
           </article>
           <article class="panel">
             <div class="label-row"><span class="pill ok">отладка</span></div>
-            <h3>Когда что-то не видно</h3>
+            <h3>Диагностика событий</h3>
             <ul class="list">
               <li>Открыть URL с `ym_debug=2`.</li>
               <li>Проверить Network/Console.</li>

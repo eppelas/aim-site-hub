@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-06-20",
+  "updatedAt": "2026-07-17",
   "sourceOfTruth": "website-ops/update-rules.json",
   "updateRules": [
     {
@@ -139,7 +139,9 @@
         "Broader owner instructions such as 'запомни правило', 'когда я говорю...', or 'в следующий раз...' update ownerRuntimeInstructions and are injected into future conversational and task prompts.",
         "Telegram text_link entities count as URLs for task recognition.",
         "Telegram voice/audio/video-note attachments must be transcribed through Gemini/Vertex before routing; the transcript counts as effective text for URL extraction, semantic classification, and private owner context memory.",
-        "URL-backed aliases learned in a chat/thread, such as ai-native, count as task targets for future owner commands in that same thread.",
+        "Group links, UTM links, analytics notes, and edited chat notes are context only; they must not start a crawl/audit unless the current owner message is in DM or directly addresses Vasily and asks him to check, audit, review, QA, inspect, or rerun.",
+        "URL-backed aliases learned in a chat/thread, such as ai-native, count as task targets only for future directly addressed owner commands in that same thread; alias memory is not task authorization by itself.",
+        "Telegram edits/retries of the same source message are deduped for the LLM task source window; owner stop commands such as 'Вась, остановись' pause new LLM checks in that chat/thread for several hours unless explicitly resumed or rerun.",
         "AI Native visual QA output belongs in AIM Site Agent Evaluation as a separate dashboard page linked from the choose-site selector once the local QA/Codex runner is connected.",
         "Do not run Telegram webhook and local getUpdates polling at the same time.",
         "Vasily production Cloud Run and lead relay live in dedicated GCP project aim-surikat-vasily; Sonya remains in project-f40c3e3c-0fca-49de-96d.",
@@ -150,6 +152,36 @@
         "Owner Telegram rule changes, generic owner runtime instructions, conversational style feedback, and chat alias memory must hydrate from and persist to the Vasily GCS state prefix before/after webhook processing.",
         "OwnerRuntimeInstructions do not override Metrika DM recipient allowlists, read-only audit limits, secrets, Linear, or deploy guards.",
         "Owner-only tuning commands are accepted only from Anca/@stavenski."
+      ]
+    },
+    {
+      "id": "website-freshness-surikat",
+      "title": "Team, labs, and recurring-link freshness",
+      "ownerAgent": "Freshness Surikat (public name TBD)",
+      "cadence": "team monthly; links weekly; labs on every site/chat discovery and daily around lifecycle deadlines",
+      "trigger": "local policy run now; future authenticated scheduler endpoint and optional Telegram work-chat webhook",
+      "inputs": [
+        "https://staging.aimindset.org/",
+        "staging sitemap and semantically classified lab pages",
+        "published team surface",
+        "authorized working chat as non-personal scheduling context when connected",
+        "Bots/Website Freshness Bot/config/freshness-policy.json",
+        "Bots/Website Freshness Bot/src/freshness-policy.mjs"
+      ],
+      "outputs": [
+        "deduplicated evidence-backed freshness obligations",
+        "one neutral monthly published-team list excluding Ira and Sasha",
+        "lab provisional-listing and recruitment-removal deadlines",
+        "confirmed bug handoff to Surikat Vasily/Linear"
+      ],
+      "policy": [
+        "Omit Ira and Sasha entirely from the monthly roster question.",
+        "Ask one neutral question about whether the remaining published list and spelling are current; do not judge people individually.",
+        "Do not infer or propose named employee additions, departures, removals, or activity levels from working-chat context.",
+        "Before a lab page exists, propose season-and-year copy without publishing tentative exact dates.",
+        "After page discovery, recompute removeRecruitmentAt whenever startDate changes and remove enrollment listings seven calendar days after the latest confirmed start.",
+        "Do not remove or hide the lab page itself merely because recruitment ended.",
+        "The bot is monitoring/proposal-only until separate write authorization and a Sanity mutation contract exist."
       ]
     },
     {
@@ -263,7 +295,7 @@
       "id": "surikat-sonya-design-review",
       "title": "Surikat Sonya design review bot",
       "ownerAgent": "Surikat Sonya",
-      "cadence": "nightly candidate scan and daytime DM review delivery when review windows are known",
+      "cadence": "policy-v2 catalog refresh every 30 minutes while the local publisher is loaded; Telegram delivery only on explicit/manual review flow",
       "trigger": "local catalog publisher, manual /review command, Cloud Run webhook, or future schedule after night-design-pursuit output",
       "inputs": [
         "Telegram DM messages and callback_query ratings from @stavenski and @alex_named",
@@ -290,14 +322,15 @@
         "GCS state/catalog surfaces for Cloud Run review cards and durable owner/dispatch/registry/handoff state"
       ],
       "policy": [
-        "Curated and scheduled review sends only candidates with sonyaScore strictly greater than 5/10; manual broad review requests may draw from inventory.json to inspect unrated candidates, but still use review-only artifacts and owner-controlled pacing.",
+        "Sonya review policy v2 admits candidates to curated or broad review only with exact status active-review, showInGallery=true, passed QA and visual-audit gates, matching current artifact fingerprints, screenshot, reviewFocus, and designDelta. Manual broad review may bypass Sonya score but never these hard gates.",
+        "A passed visual audit supersedes legacy brandFitGate=not-evaluated; explicit brand-fit blocked, rejected, or needs-rework remains a hard rejection. Payment pages and elements without a passed visual audit remain internal backlog.",
         "Use the full 0-10 rating scale: 0 is hard reject, 1-3 rejected, 4-6 weak, 7-8 promising, 9-10 strong.",
         "Anka and Sasha are the only owners; Sasha must press /start once before Sonya can DM him.",
         "Store Telegram and Gemini secrets outside tracked files, preferably Keychain.",
         "Cloud credits path must use SONYA_LLM_PROVIDER=vertex with VERTEX_PROJECT_ID inside the credit-linked Google Cloud project; plain GEMINI_API_KEY is only the Gemini Developer API fallback.",
         "Do not run Telegram polling and Cloud Run webhook mode at the same time.",
         "Cloud Run uses the GCS state mirror for owner/dispatch/log/registry/handoff surfaces; if hydrate fails while enabled, the webhook acknowledges without side effects instead of overwriting durable state from stale local files.",
-        "Cloud Run reads review cards from GCS catalog.json and inventory.json; the local catalog publisher owns scoring, screenshot capture, stale-lock cleanup, published-only public links, and GCS publication.",
+        "Cloud Run reads only policy-v2 review cards from GCS catalog.json and inventory.json; stale legacy records without revision-bound eligibility are ignored. The local publisher runs every 30 minutes, caps broad inventory at 12, and skips uploads when eligible inputs are unchanged.",
         "Current live health should expose mode=webhook, genaiProvider=vertex, groupChatEnabled=true, groupVideoReplyEnabled=true, autoReviewEnabled=false, requireSendApproval=true, and sashaProactiveDmEnabled=false.",
         "Runtime Veo is configured but disabled and expired. The repo Dockerfile runtime has ffmpeg available, so real Telegram video_note output is possible only if the owner explicitly reopens paid generation and health reports runtimeVeo.ffmpegAvailable=true; buildpack/source deploys without ffmpeg must not enable sendAsVideoNote.",
         "Every numeric rating must be passed to the relevant design generator handoff with target automation ids, rating sentiment, what to keep/change/avoid/promote, and a concrete next-generation brief.",
@@ -314,7 +347,7 @@
       "title": "Homepage full design generator",
       "ownerAgent": "AIM Homepage Full Design Generator",
       "automationId": "aim-homepage-full-design-generator",
-      "cadence": "weekly on Monday at 09:40 Europe/Lisbon after initial manual burst",
+      "cadence": "PAUSED; former cadence was weekly on Monday at 09:40 Europe/Lisbon; resume only from a new user-approved generation plan",
       "trigger": "Codex app cron automation",
       "inputs": [
         "website-ops/homepage-design-brief.json",
@@ -370,7 +403,7 @@
       "title": "AIM Night Design Pursuit",
       "ownerAgent": "AIM Night Design Pursuit",
       "automationId": "aim-night-design-pursuit",
-      "cadence": "hourly during 00:05, 01:05, 02:05, 03:05, 04:05, 05:05, and 06:05 Europe/Lisbon",
+      "cadence": "PAUSED; former cadence was hourly during 00:05-06:05 Europe/Lisbon; resume only from a new user-approved generation plan",
       "trigger": "Codex app cron automation",
       "inputs": [
         "website-ops/night-design-pursuit.md",
@@ -399,7 +432,7 @@
         "Owner-approved resource window is 00:00-07:00 Europe/Lisbon.",
         "During that window, the worker may quit nonessential apps such as Telegram, Obsidian, Pencil, Linear, extra Terminal sessions, stale subagents, and stale local servers not needed for validation.",
         "Preserve Codex, needed browser/Arc, OS services, Finder, Yandex Disk/sync services, and active Creative Taste Bot/code-animation automation processes.",
-        "The optional local bug continuation automation may stay paused while this night-design lane is active.",
+        "The optional local bug continuation automation is paused independently; this night-design lane is also paused.",
         "Generate diverse review-only designs across homepage, guided payment page, and standalone element lanes.",
         "Do not repeat the same motif; each night should vary structure, interaction, typography, imagery/media system, density, mood, and content emphasis.",
         "Do not generate many variants of the same page shell with only background/accent/ambient changes. At most two same-shell variants may be kept for comparison, and only if the README/manifest states exactly what changed.",
@@ -408,7 +441,7 @@
         "Do not create fake proof, fake reviews, archive cards without links, or source-thin complete pages.",
         "Do not commit, push, deploy, delete, rename, or replace production/staging pages.",
         "Exception: Surikat Sonya may publish only review-only design lab artifacts to GitHub Pages after sonyaScore > 5; this does not authorize live route replacement or unrelated staging.",
-        "The automation is scheduled repeatedly through the quiet window; do not treat it as a one-shot short burst.",
+        "When explicitly resumed under a new user-approved plan, the automation may run repeatedly through the quiet window; while paused it must not start any generation run.",
         "After the 2026-05-28 rejection, do not repeat over-literal AIM OS / beige-grid / monospaced Russian homepage or element directions.",
         "Homepage and element runs must pass screenshot readability gates before being promoted: readable proportional Russian body copy, high contrast, calm text surfaces, no dense grid/constellation noise under paragraphs.",
         "Payment Event Horizon learning: keep the mouse-dependent glow from AIM Payment Gravity, but do not repeat simple vertical galaxy sway. The rejected AIM Event Horizon was a local 2D approximation, not a Gemini-assisted review and not a direct source port. When the user asks to use owned X26/Anca/Creative Taste Bot code directly, first port the source mechanic 1:1, then adapt the AIM/payment composition around it. X26-derived payment variants should use owned presentation math/code for pointer inertia, depth rotation, strand/bowl/event-horizon motion, and velocity wake. Treat AIM Payment Gravity and AIM Vortex Checkout as 7.5/10 archive candidates only after a stronger replacement is user-approved.",
@@ -420,7 +453,7 @@
       "title": "AIM Gemini Page Generation Sprint",
       "ownerAgent": "AIM Gemini Page Generation Sprint",
       "automationId": "aim-gemini-page-generation-sprint",
-      "cadence": "one-off manual sprint in the current quiet window",
+      "cadence": "PAUSED; completed one-off sprint; a new run requires a new user-approved generation plan",
       "trigger": "Codex app cron automation",
       "inputs": [
         "/Users/viola/All/Yandex.Disk.localized/3 Process/8 Vibe Coding/agent-rules/cross-agent-rerouting.md",
@@ -463,7 +496,7 @@
       "title": "Homepage element design generator",
       "ownerAgent": "AIM Homepage Element Design Generator",
       "automationId": "aim-homepage-element-design-generator",
-      "cadence": "weekly on Friday at 10:20 Europe/Lisbon after initial manual burst",
+      "cadence": "PAUSED; former cadence was weekly on Friday at 10:20 Europe/Lisbon; resume only from a new user-approved generation plan",
       "trigger": "Codex app cron automation",
       "inputs": [
         "website-ops/homepage-design-brief.json",

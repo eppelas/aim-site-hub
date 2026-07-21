@@ -617,6 +617,7 @@
         <a class="tab" href="index.html">Обзор</a>
         <a class="tab active" href="sanity-cms.html">Sanity CMS</a>
         <a class="tab" href="#downloads">Скачать</a>
+        <a class="tab" href="#skills">Скиллы 07.2026</a>
         <a class="tab" href="#content-fill">Наполнение</a>
         <a class="tab" href="#workflow">Процесс</a>
         <a class="tab" href="#rules">Правила</a>
@@ -675,6 +676,109 @@
             <path d="M557 230C550 184 645 184 645 142" stroke="rgba(255,193,122,0.52)" stroke-width="2" stroke-dasharray="8 8" marker-end="url(#arrow)" />
           </svg>
         </aside>
+      </section>
+
+      <section id="skills">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">источник: репо ai-mindset-website · июль 2026</p>
+            <h2>Актуальные скиллы Sanity-команды</h2>
+          </div>
+          <p class="section-note">
+            Свежие скиллы Ракитина живут прямо в репо
+            <code>ai-mindset-org/ai-mindset-website</code> — их не нужно скачивать
+            отсюда, агент получает их вместе с репо. Пакет скилла ниже на этой
+            странице — про MD-импорт: он остаётся рабочим, но для наполнения и
+            витрин предпочитайте скиллы из репо.
+          </p>
+        </div>
+
+        <div class="download-grid">
+          <article class="download-card primary">
+            <div class="resource-title">
+              <div>
+                <div class="tag-row"><span class="tag ok">самый свежий</span><span class="tag">11–12.07.2026</span></div>
+                <h3><code>/custom-lab-site</code></h3>
+                <p class="muted" style="margin-top: 8px">
+                  Витрины лаб: «собери витрину для лабы со slug s26», «доработай
+                  витрину: добавь секцию спикеров». Держит связь с атрибутами
+                  Sanity и поддерживает визуальный редактор. Заменил ручную
+                  инструкцию по вайбкод-лабам.
+                </p>
+              </div>
+            </div>
+            <div class="need-list">
+              <div class="need-item"><b>✓</b><span>Вайбкод-лабы с данными Sanity кладутся в <code>src/pages/labs-custom</code> основного репо — так работают publish-вебхуки.</span></div>
+              <div class="need-item"><b>!</b><span>Гайды и ограничения: <code>docs/guides/vibecode-lab-site.md</code> + <code>vibecode-lab-site-guardrails.md</code> (не писать в Sanity, схему не трогать).</span></div>
+            </div>
+          </article>
+
+          <article class="download-card">
+            <div class="resource-title">
+              <div>
+                <div class="tag-row"><span class="tag ok">актуален</span><span class="tag">01.07.2026</span></div>
+                <h3><code>/sanity-content</code></h3>
+                <p class="muted" style="margin-top: 8px">
+                  Наполнение данных Sanity агентом напрямую, без MD-файла:
+                  «Создай новую лабу на основе Template Lab…». Смотрит в папку
+                  <code>studio</code> со структурой данных; менять структуру
+                  запрещено — использовать аккуратно.
+                </p>
+              </div>
+            </div>
+            <div class="need-list">
+              <div class="need-item"><b>✓</b><span>Умеет и «Кастомные блоки» — HTML-блок прямо в Sanity (без JS) внутри стандартной лабы.</span></div>
+              <div class="need-item"><b>!</b><span>Токены для агентов — только read-only; Admin в Sanity держат Ракитин и командный аккаунт (правило от 09.07).</span></div>
+            </div>
+          </article>
+
+          <article class="download-card primary">
+            <div class="resource-title">
+              <div>
+                <div class="tag-row"><span class="tag ok">оплата</span><span class="tag">для вайбкод-страниц</span></div>
+                <h3>Оплата на вайбкод-странице</h3>
+                <p class="muted" style="margin-top: 8px">
+                  Готовая инструкция Ракитина для человека или агента (06.06.2026):
+                  два способа — ссылка на страницу <code>/pay?product=…</code>
+                  (работает при любом CSP) или попап-виджет
+                  <code>&lt;script src=".../widget/checkout.js"&gt;</code> +
+                  <code>data-aim-checkout data-product="…"</code>. Автоцены через
+                  <code>data-aim-price</code>, программный API
+                  <code>AIM.openCheckout()</code> / <code>AIM.refreshPrices()</code>.
+                </p>
+              </div>
+            </div>
+            <div class="need-list">
+              <div class="need-item"><b>✓</b><span>Весь платёжный флоу (валюты, скидки, alumni, Telegram) — на стороне AIM; лендингу нужен только HTML, без ключей и API.</span></div>
+              <div class="need-item"><b>!</b><span><code>product_code</code> — только из NocoDB (спросить у Дана/Иры); несуществующий код = попап без цены и warning в консоли. Исходник: <code>docs/guides/payment-embed-guide.md</code> в репо сайта + примеры для Health в <code>reports/2026-06-06_health-pay-instruction-*.md</code>.</span></div>
+            </div>
+            <div class="actions">
+              <a class="button primary" href="md.html?f=website-ops/payment-embed-guide.md">Открыть инструкцию</a>
+              <a class="button" href="website-ops/payment-embed-guide.md" download><span class="button-icon" aria-hidden="true"><svg><use href="#icon-download"></use></svg></span>Скачать .md для агента</a>
+              <button class="button" type="button" data-copy-url="website-ops/payment-embed-guide.md"><span class="button-icon" aria-hidden="true"><svg><use href="#icon-copy"></use></svg></span>Копировать текст</button>
+            </div>
+          </article>
+
+          <article class="download-card warning">
+            <div class="resource-title">
+              <div>
+                <div class="tag-row"><span class="tag warn">поддерживается</span><span class="tag">MD-импорт</span></div>
+                <h3>MD-пайплайн + пакет create-aim-lab-md</h3>
+                <p class="muted" style="margin-top: 8px">
+                  <code>npm run import-lab</code> / кнопка «Загрузить из MD» в
+                  Studio, шаблон <code>create-lab-from-md.md</code> + свежий
+                  <code>common_content.md</code>. Пакет скилла ниже построен на
+                  этом пайплайне: рабочий путь для импорта готовых лаб, но для
+                  наполнения и витрин быстрее скиллы из репо.
+                </p>
+              </div>
+            </div>
+            <div class="need-list">
+              <div class="need-item"><b>✓</b><span>Бонус июля: режим «Редактировать текст» + визуальный редактор прямо в превью (Loom: 63a74f39…), предпросмотр до publish.</span></div>
+              <div class="need-item"><b>!</b><span>После publish — вебхук и билд 1–2 минуты; product_code по-прежнему только из NocoDB.</span></div>
+            </div>
+          </article>
+        </div>
       </section>
 
       <section id="downloads">

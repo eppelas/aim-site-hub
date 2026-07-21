@@ -826,6 +826,109 @@
         align-items: stretch;
       }
 
+      .tool-card {
+        isolation: isolate;
+      }
+
+      .tool-card-preview {
+        position: relative;
+        z-index: 1;
+        display: block;
+        width: 96px;
+        height: 58px;
+        align-self: flex-end;
+        margin: -8px 0;
+        overflow: hidden;
+        cursor: zoom-in;
+        border: var(--frame) solid rgba(255, 250, 240, 0.2);
+        border-radius: 14px;
+        background: #0a0a0a;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.26);
+        transform-origin: top center;
+        transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+      }
+
+      .tool-card-preview img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        object-position: top center;
+        transition: transform 0.24s ease;
+      }
+
+      .tool-card:hover,
+      .tool-card:focus-visible {
+        z-index: 12;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .tool-card:hover .tool-card-preview,
+        .tool-card:focus-visible .tool-card-preview {
+          z-index: 20;
+          border-color: rgba(255, 250, 240, 0.62);
+          box-shadow: 0 20px 52px rgba(0, 0, 0, 0.58);
+          transform: translateY(-3px);
+        }
+
+        .tool-card:hover .tool-card-preview img,
+        .tool-card:focus-visible .tool-card-preview img {
+          transform: scale(1.02);
+        }
+      }
+
+      .tool-preview-hover-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: grid;
+        place-items: center;
+        padding: clamp(20px, 5vw, 72px);
+        background: rgba(0, 0, 0, 0.78);
+        backdrop-filter: blur(8px);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.18s ease, visibility 0.18s ease;
+      }
+
+      .tool-preview-hover-layer[data-open="true"] {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .tool-preview-hover-frame {
+        width: min(1120px, 92vw);
+        display: grid;
+        gap: 10px;
+        transform: translateY(12px) scale(0.96);
+        transition: transform 0.2s ease;
+      }
+
+      .tool-preview-hover-layer[data-open="true"] .tool-preview-hover-frame {
+        transform: translateY(0) scale(1);
+      }
+
+      .tool-preview-hover-image {
+        display: block;
+        width: 100%;
+        max-height: 80vh;
+        object-fit: contain;
+        object-position: top center;
+        border: var(--frame) solid rgba(255, 250, 240, 0.7);
+        border-radius: 18px;
+        background: #050505;
+        box-shadow: 0 34px 100px rgba(0, 0, 0, 0.86);
+      }
+
+      .tool-preview-hover-title {
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
       .card,
       .record {
         position: relative;
@@ -1048,52 +1151,6 @@
         grid-column: span 2;
       }
 
-      .style-notes {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .style-card {
-        border: var(--frame) solid var(--soft);
-        border-radius: 20px;
-        background: var(--panel);
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 14px;
-        text-decoration: none;
-        box-shadow: 0 18px 46px rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(12px);
-        transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
-      }
-
-      .style-card .style-go {
-        color: var(--muted);
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-      }
-
-      .style-card:hover .style-go {
-        color: var(--ink);
-      }
-
-      .style-card:hover {
-        border-color: rgba(255, 77, 77, 0.36);
-        transform: translateY(-6px);
-        box-shadow: 0 26px 60px rgba(0, 0, 0, 0.34);
-      }
-
-      .style-card strong {
-        display: block;
-        margin-bottom: 10px;
-        font-size: 18px;
-        line-height: 1.12;
-      }
-
       .index-card {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(280px, 0.84fr);
@@ -1131,6 +1188,15 @@
 
       .archive-preview img {
         min-height: 340px;
+      }
+
+      .design-iteration-card {
+        margin-top: 14px;
+      }
+
+      .design-iteration-card .card-media,
+      .design-iteration-card .card-media img {
+        min-height: 240px;
       }
 
       .archive-thumbs {
@@ -1497,7 +1563,6 @@
 
         .hero,
         .rail,
-        .style-notes,
         .index-card,
         .ops-layout,
         .ops-board {
@@ -1527,6 +1592,16 @@
           transform: none;
         }
 
+        .tool-card-preview {
+          width: 96px;
+          height: 58px;
+          cursor: default;
+        }
+
+        .tool-preview-hover-layer {
+          display: none;
+        }
+
         .status-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
@@ -1537,6 +1612,12 @@
 
         .timeline-item {
           grid-template-columns: 1fr;
+        }
+      }
+
+      @media (hover: none), (pointer: coarse) {
+        .tool-preview-hover-layer {
+          display: none;
         }
       }
 
@@ -1671,27 +1752,26 @@
         <input id="hub-search" type="search" placeholder="поиск по хабу: ссылки, правила, боты, дашборды…" autocomplete="off" />
         <span class="counter" id="hub-search-counter"></span>
       </div>
-      <div class="meta">минимальный гайдлайн</div>
+      <div class="meta">сайт · QA · CMS · дизайн</div>
     </header>
 
     <main>
       <section class="hero" id="overview" data-tab="overview" data-search-item>
         <div class="hero-panel hero-copy">
           <div>
-            <p class="kicker">минимум / ссылки + контекст</p>
+            <p class="kicker">AIM Website / операции</p>
             <h1>Гайдлайн AIM Website</h1>
           </div>
           <div>
             <p class="hero-lead">
-              Короткая стартовая страница для сайта AI Mindset: основные ссылки, QA, дизайн-индекс
-              и операционная карта зависимостей. Главная поверхность здесь — текущий сайт; боты,
-              правила и дизайн-лабы показаны как контуры вокруг него.
+              Production, staging и локальная версия AI Mindset, а также QA, аналитика,
+              правила, CMS, дизайн-лабы и архивы.
             </p>
             <div class="actions">
               <a class="action" href="https://aimindset.org/" target="_blank" rel="noopener noreferrer">сайт</a>
               <a class="action" href="../aimwebsite0.5/">локально</a>
               <a class="action" href="https://staging.aimindset.org/" target="_blank" rel="noopener noreferrer">стейджинг</a>
-              <a class="action" href="../style-index/">дизайн-индекс</a>
+              <a class="action" href="https://eppelas.github.io/aim-web-design-index/" target="_blank" rel="noopener noreferrer">дизайн-индекс</a>
               <a class="action" href="https://eppelas.github.io/aim-site-hub/" target="_blank" rel="noopener noreferrer">hub pages</a>
               <a class="action" href="https://github.com/eppelas/aim-site-hub" target="_blank" rel="noopener noreferrer">repo</a>
               <a class="action" href="sanity-cms.html">CMS</a>
@@ -1705,10 +1785,10 @@
           <div class="system-map" aria-label="Кликабельная карта зависимостей AIM Website">
             <div class="map-head">
               <p class="kicker">dependency map</p>
-              <h2>Что с чем связано</h2>
+              <h2>Система AIM Website</h2>
               <p>
-                Большие блоки — поверхности и диспетчеры, маленькие — источники.
-                Telegram живет внутри Сони и Василия, а не отдельным входом в сайт.
+                Сайт связан с QA, аналитикой, правилами, дизайн-лабораториями
+                и Telegram-ботами Соней и Василием.
               </p>
             </div>
             <svg class="map-lines" viewBox="0 0 1200 620" preserveAspectRatio="none" aria-hidden="true">
@@ -1745,7 +1825,7 @@
               <text x="914" y="502">оценки 0-10</text>
               <text x="560" y="512">память генераторам</text>
             </svg>
-            <a class="map-node current" href="../aimwebsite0.5/" data-detail="Текущий сайт здесь означает боевой домен, staging-домен и локальную папку/preview-контекст `aimwebsite0.5`. Локальный порт не является постоянным адресом сайта; его дает текущий preview launcher." aria-label="Открыть текущий локальный сайт">
+            <a class="map-node current" href="../aimwebsite0.5/" data-detail="Production: aimindset.org. Staging: staging.aimindset.org. Локальная версия: aimwebsite0.5; адрес задаёт активный preview-сервер." aria-label="Открыть текущий локальный сайт">
               <span class="node-main">
                 <span class="map-glyph glyph-site" aria-hidden="true">
                   <svg viewBox="0 0 120 84" fill="none">
@@ -1783,7 +1863,7 @@
               </span>
               <span class="telegram-badge">Telegram: @aim_surikat_bot</span>
             </a>
-            <a class="map-node qa-agent" href="AIM Site Agent Evaluation/reports/latest/dashboard.html" data-detail="Автоматический black-box worker: открывает production/staging и текущий local preview как внешний пользователь, проверяет CTA, ссылки, скриншоты, даты и читаемость, затем отдает результат Василию." aria-label="Открыть последний QA-дашборд">
+            <a class="map-node qa-agent" href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html" data-detail="Автоматический black-box worker: открывает production/staging и текущий local preview как внешний пользователь, проверяет CTA, ссылки, скриншоты, даты и читаемость, затем отдает результат Василию." aria-label="Открыть последний QA-дашборд">
               <span class="node-main">
                 <span class="map-glyph glyph-scan" aria-hidden="true">
                   <svg viewBox="0 0 64 56" fill="none">
@@ -1852,7 +1932,7 @@
                 </span>
               </span>
             </a>
-            <a class="map-node rules" href="#rules-pipelines" data-detail="Правила — не одна коробка: product/payment logic, правила ботов, QA/freshness, source fidelity, design feedback и update/generator cadences живут в разных файлах и кормят разные контуры." aria-label="Открыть продуктовые правила и пайплайны сайта">
+            <a class="map-node rules" href="#rules-pipelines" data-detail="Product/payment logic, bot behavior, QA/freshness, source fidelity, design feedback и generator cadence хранятся в отдельных реестрах правил." aria-label="Открыть продуктовые правила и пайплайны сайта">
               <span class="node-main">
                 <span class="map-glyph glyph-rules" aria-hidden="true">
                   <svg viewBox="0 0 76 60" fill="none">
@@ -1899,7 +1979,7 @@
                 <span>цели воронки</span>
               </span>
             </a>
-            <a class="map-node legacy" href="../style-index/" data-detail="Дизайн-архив — меньший источник: Style Index, legacy-направления, старые элементы и удачные механики. Он дает семена мастерским, но не управляет сайтом напрямую." aria-label="Открыть дизайн-индекс">
+            <a class="map-node legacy" href="https://eppelas.github.io/aim-web-design-index/" target="_blank" rel="noopener noreferrer" data-detail="Дизайн-архив — меньший источник: Style Index, legacy-направления, старые элементы и удачные механики. Он дает семена мастерским, но не управляет сайтом напрямую." aria-label="Открыть дизайн-индекс">
               <span class="node-main">
                 <span class="map-glyph glyph-archive" aria-hidden="true">
                   <svg viewBox="0 0 56 48" fill="none">
@@ -1930,43 +2010,9 @@
         <a class="action" href="analytics.html">Метрика ↗</a>
       </nav>
 
-      <section class="section" id="styles" data-tab="overview">
-        <div class="section-head">
-          <h2>Стилевой ориентир</h2>
-          <p class="section-note">Из каких трёх источников смешан стиль этой страницы — каждый можно открыть.</p>
-        </div>
-        <div class="style-notes">
-          <a class="style-card" data-search-item href="../style-index/">
-            <div>
-              <span class="pill">1</span>
-              <strong>Галерея проектов</strong>
-              <p class="summary">Карточки и быстрые переходы к материалам — как в опубликованном дизайн-индексе.</p>
-            </div>
-            <span class="style-go">открыть дизайн-индекс →</span>
-          </a>
-          <a class="style-card" data-search-item href="#current">
-            <div>
-              <span class="pill">2</span>
-              <strong>Рабочий архив AIM Website</strong>
-              <p class="summary">Ссылки на сайт, QA, документы и дизайн-индекс — это сам хаб, вы на нём.</p>
-            </div>
-            <span class="style-go">к основным ссылкам →</span>
-          </a>
-          <a class="style-card" data-search-item href="https://aim-os.netlify.app" target="_blank" rel="noopener noreferrer">
-            <div>
-              <span class="pill ok">3</span>
-              <strong>Бренд-индекс в стиле OS</strong>
-              <p class="summary">Моноширинность, сетка и спокойная системная подача — канон бренда aim-os (Brand OS v5).</p>
-            </div>
-            <span class="style-go">открыть aim-os →</span>
-          </a>
-        </div>
-      </section>
-
       <section class="section" id="current" data-tab="overview">
         <div class="section-head">
           <h2>Основные ссылки</h2>
-          <p class="section-note">Только то, что нужно открыть в первую очередь.</p>
         </div>
         <div class="grid">
           <a class="card dark wide" data-search-item href="../aimwebsite0.5/">
@@ -1993,15 +2039,15 @@
             </div>
             <span class="path">staging.aimindset.org</span>
           </a>
-          <a class="card green" data-search-item href="../style-index/">
+          <a class="card green" data-search-item href="https://eppelas.github.io/aim-web-design-index/" target="_blank" rel="noopener noreferrer">
             <div class="label-row"><span class="pill ok">дизайн</span></div>
             <div>
               <h3>AIM Web Design Index</h3>
               <p class="summary">Опубликованные legacy-направления.</p>
             </div>
-            <span class="path">/style-index/</span>
+            <span class="path">eppelas.github.io/aim-web-design-index/</span>
           </a>
-          <a class="card" data-search-item href="AIM Site Agent Evaluation/reports/latest/dashboard.html">
+          <a class="card" data-search-item href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html">
             <div class="label-row"><span class="pill">QA</span></div>
             <div>
               <h3>QA-дашборд</h3>
@@ -2013,25 +2059,25 @@
             <div class="label-row"><span class="pill ok">аналитика</span><span class="pill">Метрика</span></div>
             <div>
               <h3>Аналитика сайта</h3>
-              <p class="summary">Отдельная страница про Метрику, Вебвизор, цели, UTM-ссылки и то, как читать неизвестный Direct.</p>
+              <p class="summary">Метрика, Вебвизор, цели оплаты, UTM-ссылки и классификация Direct-трафика.</p>
             </div>
             <span class="path">analytics.html / website-ops/analytics-current-setup.md</span>
           </a>
           <a class="card green" data-search-item href="sanity-cms.html">
             <div class="label-row"><span class="pill ok">CMS</span><span class="pill">Sanity</span></div>
             <div>
-              <h3>Sanity и лабы из MD</h3>
-              <p class="summary">Отдельная страница правил для разработчика: Studio, Markdown import, common_content.md, API/CLI, product_code и staging.</p>
+              <h3>Sanity, скиллы и лабы из MD</h3>
+              <p class="summary">Актуальные скиллы июля 2026: /custom-lab-site и /sanity-content в репо сайта + гайды вайбкод-лаб. Плюс MD-импорт, common_content.md, API/CLI, product_code и staging.</p>
             </div>
-            <span class="path">sanity-cms.html / скачать скилл / скачать промпт</span>
+            <span class="path">sanity-cms.html / скиллы / скачать промпт</span>
           </a>
-          <a class="card" data-search-item href="../ai-mindset-blocks/">
-            <div class="label-row"><span class="pill">блоки</span></div>
+          <a class="card" data-search-item href="https://eppelas.github.io/ai-mindset-blocks/" target="_blank" rel="noopener noreferrer">
+            <div class="label-row"><span class="pill">блоки</span><span class="pill ok">experiments</span></div>
             <div>
               <h3>Blocks Lab</h3>
-              <p class="summary">Компоненты и секции.</p>
+              <p class="summary">Галерея вариантов отдельных секций сайта: программа, отзывы, FAQ, навигация лаб, спикеры, кейсы, тарифы и другие блоки.</p>
             </div>
-            <span class="path">/ai-mindset-blocks/</span>
+            <span class="path">eppelas.github.io/ai-mindset-blocks/</span>
           </a>
           <a class="card dark" data-search-item href="md.html?f=website-ops/qa-weekly-digest.md">
             <div class="label-row"><span class="pill ok">еженедельно</span><span class="pill">идеи</span></div>
@@ -2049,6 +2095,30 @@
             </div>
             <span class="path">website-ops/site-work-history-2025-2026.md</span>
           </a>
+          <a class="card dark" data-search-item href="md.html?f=website-ops/site-status-2026-07.md">
+            <div class="label-row"><span class="pill ok">статус</span><span class="pill">июль 2026</span></div>
+            <div>
+              <h3>Статус: июль 2026</h3>
+              <p class="summary">Сводка из рабочих чатов: команда и роли (техлид — Ракитин), актуальные Sanity-скиллы, состояние оплаты и главные риски (timeweb, site-list-products, точка пересборки 14.07).</p>
+            </div>
+            <span class="path">website-ops/site-status-2026-07.md</span>
+          </a>
+          <a class="card" data-search-item href="md.html?f=website-ops/community-advice.md">
+            <div class="label-row"><span class="pill warn">непроверено</span><span class="pill">эксперименты</span></div>
+            <div>
+              <h3>Советы комьюнити</h3>
+              <p class="summary">Чужой опыт из чатов {space} и {circle}: скиллы, агенты, анти-слоп, дизайн-пайплайны. НЕ правила команды — список «попробовать и поресёрчить», перед применением проверять на своих задачах.</p>
+            </div>
+            <span class="path">website-ops/community-advice.md</span>
+          </a>
+          <a class="card" data-search-item href="md.html?f=website-ops/adjacent-bots-2026-07.md">
+            <div class="label-row"><span class="pill">соседние боты</span><span class="pill">справка</span></div>
+            <div>
+              <h3>Боты вне контура</h3>
+              <p class="summary">Партнёрский copilot Alex (@aim_partners_bot) и онбординг/платёжный бот Dan: как устроены, уровни доступа, заметки безопасности. Не входят в реестр правил сурикатов.</p>
+            </div>
+            <span class="path">website-ops/adjacent-bots-2026-07.md</span>
+          </a>
         </div>
       </section>
 
@@ -2056,7 +2126,7 @@
       <section class="section" id="analytics" data-tab="analytics">
         <div class="section-head">
           <h2>Аналитика</h2>
-          <p class="section-note">Коротко: здесь мы отделяем поведение людей на сайте от наших тестов, смотрим путь до оплаты и не верим сырому Direct без проверки источников.</p>
+          <p class="section-note">Поведение посетителей, путь до оплаты и проверка источников трафика — отдельно от внутренних тестовых визитов.</p>
         </div>
         <div class="ops-layout">
           <article class="card dark" data-search-item>
@@ -2065,15 +2135,15 @@
               <span class="pill">AI Native + payment</span>
             </div>
             <div>
-              <h3>Что это за контур</h3>
+              <h3>Охват аналитики</h3>
               <p class="summary">
-                Сейчас этот контур относится к AI Native, странице оплаты и staging-зеркалу.
-                Главный смысл: видеть, кто доходит до цены, кто нажимает оплату, какие блоки читают,
-                какие ссылки привели людей и какие визиты нужно исключать как командные.
+                Метрика охватывает AI Native, страницу оплаты и staging. Она показывает путь
+                до цены и оплаты, чтение блоков, источники трафика и внутренние командные визиты.
               </p>
             </div>
             <div class="actions">
               <a class="action" href="analytics.html">открыть страницу аналитики</a>
+              <a class="action" href="metrika-report.html">выводы и графики</a>
               <a class="action" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">открыть Метрику</a>
               <a class="action" href="md.html?f=website-ops/analytics-current-setup.md">техническая настройка</a>
             </div>
@@ -2082,8 +2152,8 @@
 
           <div class="ops-board">
             <article class="ops-panel" data-search-item>
-              <div class="label-row"><span class="pill ok">смысл</span><span class="pill">воронка</span></div>
-              <h3>Что смотрим</h3>
+              <div class="label-row"><span class="pill ok">метрики</span><span class="pill">воронка</span></div>
+              <h3>Воронка и источники</h3>
               <ul class="ops-list">
                 <li><strong>Путь:</strong> визит → блок цены → кнопка записи → страница оплаты.</li>
                 <li><strong>Качество:</strong> где люди зависают, что раскрывают, где уходят.</li>
@@ -2103,11 +2173,11 @@
 
             <article class="ops-panel" data-search-item>
               <div class="label-row"><span class="pill ok">Сурикат</span><span class="pill">страховка</span></div>
-              <h3>Почему это не одно и то же</h3>
+              <h3>Метрика и Сурикат</h3>
               <ul class="ops-list">
                 <li><strong>Метрика:</strong> показывает поведение, источники и цели.</li>
                 <li><strong>Сурикат:</strong> страхует контакт, если Telegram-ник теряется в оплате.</li>
-                <li><strong>Отчет:</strong> для решений по сайту смотрим оба источника, но не смешиваем их роли.</li>
+                <li><strong>Отчет:</strong> сопоставляет данные Метрики и Суриката без смешения их функций.</li>
               </ul>
             </article>
           </div>
@@ -2117,7 +2187,7 @@
       <section class="section" id="review-tools" data-tab="tools">
         <div class="section-head">
           <h2>Инструменты</h2>
-          <p class="section-note">Сюда дозаписываем рабочие инструменты сайта: отдельно ревью-поверхности и дизайнерские генераторы/референсы.</p>
+          <p class="section-note">Рабочие поверхности для просмотра, сравнения и проверки сайта.</p>
         </div>
         <div class="tool-registry">
           <!-- TOOL_REGISTRY_SUMMARY_START -->
@@ -2127,8 +2197,12 @@
               <p class="summary">Открывать, сравнивать и проверять конкретные состояния сайта.</p>
             </div>
             <div class="grid tool-grid">
-              <a class="card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-payment-popup-compare-html/">
+              <a class="card tool-card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-payment-popup-compare-html/">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">payment</span></div>
+
+            <span class="tool-card-preview">
+              <img src="local-preview/site-hub-screenshots/review-payment-popup-compare.png" alt="Payment popup compare с desktop и mobile состояниями платежного попапа" loading="lazy" />
+            </span>
             <div>
               <h3>Payment popup compare</h3>
               <p class="summary">Сравнение версий платежного попапа: desktop/mobile, left/right variants, draggable split, result states.</p>
@@ -2139,8 +2213,12 @@
             </div>
             <span class="path">V3 Site Repo - aimwebsite0.5/payment-popup-compare.html</span>
           </a>
-              <a class="card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-payment-page-design-lab/">
+              <a class="card tool-card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-payment-page-design-lab/">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">payment</span></div>
+
+            <span class="tool-card-preview">
+              <img src="local-preview/site-hub-screenshots/review-payment-page-design-lab.png" alt="Payment Page Design Lab с полноэкранным вариантом платежной страницы" loading="lazy" />
+            </span>
             <div>
               <h3>Payment Page Design Lab</h3>
               <p class="summary">Review-only dark full-canvas payment page lab: 10 visual variants with the current payment popup copy, UX, states, methods, discounts, and validation preserved.</p>
@@ -2151,8 +2229,12 @@
             </div>
             <span class="path">V3 Site Repo - aimwebsite0.5/payment-page-design-lab/index.html</span>
           </a>
-              <a class="card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-case-popup-compare-html/">
+              <a class="card tool-card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-case-popup-compare-html/">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">cases</span></div>
+
+            <span class="tool-card-preview">
+              <img src="local-preview/site-hub-screenshots/review-case-popup-compare.png" alt="Case popup compare с двумя вариантами попапа кейса" loading="lazy" />
+            </span>
             <div>
               <h3>Case popup compare</h3>
               <p class="summary">Сравнение текущего и новых вариантов попапа кейса: desktop/mobile, left/right variants, shared case auto-open.</p>
@@ -2163,8 +2245,12 @@
             </div>
             <span class="path">V3 Site Repo - aimwebsite0.5/case-popup-compare.html</span>
           </a>
-              <a class="card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-homepage-design-lab/">
+              <a class="card tool-card" data-search-item href="../preview/v3-site-repo-aimwebsite0-5-homepage-design-lab/">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">homepage</span></div>
+
+            <span class="tool-card-preview">
+              <img src="local-preview/site-hub-screenshots/review-page-design-lab.png" alt="Page Design Lab с галереей вариантов страниц AIM" loading="lazy" />
+            </span>
             <div>
               <h3>Page Design Lab</h3>
               <p class="summary">Review-only Style Gallery-like index for generated AIM page prototypes with screenshot thumbnails, site-side Anca/Sasha/other rating controls, separated homepage/payment/element lanes, and left/right compare mode as a secondary review tool.</p>
@@ -2175,8 +2261,12 @@
             </div>
             <span class="path">V3 Site Repo - aimwebsite0.5/homepage-design-lab/index.html</span>
           </a>
-              <a class="card" data-search-item href="../preview/design-feedback-dashboard/">
+              <a class="card tool-card" data-search-item href="../preview/design-feedback-dashboard/">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">design-feedback</span></div>
+
+            <span class="tool-card-preview">
+              <img src="local-preview/site-hub-screenshots/review-design-feedback-dashboard.png" alt="AIM Design Feedback Dashboard со сводными метриками и вкладками" loading="lazy" />
+            </span>
             <div>
               <h3>AIM Design Feedback Dashboard</h3>
               <p class="summary">Evaluation dashboard for homepage, guided payment page, and standalone element design feedback. Stores Telegram and site-side ratings, negative memory, preferred mechanics, and generator guardrails.</p>
@@ -2187,8 +2277,12 @@
             </div>
             <span class="path">design-feedback-dashboard/index.html</span>
           </a>
-              <a class="card" data-search-item href="../">
+              <a class="card tool-card" data-search-item href="../">
             <div class="label-row"><span class="pill ok">active</span><span class="pill">navigation</span></div>
+
+            <span class="tool-card-preview">
+              <img src="local-preview/site-hub-screenshots/review-local-preview-index.png" alt="Локальный индекс доступных страниц и галерей AIM Website" loading="lazy" />
+            </span>
             <div>
               <h3>Local Preview Index</h3>
               <p class="summary">Корневой локальный индекс всех найденных built pages, галерей, опубликованных style pages и основных preview entry points в папке AIM Website.</p>
@@ -2199,8 +2293,12 @@
             </div>
             <span class="path">local-preview/server.mjs / root route</span>
           </a>
-              <a class="card" data-search-item href="../preview/design-feedback-dashboard/">
+              <a class="card tool-card" data-search-item href="../preview/design-feedback-dashboard/">
             <div class="label-row"><span class="pill ok">local-bot</span><span class="pill">design-feedback</span></div>
+
+            <span class="tool-card-preview">
+              <img src="local-preview/site-hub-assets/sonya-primary-selfie-20260528-140751.jpeg" alt="Соня, Telegram-бот для дизайн-ревью AIM" loading="lazy" />
+            </span>
             <div>
               <h3>Surikat Sonya Design Review Bot</h3>
               <p class="summary">Telegram design-review bot that sends AIM design-lab screenshots to Anca and Sasha, records 0-10 ratings, feeds the design feedback registry, writes next-design handoff instructions for the page generators, and can run on Cloud Run with Vertex AI for Google Cloud billing credits.</p>
@@ -2216,14 +2314,15 @@
           <div class="tool-group" data-tool-kind="design">
             <div class="tool-group-head">
               <h3>Design tools</h3>
-              <p class="summary">Использовать как источник визуального языка, генерации ассетов и дизайнерских направлений.</p>
+              <p class="summary">Визуальные системы, генерация ассетов и дизайн-направления для сайта.</p>
             </div>
             <div class="grid tool-grid">
-              <a class="card" data-search-item href="https://ai.studio/apps/2dbe04c3-5e89-4176-b527-c28474821221" target="_blank" rel="noopener noreferrer">
+              <a class="card tool-card" data-search-item href="https://ai.studio/apps/2dbe04c3-5e89-4176-b527-c28474821221" target="_blank" rel="noopener noreferrer">
             <div class="label-row"><span class="pill ok">external</span><span class="pill">visual-system</span></div>
+
             <div>
               <h3>Morph System</h3>
-              <p class="summary">Дизайнерский AI Studio инструмент для генерации/подбора technical, ASCII, blueprint и glitch visual systems; использовать как источник визуального языка и идей для сайта.</p>
+              <p class="summary">Генерация и подбор technical, ASCII, blueprint и glitch-визуальных систем для сайта.</p>
             </div>
             <div class="actions">
               <span class="mini-button">open</span>
@@ -2235,13 +2334,12 @@
           </div>
         <!-- TOOL_REGISTRY_SUMMARY_END -->
         </div>
-        <p class="section-note">Источник: `website-ops/tool-registry.json`; синхронизация: `node local-preview/sync-tool-registry-summary.mjs`.</p>
       </section>
 
       <section class="section" id="rules-pipelines" data-tab="rules">
         <div class="section-head">
           <h2>Правила и пайплайны</h2>
-          <p class="section-note">Продуктовые правила, правила работы ботов и update-пайплайны, которые должны быть синхронизированы между сайтом, Сурикатами, QA и этой страницей.</p>
+          <p class="section-note">Продуктовые правила, работа ботов и пайплайны обновления сайта, QA и дизайн-инструментов.</p>
         </div>
         <div class="ops-layout">
           <article class="card dark" data-search-item>
@@ -2252,8 +2350,7 @@
             <div>
               <h3>Product Rules Registry</h3>
               <p class="summary">
-                Источник правды для правил, которые нельзя держать только в коде или в чате.
-                Сейчас здесь зафиксированы логика скидок в платежном попапе и правила source-fidelity
+                Product Rules Registry хранит логику скидок платежного попапа и правила source fidelity
                 для добавления кейсов из YouTube, заметок и других исходников.
               </p>
             </div>
@@ -2289,6 +2386,76 @@
               <li><strong>Rule:</strong> New or updated case studies must be built from the exact provided sources. YouTube fragments require clean video-frame screenshots, source-matched task and description copy, and an explicit source-fidelity review of technologies before handoff.</li>
               <li><strong>QA:</strong> Every new or materially updated case should have a Case Source Fidelity Reviewer pass before local review handoff.</li>
               <li><strong>QA:</strong> For YouTube-sourced cases, reviewer notes should explicitly confirm screenshots, speaker portrait, transcript/video claims, and technology list evidence.</li>
+              <li><strong>Source:</strong> website-ops/product-rules.json</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">payment</span></div>
+            <h3>Payment display equals charge</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> The price shown in the discount-check preview and the amount actually charged by checkout-init/invoice must be computed from the same FX rate and the same discount chain. Rounding happens once, at the very end (RUB and USDT to whole units). RUB is derived at runtime as price_eur × eur_rub_rate from NocoDB config (no price_rub in the catalog); USDT is indicative (shown with ≈) because OxaPay converts EUR to crypto at invoice time. Providers: Stripe (EUR), Moneta/PayAnyWay (RUB, SBP/QR), OxaPay (USDT crypto), plus manual invoice for custom deals.</li>
+              <li><strong>QA:</strong> For any product code, discount-check amounts {eur, rub, usdt} must match what each provider actually charges after the same discounts.</li>
+              <li><strong>QA:</strong> Rounded values appear only once at the end of the chain: RUB integer, USDT integer, no intermediate rounding.</li>
+              <li><strong>Source:</strong> website-ops/product-rules.json</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">payment</span></div>
+            <h3>Tariff switchover keeps both tariffs live</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> When switching a lab from an early tariff to the main tariff, enable the new tariff and keep the old one enabled in parallel; never disable the old tariff before the new one is confirmed working. Early tariffs may stay enabled indefinitely — latecomers who deserve early pricing are handled manually by Ira. Adopted after the 2026-07-07 incident when payments went down during an early→main switch while ads were running.</li>
+              <li><strong>QA:</strong> During any tariff switch, at least one payable tariff for the lab must return a valid price from discount-check at all times.</li>
+              <li><strong>QA:</strong> Payment QA should re-run the purchase path immediately after any tariff config change in NocoDB.</li>
+              <li><strong>Source:</strong> website-ops/product-rules.json</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">payment</span></div>
+            <h3>Product codes come from NocoDB, not Sanity</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> product_code is {lab_slug}_{tariff} in lowercase (e.g. s26_main, ain3_mainearly). The source of truth for prices, tariffs, and validity windows is the NocoDB LMS Lab Config table (Dan), not Sanity and not the page slug — codes are never derived or invented. Early-bird is a tariff with valid_until, not a promo code. Corporate/team deals are not automated on the site: the button leads to Telegram and Ira handles contracts and transfers manually.</li>
+              <li><strong>QA:</strong> Every product_code used on a page or in a lab MD import must exist in NocoDB Lab Config (site-list-products / discount-check confirm it).</li>
+              <li><strong>QA:</strong> Tariff-code lookup should be case-insensitive end to end; until the n8n root fix is confirmed, keep catalog keys lowercase.</li>
+              <li><strong>Source:</strong> website-ops/product-rules.json</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">content</span></div>
+            <h3>Testimonial consent is site-only</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Testimonials collected in 2026 are approved for the website only (ai-native set); using them anywhere else requires fresh consent from the person. Case studies were cleared by Vlada for marketing in general and may be used more widely. Raiffeisen must not be named in a testimonial — describe as &#039;Financing + company size&#039;; the logo may appear on the site only without matching it to a testimonial or a person&#039;s name.</li>
+              <li><strong>QA:</strong> No testimonial from the site set appears in emails, decks, or ads without recorded new consent.</li>
+              <li><strong>QA:</strong> No page visually links the Raiffeisen logo to a specific testimonial or employee name.</li>
+              <li><strong>Source:</strong> website-ops/product-rules.json</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">analytics</span></div>
+            <h3>Staff and agents excluded from analytics</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Everyone working on the site — and every browser their agents drive (including Playwright profiles) — must self-exclude from analytics by opening the staff links once: https://ai-native.aimindset.org/?aim_staff=on and https://staging.aimindset.org/pay/?product=ain3_mainearly&amp;aim_staff=on. The cookie lasts 180 days and must be refreshed after profile resets.</li>
+              <li><strong>QA:</strong> QA/bot browser profiles set aim_staff=on before crawling production or staging.</li>
+              <li><strong>QA:</strong> Metrika sessions from team devices and agent runs do not appear in funnel numbers.</li>
+              <li><strong>Source:</strong> website-ops/product-rules.json</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">cms</span></div>
+            <h3>Agents get read-only Sanity access</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> AI agents working with Sanity receive read-only tokens so they cannot change schema or data; Admin roles are held only by Sergei Rakitin and the team account. Agents must never modify the Sanity schema (guardrails doc: docs/guides/vibecode-lab-site-guardrails.md). Vibecode lab sites bound to Sanity data live inside the ai-mindset-website repo under src/pages/labs-custom — not in separate repos — so publish webhooks keep working; free-standing vibecode sites stay out of the main site repo.</li>
+              <li><strong>QA:</strong> Sanity access review: only Rakitin + team account hold Admin; agent tokens are Viewer/read-only.</li>
+              <li><strong>QA:</strong> New vibecode lab pages appear under staging.aimindset.org/labs-custom/* and update on Sanity publish.</li>
+              <li><strong>Source:</strong> website-ops/product-rules.json</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">active</span><span class="pill">process</span></div>
+            <h3>New site people and entities are announced</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Any new person, agent, repo, service, or input that touches the site surface (staging, Sanity, aimindset.org, analytics, QA tests, payments, branding) must be announced in the site chat before or as it appears. Adopted after agent OXI-717 (Ilya Golubev) was discovered in the staging repo without prior introduction.</li>
+              <li><strong>QA:</strong> Every new collaborator or agent with repo/Sanity/analytics access maps to an introduction message in the site chat.</li>
+              <li><strong>QA:</strong> Hub registries (bots, tools, rules) are updated when such an entity becomes permanent.</li>
               <li><strong>Source:</strong> website-ops/product-rules.json</li>
             </ul>
           </article>
@@ -2343,7 +2510,7 @@
             <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">llm</span><span class="pill">active</span></div>
             <h3>Owner-gated LLM site audits</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Owner requests like &#039;Вась, сходи проверь сайт, ссылки, даты и названия&#039; or &#039;Вась, давай сделаем аудит вот этого сайта https://...&#039; trigger bounded read-only website QA via Vertex/Gemini. Vasily crawls the target, same-origin pages, linked AIM Labs/sprint pages, and a bounded external-link sample, then answers in DM or the source chat. A plain group URL or analytics discussion is only remembered as context and must not trigger this mode.</li>
+              <li><strong>Rule:</strong> A direct owner request for a website audit triggers bounded read-only QA via Vertex/Gemini. Vasily crawls the target, same-origin pages, linked AIM Labs/sprint pages, and a bounded external-link sample, then answers in DM or the source chat. A plain group URL or analytics discussion is remembered only as context and does not trigger this mode.</li>
               <li><strong>Check:</strong> SURIKAT_LLM_TASK_OWNER_ONLY stays true unless the owner explicitly opens access.</li>
               <li><strong>Check:</strong> The LLM semantic intent router runs before conversational replies for owner DMs and directly addressed owner messages, so audit/QA tasks are classified by meaning and cannot be answered as casual chat just because they miss a task regex.</li>
               <li><strong>Check:</strong> A plain URL, UTM link, analytics note, or edited chat note is not a site-audit task by itself, even if the URL is an accepted AIM surface.</li>
@@ -2379,7 +2546,7 @@
               <li><strong>Rule:</strong> @aim_surikat_sonya_bot runs as Cloud Run webhook aim-surikat-sonya in the Sonya Google Cloud project project-f40c3e3c-0fca-49de-96d. Local polling should not run while webhook mode is active. Sonya uses Vertex AI for the Google Cloud credits path and Cloud Storage for media/state/catalog surfaces. Cloud Run can answer in groups when addressed, but auto-review remains off and send approval remains required. Runtime Veo is configured but currently disabled/expired; the repo Dockerfile runtime has ffmpeg available for real Telegram video_note output if the owner explicitly re-enables that mode. Vasily must not be deployed into this project except as an explicit rollback.</li>
               <li><strong>Check:</strong> Live health should report mode=webhook, genaiProvider=vertex, groupChatEnabled=true, groupVideoReplyEnabled=true, autoReviewEnabled=false, requireSendApproval=true, and sashaProactiveDmEnabled=false.</li>
               <li><strong>Check:</strong> runtimeVeo should remain enabled=false and expired=true unless the owner explicitly reopens the paid media-generation window; if reopened with sendAsVideoNote=true, health must report ffmpegAvailable=true.</li>
-              <li><strong>Check:</strong> Cloud Run reads review cards from GCS catalog.json/inventory.json; the local catalog publisher owns candidate scoring, bounded missing-preview capture, stale-lock cleanup, and GCS catalog publication.</li>
+              <li><strong>Check:</strong> Cloud Run reads only Sonya policy-v2 review cards from GCS catalog.json/inventory.json. The local publisher runs every 30 minutes, caps hard-eligible broad inventory at 12, skips unchanged uploads, and owns scoring, bounded missing-preview capture, stale-lock cleanup, and GCS publication.</li>
               <li><strong>Source:</strong> Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md</li>
             </ul>
           </article>
@@ -2387,11 +2554,44 @@
             <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">design-feedback</span><span class="pill">active</span></div>
             <h3>Sonya ratings become generator memory</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Sonya sends review-only homepage/payment/element screenshots, collects 0-10 owner ratings, writes the design feedback registry, mirrors fresh state/catalog surfaces to GCS for Cloud Run, and appends keep/change/avoid/promote instructions for future generators.</li>
+              <li><strong>Rule:</strong> Sonya sends only revision-bound, QA- and visual-audit-passed review artifacts, collects 0-10 owner ratings, writes the design feedback registry, mirrors fresh state/catalog surfaces to GCS for Cloud Run, and appends keep/change/avoid/promote instructions for future generators.</li>
               <li><strong>Check:</strong> 0 is hard reject; 1-3 rejected; 4-6 weak; 7-8 promising; 9-10 strong.</li>
-              <li><strong>Check:</strong> catalog.json is the curated top selection for normal/scheduled Sonya review; inventory.json is the full screenshot-ready review inventory for owner broad review requests.</li>
-              <li><strong>Check:</strong> SONYA_PAGES_LINK_MODE=published-only guards public links: untracked/local-only review labs may be evaluated and screenshotted but must not be advertised as GitHub Pages URLs.</li>
+              <li><strong>Check:</strong> catalog.json is the curated top selection; inventory.json contains only hard-eligible active-review artifacts with passed QA and visual audit for the same current fingerprint.</li>
+              <li><strong>Check:</strong> Manual broad review may bypass Sonya score but never manifest visibility, QA, visual audit, current revision, screenshot, reviewFocus, or designDelta gates.</li>
               <li><strong>Source:</strong> website-ops/design-feedback-rules.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Freshness Surikat (public name TBD)</span><span class="pill">content-freshness</span><span class="pill">specified-local</span></div>
+            <h3>Freshness Surikat reconciles the public team monthly</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Once per month, show one neutral list of the team names currently published on the site and ask whether the list and spelling are current. Omit Ira and Sasha from the list entirely. Do not single out individuals, infer arrivals or departures from chat activity, or propose adding/removing a named employee.</li>
+              <li><strong>Check:</strong> Do not mention Ira or Sasha in the monthly roster question.</li>
+              <li><strong>Check:</strong> Use exactly one neutral roster-level question, not separate questions or judgments about individuals.</li>
+              <li><strong>Check:</strong> Working-chat context must not create named add/remove suggestions or employee activity scoring.</li>
+              <li><strong>Source:</strong> Bots/Website Freshness Bot/README.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Freshness Surikat (public name TBD)</span><span class="pill">lab-freshness</span><span class="pill">specified-local</span></div>
+            <h3>Freshness Surikat owns the lab recruitment lifecycle</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Track each lab from chat-known planning through published page and recruitment removal. Before a page exists, propose a nearest-lab listing with season and year only. Once a semantically valid lab page is discoverable through sitemap, internal link, configured route, or confirmed chat URL, read its current start date and remove every enrollment-list mention exactly seven calendar days after start. A date change recomputes the deadline. The lab page itself may remain as current, waitlist, recap, or archive.</li>
+              <li><strong>Check:</strong> S26 is currently linked from the staging homepage recruitment surface at /labs-custom/s26/ with startDate 2026-08-03; the current recruitment-removal checkpoint is 2026-08-10.</li>
+              <li><strong>Check:</strong> Treat page discovery as site/sitemap/crawl discovery; do not claim Google index status without search-engine evidence.</li>
+              <li><strong>Check:</strong> Deduplicate all homepage and selling-surface enrollment mentions into one obligation with every source location.</li>
+              <li><strong>Source:</strong> Bots/Website Freshness Bot/README.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Freshness Surikat (public name TBD)</span><span class="pill">link-freshness</span><span class="pill">specified-local</span></div>
+            <h3>Freshness Surikat deduplicates recurring link drift</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Check recurring and changeable links at least weekly. Evaluate HTTP status, final redirect target, visible link meaning, and repeated use across pages. One destination problem creates one obligation listing every occurrence instead of chat noise or duplicate tickets.</li>
+              <li><strong>Check:</strong> A 200 response is not sufficient when the final redirect target or semantic destination changed.</li>
+              <li><strong>Check:</strong> Keep source locations and timestamps as evidence.</li>
+              <li><strong>Check:</strong> Hand confirmed site defects to Vasily/Linear rather than creating a parallel bug tracker.</li>
+              <li><strong>Source:</strong> Bots/Website Freshness Bot/README.md</li>
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
@@ -2447,23 +2647,24 @@
               <div class="label-row"><span class="pill ok">local</span><span class="pill">codex</span></div>
               <h3>Локальная Codex automation `bug`</h3>
               <ul class="ops-list">
-                <li><strong>Статус сейчас:</strong> `PAUSED`, чтобы ночью ресурс уходил в AIM Night Design Pursuit.</li>
-                <li><strong>Что это:</strong> локальный cron в Codex, который может продолжать незавершённую bug-задачу с последнего понятного состояния.</li>
+                <li><strong>Статус сейчас:</strong> `PAUSED` независимо от дизайн-генераторов; AIM Night Design Pursuit тоже остановлен.</li>
+                <li><strong>Назначение:</strong> продолжает незавершённую bug-задачу с последнего сохранённого состояния.</li>
                 <li><strong>Где живёт:</strong> `~/.codex/automations/bug/` вне git-репозитория.</li>
                 <li><strong>Из чего состоит:</strong> `automation.toml` хранит расписание/cwd/model/prompt, а `memory.md` хранит понятную историю прогонов.</li>
                 <li><strong>Как работает, если включить:</strong> запускается по расписанию с prompt `continue this task`, читает прошлый след в `memory.md`, поднимает текущий контекст из рабочей папки и продолжает последний незакрытый баговый поток.</li>
-                <li><strong>Что смотреть человеку:</strong> если непонятно, почему Codex что-то сам проверял или чинил, сначала открыть `~/.codex/automations/bug/memory.md`.</li>
-                <li><strong>Важно:</strong> это исполняющий worker и журнал, а не источник правды для правил сайта; source of truth остаётся в `website-ops/*.json`, `website-ops/*.md`, docs Суриката и QA repo.</li>
+                <li><strong>Журнал действий:</strong> `~/.codex/automations/bug/memory.md`.</li>
+                <li><strong>Источник правил:</strong> `website-ops/*.json`, `website-ops/*.md`, документация Суриката и QA repo; automation хранит исполнение и журнал.</li>
               </ul>
             </article>
 
             <article class="ops-panel" data-search-item>
-              <div class="label-row"><span class="pill ok">night</span><span class="pill">design</span></div>
+              <div class="label-row"><span class="pill">paused</span><span class="pill">design</span></div>
               <h3>AIM Night Design Pursuit</h3>
               <ul class="ops-list">
                 <li><strong>Automation ID:</strong> `aim-night-design-pursuit`.</li>
-                <li><strong>Окно:</strong> каждый день старт в 00:05 Europe/Lisbon; может работать до 06:45.</li>
-                <li><strong>Цель:</strong> много разнообразных review-only дизайнов по трём направлениям: главная, guided payment page, отдельные элементы/попапы.</li>
+                <li><strong>Статус:</strong> `PAUSED`; прежнее окно было 00:05–06:05 Europe/Lisbon.</li>
+                <li><strong>Возобновление:</strong> только под новый согласованный план генерации; старое расписание не должно самостоятельно создавать новые варианты.</li>
+                <li><strong>Историческая цель:</strong> review-only дизайны по трём направлениям: главная, guided payment page, отдельные элементы/попапы.</li>
                 <li><strong>Качество:</strong> AIM Design Quality Pursuit, целевой self-check `8/10+` и соответствие духу AI Mindset.</li>
                 <li><strong>Ресурсы:</strong> ночью можно закрывать Telegram, Obsidian, Pencil, Linear, лишние Terminal, stale subagents и не нужные dev-серверы.</li>
                 <li><strong>Не трогать:</strong> Codex, нужный браузер/Arc, OS/Finder, Yandex Disk/sync и активные Creative Taste Bot/code-animation процессы.</li>
@@ -2485,7 +2686,7 @@
 
             <article class="ops-panel" data-search-item>
               <div class="label-row"><span class="pill ok">cadence</span><span class="pill">agents</span></div>
-              <h3>Что обновляется само</h3>
+              <h3>Автоматические обновления</h3>
               <ul class="ops-list">
                 <li><strong>Product rules:</strong> каждый день 09:00 Europe/Lisbon, automation `aim-website-product-rules-sync-watch`.</li>
                 <li><strong>Case source fidelity:</strong> перед каждым новым или существенно обновлённым кейсом, reviewer `Case Source Fidelity Reviewer`.</li>
@@ -2493,9 +2694,9 @@
                 <li><strong>DeviceCloud:</strong> manual и preflight 2-го числа 09:00 UTC; реальные сессии ждут provider secrets.</li>
                 <li><strong>Surikat:</strong> Cloud Run webhook `aim-surikat-vasily`; local LaunchAgent выключен и используется только как rollback после `deleteWebhook`.</li>
                 <li><strong>Surikat LLM chat:</strong> LLM may write only the final short reply after hard guards and semantic intent classification; it must not accept tasks, create Linear issues, or invent QA/dashboard status.</li>
-                <li><strong>Homepage full design:</strong> раз в неделю по понедельникам 09:40 Europe/Lisbon; automation `aim-homepage-full-design-generator` создаёт полный light-theme прототип в `homepage-design-lab/runs/full/` и читает Sonya handoff.</li>
-                <li><strong>AIM Night Design Pursuit:</strong> каждый день 00:05 Europe/Lisbon; automation `aim-night-design-pursuit` использует ночное окно 00:00–07:00 для разнообразных review-only дизайнов, может закрывать лишние приложения и читает Sonya handoff.</li>
-                <li><strong>Homepage elements:</strong> раз в неделю по пятницам 10:20 Europe/Lisbon; automation `aim-homepage-element-design-generator` создаёт один блок/попап/элемент в `homepage-design-lab/runs/elements/` и читает Sonya handoff.</li>
+                <li><strong>Homepage full design:</strong> `PAUSED`; прежнее расписание — понедельник 09:40 Europe/Lisbon. `aim-homepage-full-design-generator` можно возобновить только под новый согласованный план генерации.</li>
+                <li><strong>AIM Night Design Pursuit:</strong> `PAUSED`; прежнее ночное окно — 00:05–06:05 Europe/Lisbon. Новые массовые прогоны не запускаются без нового согласованного плана.</li>
+                <li><strong>Homepage elements:</strong> `PAUSED`; прежнее расписание — пятница 10:20 Europe/Lisbon. `aim-homepage-element-design-generator` можно возобновить только под новый согласованный план генерации.</li>
                 <li><strong>Codex bug automation:</strong> сейчас `PAUSED`; живёт в `~/.codex/automations/bug/`, при включении продолжает незавершённый bug-thread и пишет след в `memory.md`.</li>
                 <li><strong>Hub:</strong> после значимых изменений руками или через sync script; local preview auto-sync подтягивает Product rules, Tool registry и Bot operating rules; desktop/mobile preview обязателен.</li>
               </ul>
@@ -2508,7 +2709,7 @@
       <section class="section" id="qa" data-tab="qa">
         <div class="section-head">
           <h2>Сурикат и QA-агенты</h2>
-          <p class="section-note">Операционная карта: Василий принимает QA-сигналы из Telegram и докладывает людям, Соня принимает дизайн-сигналы и оценки, а автоматические workers проверяют сайт и готовят новые варианты страниц/элементов.</p>
+          <p class="section-note">Василий принимает QA-сигналы из Telegram и передаёт результаты людям; Соня собирает дизайн-оценки; автоматические workers проверяют сайт и создают варианты страниц и элементов.</p>
         </div>
         <div class="ops-layout">
           <article class="card dark" data-search-item>
@@ -2525,7 +2726,7 @@
               </p>
             </div>
             <div class="actions">
-              <a class="action" href="AIM Site Agent Evaluation/README.md">README</a>
+              <a class="action" href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/README.md">README</a>
               <a class="action" href="https://github.com/eppelas/aim-site-agent-evaluation" target="_blank" rel="noopener noreferrer">GitHub</a>
               <a class="action" href="https://eppelas.github.io/aim-site-agent-evaluation/" target="_blank" rel="noopener noreferrer">GitHub Pages</a>
             </div>
@@ -2609,15 +2810,15 @@
             </div>
             <span class="path">Bots/Telegram Design Taste Bot - Sonya</span>
           </a>
-          <a class="card" data-search-item href="AIM Site Agent Evaluation/reports/latest/dashboard.html">
+          <a class="card" data-search-item href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html">
             <div class="label-row"><span class="pill">подключаемый QA-агент</span></div>
             <div>
               <h3>QA-бот сайта</h3>
-              <p class="summary">Текущий автоматический проверяющий: CTA, ссылки, скриншоты, даты и читаемость. Дальше Сурикат будет собирать его результаты и докладывать подписанным людям.</p>
+              <p class="summary">Автоматически проверяет CTA, ссылки, скриншоты, даты и читаемость; результаты публикуются в latest QA dashboard.</p>
             </div>
             <span class="path">AIM Site Agent Evaluation/reports/latest/dashboard.html</span>
           </a>
-          <a class="card dark" data-search-item href="AIM Site Agent Evaluation/reports/latest/dashboard.html">
+          <a class="card dark" data-search-item href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html">
             <div class="label-row"><span class="pill ok">latest</span><span class="pill">local launcher</span></div>
             <div>
               <h3>Последний QA-дашборд</h3>
@@ -2649,15 +2850,15 @@
             </div>
             <span class="path">eppelas/aim-site-agent-evaluation</span>
           </a>
-          <a class="card" data-search-item href="AIM Site Agent Evaluation/docs/12-github-actions-operations.md">
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/12-github-actions-operations.md">
             <div class="label-row"><span class="pill">ops</span></div>
             <div>
               <h3>Расписание</h3>
-              <p class="summary">Подробности запусков, если понадобятся.</p>
+              <p class="summary">Команды запуска, конфигурация и диагностика QA.</p>
             </div>
             <span class="path">docs/12-github-actions-operations.md</span>
           </a>
-          <a class="card" data-search-item href="AIM Site Agent Evaluation/docs/13-device-cloud-integration.md">
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/13-device-cloud-integration.md">
             <div class="label-row"><span class="pill">devices</span></div>
             <div>
               <h3>DeviceCloud</h3>
@@ -2665,7 +2866,7 @@
             </div>
             <span class="path">docs/13-device-cloud-integration.md</span>
           </a>
-          <a class="card" data-search-item href="AIM Site Agent Evaluation/docs/03-visual-workflow-qa.md">
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/03-visual-workflow-qa.md">
             <div class="label-row"><span class="pill">visual</span></div>
             <div>
               <h3>Пустые блоки на скриншотах</h3>
@@ -2673,7 +2874,7 @@
             </div>
             <span class="path">docs/03-visual-workflow-qa.md</span>
           </a>
-          <a class="card" data-search-item href="AIM Site Agent Evaluation/docs/05-agent-readability.md">
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/docs/05-agent-readability.md">
             <div class="label-row"><span class="pill">agents</span></div>
             <div>
               <h3>HTML vs Markdown</h3>
@@ -2681,11 +2882,11 @@
             </div>
             <span class="path">docs/05-agent-readability.md</span>
           </a>
-          <a class="card" data-search-item href="AIM Site Agent Evaluation/TODO.md">
+          <a class="card" data-search-item href="https://github.com/eppelas/aim-site-agent-evaluation/blob/main/TODO.md">
             <div class="label-row"><span class="pill">todo</span></div>
             <div>
               <h3>Открытые задачи</h3>
-              <p class="summary">Что уже self-checked, что заблокировано доступами, какие site fixes еще ждут правок.</p>
+              <p class="summary">Статус автоматических проверок, блокеры доступа и ожидающие исправления сайта.</p>
             </div>
             <span class="path">AIM Site Agent Evaluation/TODO.md</span>
           </a>
@@ -2693,8 +2894,8 @@
 
         <div class="dark-band" id="sonya" data-search-item>
           <div class="section-head">
-            <h2>Как работает Сурикат Соня</h2>
-            <p class="section-note">Это не QA-диспетчер и не live deployer, а Telegram taste-memory бот для AIM design labs: она собирает варианты, разговаривает коротко, просит оценки, возвращает сигнал генераторам и передает Василию только багоподобные сигналы.</p>
+            <h2>Сурикат Соня</h2>
+            <p class="section-note">Telegram-бот для оценки дизайн-лабов: отправляет варианты, собирает оценки, обновляет память генераторов и передаёт багоподобные сигналы Василию.</p>
           </div>
           <div class="ops-board">
             <article class="ops-panel" data-search-item>
@@ -2704,15 +2905,15 @@
                 <li><strong>Где живет:</strong> отдельный Telegram-бот `@aim_surikat_sonya_bot`.</li>
                 <li><strong>Хозяева:</strong> Анка `@stavenski` и Саша `@alex_named`; numeric id сохраняется после `/start`.</li>
                 <li><strong>Что отправляет:</strong> review-only design-lab screenshots с кнопками `0-10` и ссылкой на published GitHub Pages/local preview, если она есть.</li>
-                <li><strong>Каталог:</strong> Cloud Run берет быстрые карточки из GCS `catalog.json` / `inventory.json`; локальный publisher отвечает за scoring, screenshots, stale-lock cleanup и published-only ссылки.</li>
+                <li><strong>Каталог:</strong> Cloud Run принимает только policy-v2 карточки из GCS `catalog.json` / `inventory.json`; локальный publisher запускается раз в 30 минут, держит максимум 12 прошедших кандидатов и не загружает неизменившийся каталог повторно.</li>
                 <li><strong>Что можно писать:</strong> `/review`, просьбы вроде «пришли дизайны», оценки, медиа-референсы и дизайн-фидбек.</li>
-                <li><strong>Safety gate:</strong> scheduled delivery остается approval/catalog-based; прямые owner-команды «все/больше/неоцененное» могут расширять выдачу по inventory без live deploy.</li>
+                <li><strong>Safety gate:</strong> и обычная, и расширенная выдача требуют `active-review`, passed QA + visual audit для одного актуального fingerprint, screenshot и review focus/delta. Команды «все/больше/неоцененное» обходят только оценку Сони, но не эти gates.</li>
               </ul>
             </article>
 
             <article class="ops-panel" data-search-item>
               <div class="label-row"><span class="pill">semantic road</span></div>
-              <h3>Речь и смысл</h3>
+              <h3>Обработка сообщений</h3>
               <ul class="ops-list">
                 <li><strong>Hard routes:</strong> `/start`, `/scan`, `/review`, callbacks и rating replies остаются детерминированными.</li>
                 <li><strong>Обычный текст:</strong> идет через Semantic Road: короткое `привет` получает короткий ответ, дизайн-фидбек сохраняется, баг уходит Василию.</li>
@@ -2749,8 +2950,8 @@
 
         <div class="dark-band" id="surikat" data-search-item>
           <div class="section-head">
-            <h2>Как работает Сурикат</h2>
-            <p class="section-note">Это не отдельный ChatGPT в чате, а тревожный диспетчер QA-контура: он принимает сигналы, решает что является багом, и связывает людей, Linear и автоматические проверки.</p>
+            <h2>Сурикат Василий</h2>
+            <p class="section-note">Telegram-диспетчер QA: принимает сигналы, классифицирует баги и связывает сообщения с Linear и автоматическими проверками.</p>
             <button class="card-media" type="button" data-src="local-preview/site-hub-assets/surikat-two-modes-diptych.png" data-title="Сурикат Василий: день и ночь" data-caption="Два режима Василия: дневной intake и ночной диспетчер QA-агентов.">
               <img src="local-preview/site-hub-assets/surikat-two-modes-diptych.png" alt="Диптих: два режима Суриката Василия" loading="lazy" />
             </button>
@@ -2776,7 +2977,7 @@
                 <li><strong>Проект:</strong> `AIM Website`.</li>
                 <li><strong>Статус:</strong> `Backlog`.</li>
                 <li><strong>Лейбл:</strong> `Баг`.</li>
-                <li><strong>Приоритет:</strong> пока расставляется эвристикой из `evaluation-track.md`; дальше можно докрутить на реальных примерах.</li>
+                <li><strong>Приоритет:</strong> определяется эвристиками из `evaluation-track.md`.</li>
                 <li><strong>Если Linear недоступен:</strong> отчет сохраняется локально в очередь и будет отправлен после настройки ключа.</li>
               </ul>
             </article>
@@ -2799,7 +3000,7 @@
               <div class="label-row"><span class="pill warn">secrets</span></div>
               <h3>Токены и доступы</h3>
               <ul class="ops-list">
-                <li><strong>Telegram token:</strong> не хранится на сайте и не пишется в репозиторий; если что, токен у Ани.</li>
+                <li><strong>Telegram token:</strong> хранится вне сайта и репозитория; ответственный — Аня.</li>
                 <li><strong>Локально:</strong> rollback watcher читает Telegram token из macOS Keychain; token не попадает в файлы сайта.</li>
                 <li><strong>Cloud Run:</strong> использует Secret Manager для Telegram, Linear и webhook secret; сами значения не хранятся в репозитории или Hub.</li>
                 <li><strong>Linear:</strong> нужен отдельный `LINEAR_API_KEY`; без него Сурикат отвечает в Telegram, но складывает баги в локальную очередь.</li>
@@ -2814,8 +3015,7 @@
               <ul class="ops-list">
                 <li><strong>Сурикат:</strong> диспетчер, голос в Telegram, маршрутизация в Linear, дайджесты людям.</li>
                 <li><strong>AIM Site Agent Evaluation:</strong> worker, который запускает black-box проверки, генерирует `reports/latest/report.json` и dashboard.</li>
-                <li><strong>Сейчас:</strong> Сурикат может читать/объяснять latest QA report и роутить findings; запуск новых прогонов остается отдельной QA/Actions lane.</li>
-                <li><strong>Следующий шаг:</strong> команда вроде `Васек, проверь сайт` может запускать GitHub Action, а Сурикат потом будет докладывать high/medium findings.</li>
+                <li><strong>Возможности:</strong> чтение latest QA report и маршрутизация findings; новые прогоны запускаются через QA/Actions.</li>
               </ul>
             </article>
 
@@ -2834,8 +3034,8 @@
 
         <div class="dark-band">
           <div class="section-head">
-            <h2>Если run failed</h2>
-            <p class="section-note">Failure сейчас означает, что найдены high findings или сломался сам прогон. Сначала открываем run status в дашборде.</p>
+            <h2>Сбой QA-прогона</h2>
+            <p class="section-note">Статус failure означает high findings или технический сбой прогона. Диагностика начинается с run status в дашборде.</p>
           </div>
           <div class="ops-board">
             <article class="ops-panel" data-search-item>
@@ -2866,20 +3066,20 @@
       <section class="section" id="legacy" data-tab="design">
         <div class="section-head">
           <h2>Дизайн-индекс</h2>
-          <p class="section-note">Оставляем только главный вход в legacy-дизайны. Подробную галерею здесь не дублируем.</p>
+          <p class="section-note">Архивы готовых страниц, визуальных состояний и экспериментов с отдельными блоками.</p>
         </div>
         <article class="card green wide index-card" id="design-archive" data-search-item>
           <div>
             <div class="label-row"><span class="pill ok">главный архив</span></div>
             <div>
               <h3>Опубликованный дизайн-индекс</h3>
-              <p class="summary">Единый вход в опубликованные визуальные направления. Справа можно листать прошлые варианты прямо здесь, не уходя со страницы.</p>
+              <p class="summary">Опубликованные визуальные направления с переключаемыми превью прошлых вариантов.</p>
             </div>
             <div class="actions">
-              <a class="action" href="../style-index/">открыть индекс</a>
+              <a class="action" href="https://eppelas.github.io/aim-web-design-index/" target="_blank" rel="noopener noreferrer">открыть индекс</a>
               <a class="action" href="https://github.com/eppelas/aim-web-design-index" target="_blank" rel="noopener noreferrer">GitHub-репозиторий</a>
             </div>
-            <span class="path">/style-index/</span>
+            <span class="path">eppelas.github.io/aim-web-design-index/</span>
           </div>
           <div class="archive-browser" aria-label="Скриншоты прошлых дизайн-вариантов AIM Website">
             <button class="card-media archive-preview" id="archive-preview-button" type="button" data-src="local-preview/site-hub-screenshots/design-index-desktop.png" data-title="Опубликованный дизайн-индекс" data-caption="Локальный скриншот /style-index/ с карточками опубликованных legacy-направлений.">
@@ -2910,12 +3110,46 @@
             </div>
           </div>
         </article>
+        <article class="card dark wide index-card design-iteration-card" id="design-archive-first-iteration" data-search-item>
+          <div>
+            <div class="label-row"><span class="pill info">первая итерация</span><span class="pill">dump styles</span></div>
+            <div>
+              <h3>Visual Elements Library</h3>
+              <p class="summary">Первая большая dump-style галерея: 400 процедурных и математических visual states, пронумерованных от 001 до 400 и разложенных по 20 категориям. Это архив визуальных зерен и механик, а не готовых страниц.</p>
+            </div>
+            <div class="actions">
+              <a class="action" href="https://eppelas.github.io/visual-elements-library/" target="_blank" rel="noopener noreferrer">открыть галерею</a>
+              <a class="action" href="https://github.com/eppelas/visual-elements-library" target="_blank" rel="noopener noreferrer">GitHub-репозиторий</a>
+            </div>
+            <span class="path">eppelas/visual-elements-library · 400 generative states</span>
+          </div>
+          <button class="card-media" type="button" data-src="local-preview/site-hub-screenshots/visual-elements-library-preview.png" data-title="Visual Elements Library" data-caption="Первая большая style dump-галерея: 400 генеративных visual states в 20 категориях.">
+            <img src="local-preview/site-hub-screenshots/visual-elements-library-preview.png" alt="Скриншот Visual Elements Library с карточками генеративных стилей" loading="lazy" />
+          </button>
+        </article>
+        <article class="card wide index-card design-iteration-card" id="design-blocks-lab" data-search-item>
+          <div>
+            <div class="label-row"><span class="pill ok">blocks lab</span><span class="pill">experiments</span></div>
+            <div>
+              <h3>AI Mindset Blocks Lab</h3>
+              <p class="summary">Галерея вариантов программы, отзывов, FAQ, навигации лаб, спикеров, кейсов, тарифов и других секций для отдельного сравнения блоков.</p>
+            </div>
+            <div class="actions">
+              <a class="action" href="https://eppelas.github.io/ai-mindset-blocks/" target="_blank" rel="noopener noreferrer">открыть Blocks Lab</a>
+              <a class="action" href="https://github.com/eppelas/ai-mindset-blocks" target="_blank" rel="noopener noreferrer">GitHub-репозиторий</a>
+            </div>
+            <span class="path">eppelas/ai-mindset-blocks · block experiments</span>
+          </div>
+          <button class="card-media" type="button" data-src="local-preview/site-hub-screenshots/ai-mindset-blocks-preview.png" data-title="AI Mindset Blocks Lab" data-caption="Галерея вариантов отдельных блоков AIM Website: программа, отзывы, FAQ, спикеры, кейсы, тарифы и другие секции.">
+            <img src="local-preview/site-hub-screenshots/ai-mindset-blocks-preview.png" alt="Скриншот AI Mindset Blocks Lab с вариантами блоков сайта" loading="lazy" />
+          </button>
+        </article>
       </section>
 
     </main>
 
     <footer class="hub-footer">
-      <span>AIM Site Hub · обновлено 2026-07-07 · <a href="https://eppelas.github.io/aim-site-hub/" target="_blank" rel="noopener noreferrer">pages</a> · <a href="https://github.com/eppelas/aim-site-hub" target="_blank" rel="noopener noreferrer">repo</a></span>
+      <span>AIM Site Hub · обновлено 2026-07-16 · <a href="https://eppelas.github.io/aim-site-hub/" target="_blank" rel="noopener noreferrer">pages</a> · <a href="https://github.com/eppelas/aim-site-hub" target="_blank" rel="noopener noreferrer">repo</a></span>
       <span class="actions">
         <a class="action" href="website-ops/product-rules.json" download>⬇ правила (json)</a>
         <a class="action" href="website-ops/bot-operating-rules.json" download>⬇ правила ботов (json)</a>
@@ -2937,6 +3171,13 @@
       </div>
     </dialog>
 
+    <div class="tool-preview-hover-layer" data-tool-preview-hover-layer data-open="false" aria-hidden="true">
+      <figure class="tool-preview-hover-frame">
+        <img class="tool-preview-hover-image" data-tool-preview-hover-image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" />
+        <figcaption class="tool-preview-hover-title" data-tool-preview-hover-title></figcaption>
+      </figure>
+    </div>
+
     <script>
       const dialog = document.querySelector('#lightbox');
       const dialogImage = document.querySelector('#dialog-image');
@@ -2956,6 +3197,63 @@
       document.querySelector('#close-dialog').addEventListener('click', () => dialog.close());
       dialog.addEventListener('click', (event) => {
         if (event.target === dialog) dialog.close();
+      });
+
+      const toolPreviewHoverLayer = document.querySelector('[data-tool-preview-hover-layer]');
+      const toolPreviewHoverImage = document.querySelector('[data-tool-preview-hover-image]');
+      const toolPreviewHoverTitle = document.querySelector('[data-tool-preview-hover-title]');
+      const toolPreviewHoverQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+      function showToolPreview(card) {
+        if (!toolPreviewHoverQuery.matches || window.innerWidth <= 960) return;
+        const image = card.querySelector('.tool-card-preview img');
+        if (!image) return;
+        toolPreviewHoverImage.src = image.currentSrc || image.src;
+        toolPreviewHoverImage.alt = image.alt;
+        toolPreviewHoverTitle.textContent = card.querySelector('h3')?.textContent || image.alt;
+        toolPreviewHoverLayer.dataset.open = 'true';
+        toolPreviewHoverLayer.setAttribute('aria-hidden', 'false');
+      }
+
+      function hideToolPreview() {
+        toolPreviewHoverLayer.dataset.open = 'false';
+        toolPreviewHoverLayer.setAttribute('aria-hidden', 'true');
+      }
+
+      document.addEventListener('mouseover', (event) => {
+        const preview = event.target.closest?.('.tool-card-preview');
+        if (!preview || preview.contains(event.relatedTarget)) return;
+        showToolPreview(preview.closest('.tool-card'));
+      });
+
+      document.addEventListener('mouseout', (event) => {
+        const card = event.target.closest?.('.tool-card');
+        if (!card || card.contains(event.relatedTarget)) return;
+        hideToolPreview();
+      });
+
+      document.addEventListener('click', (event) => {
+        const preview = event.target.closest?.('.tool-card-preview');
+        if (!preview || !toolPreviewHoverQuery.matches) return;
+        event.preventDefault();
+        event.stopPropagation();
+        showToolPreview(preview.closest('.tool-card'));
+      }, true);
+
+      document.addEventListener('focusin', (event) => {
+        const card = event.target.closest?.('.tool-card');
+        if (card?.querySelector('.tool-card-preview')) showToolPreview(card);
+      });
+
+      document.addEventListener('focusout', (event) => {
+        const card = event.target.closest?.('.tool-card');
+        if (card && !card.contains(event.relatedTarget)) hideToolPreview();
+      });
+
+      toolPreviewHoverQuery.addEventListener('change', hideToolPreview);
+      window.addEventListener('blur', hideToolPreview);
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') hideToolPreview();
       });
 
       const archivePreviewButton = document.querySelector('#archive-preview-button');

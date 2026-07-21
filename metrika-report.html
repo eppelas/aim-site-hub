@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>Что происходит на AI Native — аналитический отчёт</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #050505;
+        --panel: #101010;
+        --panel-2: #161616;
+        --ink: #fffaf0;
+        --muted: #aaa49a;
+        --hair: rgba(255, 250, 240, 0.13);
+        --hair-strong: rgba(255, 250, 240, 0.24);
+        --red: #ff5b58;
+        --green: #31d987;
+        --blue: #78a1ff;
+        --yellow: #f3c860;
+        --mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(255,255,255,.025) 1px, transparent 1px),
+          var(--bg);
+        background-size: 32px 32px;
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 14px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a { color: inherit; }
+      code { color: #d8e2ff; font-family: inherit; }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 13px clamp(16px, 3vw, 34px);
+        border-bottom: 1px solid var(--hair);
+        background: rgba(5, 5, 5, .9);
+        backdrop-filter: blur(12px);
+      }
+
+      .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; }
+      .brand-mark { display: grid; place-items: center; width: 30px; height: 30px; background: var(--ink); color: var(--bg); font-size: 10px; }
+      .nav { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+      .button {
+        display: inline-flex;
+        align-items: center;
+        min-height: 34px;
+        padding: 7px 11px;
+        border: 1px solid var(--hair-strong);
+        border-radius: 4px;
+        background: rgba(255,255,255,.04);
+        color: var(--ink);
+        font: inherit;
+        font-size: 11px;
+        text-decoration: none;
+      }
+      .button:hover, .button:focus-visible { border-color: var(--ink); outline: 0; }
+
+      main { width: min(1400px, calc(100vw - 32px)); margin: 0 auto; padding: 34px 0 80px; }
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr);
+        gap: clamp(28px, 6vw, 96px);
+        align-items: end;
+        min-height: 400px;
+        padding: clamp(26px, 5vw, 68px);
+        border: 1px solid var(--hair-strong);
+        background: linear-gradient(135deg, rgba(255,91,88,.14), transparent 44%), var(--panel);
+      }
+      .eyebrow { color: var(--red); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+      h1, h2, h3, p { margin: 0; }
+      h1 { margin-top: 18px; max-width: 900px; font-size: clamp(42px, 7vw, 92px); line-height: .96; text-transform: uppercase; }
+      .hero-copy { color: rgba(255,250,240,.8); font-size: clamp(16px, 1.35vw, 20px); }
+      .scope { display: grid; gap: 10px; margin-top: 24px; }
+      .scope-row { display: grid; grid-template-columns: 110px 1fr; gap: 14px; padding-top: 10px; border-top: 1px solid var(--hair); font-size: 12px; }
+      .scope-row span { color: var(--muted); }
+
+      .quick-nav { display: flex; gap: 8px; overflow-x: auto; padding: 14px 0 2px; scrollbar-width: thin; }
+      .quick-nav a { flex: 0 0 auto; }
+      .section { margin-top: 52px; scroll-margin-top: 82px; }
+      .section-head { display: grid; grid-template-columns: minmax(260px,.7fr) minmax(300px,1fr); gap: 26px; align-items: end; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--hair-strong); }
+      .section-head h2 { font-size: clamp(28px, 4vw, 52px); line-height: 1; text-transform: uppercase; }
+      .section-head p { color: var(--muted); }
+      .period { color: var(--blue); font-size: 11px; text-transform: uppercase; }
+
+      .kpis { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); border: 1px solid var(--hair-strong); background: var(--panel); }
+      .kpi { min-width: 0; padding: 20px; border-right: 1px solid var(--hair); }
+      .kpi:last-child { border-right: 0; }
+      .kpi b { display: block; font-size: clamp(28px, 4vw, 50px); line-height: 1; }
+      .kpi span { display: block; margin-top: 10px; color: var(--muted); font-size: 11px; }
+      .kpi em { display: block; margin-top: 6px; color: var(--green); font-style: normal; font-size: 10px; }
+
+      .callouts { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 10px; }
+      .callout { padding: 18px; border-left: 3px solid var(--blue); background: var(--panel-2); }
+      .callout.warn { border-color: var(--yellow); }
+      .callout.good { border-color: var(--green); }
+      .callout h3 { font-size: 16px; }
+      .callout p { margin-top: 8px; color: var(--muted); font-size: 12px; }
+
+      .two-col { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(320px,.85fr); gap: 22px; align-items: start; }
+      .chart { padding: 20px; border: 1px solid var(--hair); background: var(--panel); }
+      .chart-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+      .chart-title h3 { font-size: 17px; }
+      .chart-title span { color: var(--muted); font-size: 10px; text-align: right; }
+      .daily { display: grid; grid-template-columns: repeat(8, minmax(42px,1fr)); gap: 8px; align-items: end; min-height: 250px; border-bottom: 1px solid var(--hair-strong); }
+      .day { display: grid; grid-template-rows: 1fr auto; gap: 8px; height: 230px; align-items: end; }
+      .day-bars { display: flex; align-items: end; justify-content: center; gap: 3px; height: 100%; }
+      .bar-visits { width: 54%; min-width: 13px; height: var(--h); background: var(--blue); }
+      .bar-price { width: 30%; min-width: 8px; height: var(--p); background: var(--green); }
+      .day small { display: block; color: var(--muted); font-size: 9px; text-align: center; }
+      .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 14px; color: var(--muted); font-size: 10px; }
+      .legend i { display: inline-block; width: 9px; height: 9px; margin-right: 6px; background: var(--blue); }
+      .legend .green { background: var(--green); }
+
+      .funnel { display: grid; gap: 9px; }
+      .funnel-row { display: grid; grid-template-columns: 190px minmax(120px,1fr) 86px; gap: 12px; align-items: center; }
+      .track { height: 30px; background: rgba(255,255,255,.055); }
+      .fill { width: var(--w); height: 100%; min-width: 3px; background: var(--red); }
+      .funnel-row:nth-child(-n+3) .fill { background: var(--blue); }
+      .funnel-row:nth-child(4) .fill { background: var(--green); }
+      .funnel-row strong { text-align: right; font-size: 12px; }
+      .funnel-row span { font-size: 11px; }
+
+      .bars { display: grid; gap: 12px; }
+      .bar-row { display: grid; grid-template-columns: minmax(150px,250px) minmax(130px,1fr) 86px; gap: 12px; align-items: center; }
+      .bar-row .track { height: 20px; }
+      .bar-row .fill { background: var(--blue); }
+      .bar-row strong { text-align: right; font-size: 11px; }
+      .bar-row span { font-size: 11px; }
+
+      .table-wrap { overflow-x: auto; border: 1px solid var(--hair); }
+      table { width: 100%; min-width: 760px; border-collapse: collapse; background: var(--panel); }
+      th, td { padding: 13px 14px; border-bottom: 1px solid var(--hair); text-align: left; vertical-align: top; }
+      th { color: var(--muted); font-size: 10px; font-weight: 600; text-transform: uppercase; }
+      td { font-size: 12px; }
+      td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+      tbody tr:last-child td { border-bottom: 0; }
+      .signal { color: var(--green); }
+      .risk { color: var(--yellow); }
+
+      .device-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+      .device { padding: 20px; border: 1px solid var(--hair); background: var(--panel); }
+      .device h3 { font-size: 18px; }
+      .device .big { display: block; margin: 20px 0 4px; font-size: clamp(34px,5vw,62px); line-height: 1; }
+      .device dl { display: grid; grid-template-columns: 1fr auto; gap: 7px 12px; margin: 18px 0 0; }
+      .device dt, .device dd { margin: 0; font-size: 11px; }
+      .device dt { color: var(--muted); }
+
+      .block-bars .bar-row { grid-template-columns: minmax(150px,220px) minmax(130px,1fr) 105px; }
+      .block-bars .fill { background: linear-gradient(90deg, var(--blue), var(--green)); }
+      .behavior-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
+      .behavior { padding: 17px; border-top: 3px solid var(--blue); background: var(--panel); }
+      .behavior b { display: block; font-size: 30px; }
+      .behavior span { color: var(--muted); font-size: 11px; }
+
+      .rank-list { margin: 0; padding: 0; list-style: none; counter-reset: rank; }
+      .rank-list li { counter-increment: rank; display: grid; grid-template-columns: 32px 1fr auto; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--hair); align-items: start; }
+      .rank-list li::before { content: counter(rank, decimal-leading-zero); color: var(--muted); font-size: 10px; }
+      .rank-list small { color: var(--green); font-size: 11px; }
+      .rank-list li:last-child { border-bottom: 0; }
+
+      .timeline { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 1px solid var(--hair-strong); }
+      .change { position: relative; padding: 22px 22px 22px 34px; border-right: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+      .change::before { content: ""; position: absolute; left: 16px; top: 28px; width: 7px; height: 7px; background: var(--green); }
+      .change h3 { font-size: 16px; }
+      .change p { margin-top: 8px; color: var(--muted); font-size: 12px; }
+
+      .decision-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+      .decision { padding: 20px; border: 1px solid var(--hair); background: var(--panel); }
+      .decision .step { color: var(--red); font-size: 10px; }
+      .decision h3 { margin-top: 10px; font-size: 18px; }
+      .decision p { margin-top: 9px; color: var(--muted); font-size: 12px; }
+
+      .method { padding: 20px; border: 1px solid var(--hair); background: rgba(255,255,255,.025); color: var(--muted); font-size: 11px; }
+      .method strong { color: var(--ink); }
+      .method ul { margin: 12px 0 0; padding-left: 18px; }
+
+      @media (max-width: 980px) {
+        .hero, .section-head, .two-col { grid-template-columns: 1fr; }
+        .hero { min-height: 0; }
+        .kpis { grid-template-columns: repeat(2,minmax(0,1fr)); }
+        .kpi { border-bottom: 1px solid var(--hair); }
+        .kpi:nth-child(even) { border-right: 0; }
+        .kpi:last-child { grid-column: span 2; }
+        .callouts, .decision-grid { grid-template-columns: 1fr; }
+        .device-grid { grid-template-columns: 1fr; }
+        .behavior-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      }
+
+      @media (max-width: 640px) {
+        body { font-size: 13px; }
+        .topbar { align-items: flex-start; }
+        .brand span:last-child { display: none; }
+        .nav .button:first-child { display: none; }
+        main { width: min(100% - 20px, 620px); padding-top: 18px; }
+        .hero { padding: 24px 20px; }
+        h1 { font-size: clamp(38px, 13vw, 60px); }
+        .scope-row { grid-template-columns: 1fr; gap: 3px; }
+        .section { margin-top: 38px; }
+        .kpis { grid-template-columns: 1fr; }
+        .kpi, .kpi:nth-child(even) { border-right: 0; }
+        .kpi:last-child { grid-column: auto; }
+        .daily { gap: 4px; min-width: 520px; }
+        .chart { overflow-x: auto; }
+        .funnel-row { grid-template-columns: 112px minmax(90px,1fr) 58px; gap: 7px; }
+        .bar-row, .block-bars .bar-row { grid-template-columns: 108px minmax(90px,1fr) 62px; gap: 7px; }
+        .behavior-grid, .timeline { grid-template-columns: 1fr; }
+        .rank-list li { grid-template-columns: 28px 1fr; }
+        .rank-list small { grid-column: 2; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="analytics.html"><span class="brand-mark">AIM</span><span>Аналитика AI Native</span></a>
+      <nav class="nav" aria-label="Навигация отчёта">
+        <a class="button" href="analytics.html">настройки аналитики</a>
+        <a class="button" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">открыть Метрику</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Счётчик 106857835 · AI Native + payment</p>
+          <h1>Что происходит на AI Native</h1>
+        </div>
+        <div>
+          <p class="hero-copy">Не сырой экспорт, а рабочая картина: откуда приходят люди, что читают, где нажимают и на каком шаге оплаты теряются.</p>
+          <div class="scope">
+            <div class="scope-row"><span>Основной срез</span><strong>7–14 июля 2026</strong></div>
+            <div class="scope-row"><span>База</span><strong>14 июня – 14 июля 2026</strong></div>
+            <div class="scope-row"><span>Важно</span><strong>14 июля — неполный день</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="quick-nav" aria-label="Разделы отчёта">
+        <a class="button" href="#summary">главное</a><a class="button" href="#funnel">воронка</a><a class="button" href="#sources">источники</a><a class="button" href="#devices">устройства</a><a class="button" href="#blocks">блоки</a><a class="button" href="#content">контент</a><a class="button" href="#changes">что сделали</a><a class="button" href="#next">что дальше</a>
+      </nav>
+
+      <section class="section" id="summary">
+        <div class="section-head"><div><p class="period">7–14 июля 2026</p><h2>Главное</h2></div><p>Срез включает AI Native и payment flow. Метка staff-mode найдена у 3 пользователей; сырые KPI ниже ещё не вычитают их автоматически. Контакты Суриката не подменяют поведенческие данные Метрики.</p></div>
+        <div class="kpis">
+          <div class="kpi"><b>920</b><span>пользователей</span></div>
+          <div class="kpi"><b>1 186</b><span>визитов</span></div>
+          <div class="kpi"><b>2:30</b><span>среднее время</span><em>база: 2:17</em></div>
+          <div class="kpi"><b>14,2%</b><span>отказы</span><em>база: 16,5%</em></div>
+          <div class="kpi"><b>9</b><span>подтверждённых целей оплаты</span></div>
+        </div>
+        <div class="callouts">
+          <article class="callout good"><h3>До цены доходит почти половина</h3><p>450 из 920 пользователей увидели тариф — 48,9%. Сам блок цены не является главным местом раннего оттока.</p></article>
+          <article class="callout warn"><h3>Оплата резко уходит в desktop</h3><p>Мобильные дают 57% пользователей, но только 1 из 11 checkout-кликов и 1 из 9 подтверждённых целей.</p></article>
+          <article class="callout"><h3>Direct всё ещё слишком большой</h3><p>631 визит, или 53,2%, пришёл без UTM/referrer. Это не «люди набрали адрес», а смесь неразмеченных переходов.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="traffic">
+        <div class="section-head"><div><p class="period">Динамика</p><h2>По дням</h2></div><p>Синие столбцы — визиты, зелёные — пользователи, увидевшие цену. 14 июля показан только на момент выгрузки.</p></div>
+        <div class="chart" role="img" aria-label="Динамика визитов и пользователей, увидевших цену, с 7 по 14 июля">
+          <div class="chart-title"><h3>Визиты и цена</h3><span>максимум: 245 визитов<br />97 пользователей цены</span></div>
+          <div class="daily">
+            <div class="day"><div class="day-bars"><i class="bar-visits" style="--h:100%"></i><i class="bar-price" style="--p:40%"></i></div><small>07.07<br />245 / 97</small></div>
+            <div class="day"><div class="day-bars"><i class="bar-visits" style="--h:79%"></i><i class="bar-price" style="--p:33%"></i></div><small>08.07<br />193 / 81</small></div>
+            <div class="day"><div class="day-bars"><i class="bar-visits" style="--h:51%"></i><i class="bar-price" style="--p:22%"></i></div><small>09.07<br />126 / 55</small></div>
+            <div class="day"><div class="day-bars"><i class="bar-visits" style="--h:71%"></i><i class="bar-price" style="--p:33%"></i></div><small>10.07<br />175 / 81</small></div>
+            <div class="day"><div class="day-bars"><i class="bar-visits" style="--h:59%"></i><i class="bar-price" style="--p:27%"></i></div><small>11.07<br />145 / 67</small></div>
+            <div class="day"><div class="day-bars"><i class="bar-visits" style="--h:33%"></i><i class="bar-price" style="--p:16%"></i></div><small>12.07<br />80 / 40</small></div>
+            <div class="day"><div class="day-bars"><i class="bar-visits" style="--h:59%"></i><i class="bar-price" style="--p:17%"></i></div><small>13.07<br />145 / 41</small></div>
+            <div class="day"><div class="day-bars"><i class="bar-visits" style="--h:31%"></i><i class="bar-price" style="--p:9%"></i></div><small>14.07*<br />77 / 21</small></div>
+          </div>
+          <div class="legend"><span><i></i>визиты</span><span><i class="green"></i>увидели цену</span><span>* неполный день</span></div>
+        </div>
+      </section>
+
+      <section class="section" id="funnel">
+        <div class="section-head"><div><p class="period">Пользователи, не события</p><h2>Воронка</h2></div><p>Шаги считаются независимыми целями за период, а не строгой последовательной когортой. Поэтому переход между соседними строками — ориентир, не бухгалтерская конверсия.</p></div>
+        <div class="two-col">
+          <div class="chart">
+            <div class="chart-title"><h3>Путь к оплате</h3><span>доля от 920 пользователей</span></div>
+            <div class="funnel">
+              <div class="funnel-row"><span>Посетили сайт</span><div class="track"><div class="fill" style="--w:100%"></div></div><strong>920 · 100%</strong></div>
+              <div class="funnel-row"><span>Увидели цену</span><div class="track"><div class="fill" style="--w:48.9%"></div></div><strong>450 · 48,9%</strong></div>
+              <div class="funnel-row"><span>10 сек. у цены</span><div class="track"><div class="fill" style="--w:23.6%"></div></div><strong>217 · 23,6%</strong></div>
+              <div class="funnel-row"><span>Основной тариф</span><div class="track"><div class="fill" style="--w:5.8%"></div></div><strong>53 · 5,8%</strong></div>
+              <div class="funnel-row"><span>Открыли pay</span><div class="track"><div class="fill" style="--w:6.4%"></div></div><strong>59 · 6,4%</strong></div>
+              <div class="funnel-row"><span>Ввели контакт</span><div class="track"><div class="fill" style="--w:1.6%"></div></div><strong>15 · 1,6%</strong></div>
+              <div class="funnel-row"><span>Нажали оплатить</span><div class="track"><div class="fill" style="--w:1.2%"></div></div><strong>11 · 1,2%</strong></div>
+              <div class="funnel-row"><span>Ушли к провайдеру</span><div class="track"><div class="fill" style="--w:1.1%"></div></div><strong>10 · 1,1%</strong></div>
+              <div class="funnel-row"><span>Подтверждено</span><div class="track"><div class="fill" style="--w:1%"></div></div><strong>9 · 1,0%</strong></div>
+            </div>
+          </div>
+          <div class="chart">
+            <div class="chart-title"><h3>Как это читать</h3><span>вывод</span></div>
+            <div class="callout good"><h3>После checkout провала почти нет</h3><p>10 из 11 нажавших оплатить ушли к провайдеру, 9 дали completed. Главная потеря раньше: между просмотром цены и началом checkout.</p></div>
+            <div class="callout warn" style="margin-top:10px"><h3>Pay page открывают не только через primary CTA</h3><p>59 пользователей загрузили pay, а основной тариф кликнули 53. Часть приходит по прямым ссылкам или другим CTA.</p></div>
+            <div class="callout" style="margin-top:10px"><h3>Нужна когортная проверка</h3><p>Для точного ответа «какой блок убедил купить» надо связывать <code>source_section</code>, CTA и payment goals внутри одного визита.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-head"><div><p class="period">1 181 классифицированный визит из 1 186</p><h2>Источники</h2></div><p>Классификация уже учитывает Telegram, Instagram bio, email, messenger/referrer и AIM-переходы. Пять визитов не вошли в детальный attribution-разрез; остаток без признаков остаётся Unknown direct.</p></div>
+        <div class="chart">
+          <div class="bars">
+            <div class="bar-row"><span>Неизвестный Direct</span><div class="track"><div class="fill" style="--w:100%;background:var(--yellow)"></div></div><strong>631 · 53,2%</strong></div>
+            <div class="bar-row"><span>Telegram</span><div class="track"><div class="fill" style="--w:58.8%"></div></div><strong>371 · 31,3%</strong></div>
+            <div class="bar-row"><span>Instagram organic</span><div class="track"><div class="fill" style="--w:9.7%"></div></div><strong>61 · 5,1%</strong></div>
+            <div class="bar-row"><span>Instagram bio</span><div class="track"><div class="fill" style="--w:6%"></div></div><strong>38 · 3,2%</strong></div>
+            <div class="bar-row"><span>Email / Substack</span><div class="track"><div class="fill" style="--w:4.6%"></div></div><strong>29 · 2,4%</strong></div>
+            <div class="bar-row"><span>Партнёры / ссылки</span><div class="track"><div class="fill" style="--w:4.3%"></div></div><strong>27 · 2,3%</strong></div>
+            <div class="bar-row"><span>Поиск</span><div class="track"><div class="fill" style="--w:1.4%"></div></div><strong>9 · 0,8%</strong></div>
+            <div class="bar-row"><span>Переходы внутри AIM</span><div class="track"><div class="fill" style="--w:1.1%;background:var(--red)"></div></div><strong>7 · 0,6%</strong></div>
+            <div class="bar-row"><span>YouTube</span><div class="track"><div class="fill" style="--w:.5%"></div></div><strong>3 · 0,3%</strong></div>
+            <div class="bar-row"><span>Social без уточнения</span><div class="track"><div class="fill" style="--w:.8%"></div></div><strong>5 · 0,4%</strong></div>
+          </div>
+        </div>
+        <div class="table-wrap" style="margin-top:10px">
+          <table>
+            <thead><tr><th>Известная публикация / канал</th><th class="num">Визиты</th><th class="num">Пользователи</th><th>Что означает</th></tr></thead>
+            <tbody>
+              <tr><td>Telegram · gershuni</td><td class="num">125</td><td class="num">92</td><td>Крупнейший размеченный источник недели.</td></tr>
+              <tr><td>Telegram · vsevolodustinovchannel</td><td class="num">67</td><td class="num">58</td><td>Второй по объёму Telegram-источник.</td></tr>
+              <tr><td>Telegram · aimpost</td><td class="num">53</td><td class="num">38</td><td>Собственный канал / публикация.</td></tr>
+              <tr><td>Telegram · alexnamed</td><td class="num">50</td><td class="num">46</td><td>Высокая доля новых пользователей.</td></tr>
+              <tr><td>Instagram bio · cases</td><td class="num">36</td><td class="num">33</td><td>Ссылка из Instagram, а не реклама.</td></tr>
+              <tr><td>Email / Substack</td><td class="num">26</td><td class="num">18</td><td>Рассылка; конкретный выпуск не размечен.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="devices">
+        <div class="section-head"><div><p class="period">7–14 июля</p><h2>Устройства</h2></div><p>Сравниваем не только время, но и продвижение к оплате. Физические дюймы монитора Метрика не определяет; для дизайна важнее viewport и категория устройства.</p></div>
+        <div class="device-grid">
+          <article class="device"><h3>Смартфоны</h3><strong class="big">57,4%</strong><span>пользователей</span><dl><dt>визиты / люди</dt><dd>626 / 528</dd><dt>среднее время</dt><dd>1:59</dd><dt>увидели цену</dt><dd>251</dd><dt>основной тариф</dt><dd>23</dd><dt>checkout / completed</dt><dd class="risk">1 / 1</dd></dl></article>
+          <article class="device"><h3>Desktop</h3><strong class="big">42,0%</strong><span>пользователей</span><dl><dt>визиты / люди</dt><dd>553 / 386</dd><dt>среднее время</dt><dd>3:06</dd><dt>увидели цену</dt><dd>195</dd><dt>основной тариф</dt><dd>30</dd><dt>checkout / completed</dt><dd class="signal">10 / 8</dd></dl></article>
+          <article class="device"><h3>Планшеты</h3><strong class="big">0,7%</strong><span>пользователей</span><dl><dt>визиты / люди</dt><dd>7 / 6</dd><dt>среднее время</dt><dd>0:43</dd><dt>увидели цену</dt><dd>4</dd><dt>основной тариф</dt><dd>0</dd><dt>checkout / completed</dt><dd>0 / 0</dd></dl></article>
+        </div>
+        <div class="callouts">
+          <article class="callout warn"><h3>Не сравниваем время в лоб</h3><p>На телефоне сессии обычно короче. Проблема не в 1:59 против 3:06, а в почти полном исчезновении checkout после мобильного клика по тарифу.</p></article>
+          <article class="callout"><h3>Что проверить в Вебвизоре</h3><p>Мобильный путь: CTA → цена → pay → ввод контакта → кнопка оплаты. Ищем визуальный сдвиг, клавиатуру, возврат назад и медленную загрузку.</p></article>
+          <article class="callout good"><h3>Desktop конвертирует</h3><p>8 completed из 386 desktop-пользователей против 1 из 528 mobile. Это достаточно сильный сигнал для отдельного мобильного аудита.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="blocks">
+        <div class="section-head"><div><p class="period">Охват пользователей</p><h2>До каких блоков доходят</h2></div><p>Это посещение секции за период, не строгий scroll-path: CTA могут сразу переносить человека к цене. Проценты считаются от 920 пользователей недели.</p></div>
+        <div class="chart block-bars">
+          <div class="bars">
+            <div class="bar-row"><span>Первый экран</span><div class="track"><div class="fill" style="--w:89.6%"></div></div><strong>824 · 89,6%</strong></div>
+            <div class="bar-row"><span>Агентная компания</span><div class="track"><div class="fill" style="--w:76.5%"></div></div><strong>704 · 76,5%</strong></div>
+            <div class="bar-row"><span>Спикеры</span><div class="track"><div class="fill" style="--w:72.6%"></div></div><strong>668 · 72,6%</strong></div>
+            <div class="bar-row"><span>Маршрут</span><div class="track"><div class="fill" style="--w:60.4%"></div></div><strong>556 · 60,4%</strong></div>
+            <div class="bar-row"><span>Результаты</span><div class="track"><div class="fill" style="--w:55.5%"></div></div><strong>511 · 55,5%</strong></div>
+            <div class="bar-row"><span>Выпускники</span><div class="track"><div class="fill" style="--w:51.8%"></div></div><strong>477 · 51,8%</strong></div>
+            <div class="bar-row"><span>Кейсы</span><div class="track"><div class="fill" style="--w:51.4%"></div></div><strong>473 · 51,4%</strong></div>
+            <div class="bar-row"><span>Стоимость</span><div class="track"><div class="fill" style="--w:48.9%"></div></div><strong>450 · 48,9%</strong></div>
+            <div class="bar-row"><span>Адаптивная лаба</span><div class="track"><div class="fill" style="--w:48.6%"></div></div><strong>447 · 48,6%</strong></div>
+            <div class="bar-row"><span>Поддержка</span><div class="track"><div class="fill" style="--w:47.8%"></div></div><strong>440 · 47,8%</strong></div>
+            <div class="bar-row"><span>Отзывы</span><div class="track"><div class="fill" style="--w:39.5%"></div></div><strong>363 · 39,5%</strong></div>
+            <div class="bar-row"><span>Расписание</span><div class="track"><div class="fill" style="--w:29%"></div></div><strong>267 · 29,0%</strong></div>
+            <div class="bar-row"><span>FAQ</span><div class="track"><div class="fill" style="--w:23.6%"></div></div><strong>217 · 23,6%</strong></div>
+            <div class="bar-row"><span>Финальный CTA</span><div class="track"><div class="fill" style="--w:21.5%"></div></div><strong>198 · 21,5%</strong></div>
+          </div>
+        </div>
+        <div class="callouts">
+          <article class="callout good"><h3>Кейсы не являются тупиком</h3><p>До библиотеки кейсов доходит 51,4%, почти столько же, сколько до цены. Но открывает кейс только часть аудитории.</p></article>
+          <article class="callout"><h3>FAQ читают намеренно</h3><p>До FAQ доходит 217 человек, 61 раскрывает вопрос. Это 28% достигших блока — FAQ работает как слой снятия возражений.</p></article>
+          <article class="callout warn"><h3>Финальный CTA видит пятая часть</h3><p>Это не значит, что 78% «отвалились»: многие переходят к цене ранними CTA. Нужен анализ CTA по source section, а не только scroll depth.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="content">
+        <div class="section-head"><div><p class="period">Осмысленные действия</p><h2>Что читают и трогают</h2></div><p>Здесь показаны уникальные пользователи цели, а не число повторных кликов.</p></div>
+        <div class="behavior-grid">
+          <div class="behavior"><b>472</b><span>увидели список кейсов</span></div><div class="behavior"><b>44</b><span>открыли кейс</span></div><div class="behavior"><b>35</b><span>читали кейс 30+ сек.</span></div><div class="behavior"><b>61</b><span>открыли FAQ</span></div>
+          <div class="behavior"><b>316</b><span>сами выбрали роль</span></div><div class="behavior"><b>104</b><span>увидели preview расписания</span></div><div class="behavior"><b>36</b><span>открыли записи спикеров</span></div><div class="behavior"><b>40</b><span>раскрыли детали программы</span></div>
+        </div>
+        <div class="two-col" style="margin-top:22px">
+          <div class="chart">
+            <div class="chart-title"><h3>Вопросы, которые открывают</h3><span>пользователи · 7–14 июля</span></div>
+            <ol class="rank-list">
+              <li><span>Кому лаборатория подходит, а кому нет?</span><small>27</small></li>
+              <li><span>А если я не знаю, какой процесс выбрать?</span><small>19</small></li>
+              <li><span>Нужен ли технический бэкграунд?</span><small>19</small></li>
+              <li><span>Варианты оплаты / personal vs company / возврат</span><small>по 17</small></li>
+              <li><span>С каким результатом я выйду?</span><small>16</small></li>
+              <li><span>Что будет, если не успеваю на live-сессии?</span><small>16</small></li>
+              <li><span>Какие инструменты реально будем использовать?</span><small>15</small></li>
+            </ol>
+          </div>
+          <div class="chart">
+            <div class="chart-title"><h3>Кейсы, которые открывают</h3><span>пользователи · 7–14 июля</span></div>
+            <ol class="rank-list">
+              <li><span>Алексей Смирнов · 1С + 25 микросервисов</span><small>25</small></li>
+              <li><span>Константин Урванцев · AI в 7 отделах</span><small>17</small></li>
+              <li><span>Андрей Тонколитко · Personal OS</span><small>14</small></li>
+              <li><span>Катерина Неделина · Фигаро для продаж</span><small>13</small></li>
+              <li><span>Сергей Ахметов · AI-инфраструктура</span><small>12</small></li>
+              <li><span>Кирилл Трофимов · outbound-агенты</span><small>10</small></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="changes">
+        <div class="section-head"><div><p class="period">Сделано</p><h2>Что мы уже изменили</h2></div><p>Только изменения, которые отражены в текущем контуре аналитики или уже видны в событиях Метрики.</p></div>
+        <div class="timeline">
+          <article class="change"><h3>Разделили настройки и выводы</h3><p><code>analytics.html</code> хранит правила, UTM и подключения; эта страница — периодический отчёт для решений.</p></article>
+          <article class="change"><h3>Разметили весь путь к оплате</h3><p>Цена, удержание 10 секунд, CTA, загрузка pay, контакт, checkout, редирект к провайдеру, completed и error.</p></article>
+          <article class="change"><h3>Добавили источник каждого CTA</h3><p><code>cta_id</code>, <code>source_section</code>, контекст и destination позволяют отличать переход от спикеров, кейсов, header и цены.</p></article>
+          <article class="change"><h3>Разметили чтение контента</h3><p>Кейсы: список, открытие, 15/30 секунд, фильтры. FAQ: категория и конкретный вопрос. Отдельно — расписание, роли, программа и записи.</p></article>
+          <article class="change"><h3>Расширили FAQ</h3><p>Добавлены вопросы о выборе процесса, техническом бэкграунде, личной продуктивности vs компании, live-сессиях, инструментах и зависимости результата от практики.</p></article>
+          <article class="change"><h3>Уточнили тариф</h3><p>В карточке перечислено, что входит: 14+ онлайн-сессий, записи, шаблоны и артефакты, активное комьюнити, кураторы и практика на своей задаче.</p></article>
+          <article class="change"><h3>Отделили командные визиты</h3><p><code>traffic_type=internal</code> и staff-mode позволяют исключать проверки команды, когда трекер не блокируется браузером.</p></article>
+          <article class="change"><h3>Оставили Суриката страховкой</h3><p>Контакт из payment flow дублируется в Telegram, но аналитическим источником поведения остаётся Метрика.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="next">
+        <div class="section-head"><div><p class="period">Приоритеты</p><h2>Что делать дальше</h2></div><p>Не список всех возможных улучшений, а действия, которые закрывают самые дорогие слепые зоны текущего отчёта.</p></div>
+        <div class="decision-grid">
+          <article class="decision"><span class="step">01 · высокий приоритет</span><h3>Разобрать mobile payment</h3><p>Посмотреть 15–20 мобильных Вебвизоров с кликом по тарифу и без checkout. Проверить переход, скорость, форму, клавиатуру и возврат со страницы оплаты.</p></article>
+          <article class="decision"><span class="step">02 · высокий приоритет</span><h3>Сократить Unknown direct</h3><p>Все Telegram/Instagram/email ссылки создавать через UTM-таблицу. Для бота передавать его имя отдельным параметром, а не только общим <code>tg</code>.</p></article>
+          <article class="decision"><span class="step">03 · аналитика</span><h3>Собрать строгие когорты</h3><p>Отчёт: источник → первый CTA/source section → pricing → payment → completed в рамках одного визита. Это ответит, какие блоки действительно продают.</p></article>
+          <article class="decision"><span class="step">04 · контент</span><h3>Усилить ответы, которые уже читают</h3><p>Не добавлять десятки FAQ. Сначала улучшить топ-вопросы: кому подходит, какой процесс выбрать, нужен ли техбэкграунд, результат и live-сессии.</p></article>
+          <article class="decision"><span class="step">05 · качество данных</span><h3>Проверить internal</h3><p>Staff-mode работает только когда Метрика не заблокирована. Команде нужна инструкция для каждого браузера и отдельная проверка Arc/ad blocker.</p></article>
+          <article class="decision"><span class="step">06 · цикл решений</span><h3>Обновлять отчёт раз в неделю</h3><p>Фиксировать дату выгрузки, изменения сайта и эффект через 7–14 дней. Не сравнивать неполный день с полным и не смешивать визиты с пользователями.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="methodology">
+        <div class="section-head"><div><p class="period">Ограничения</p><h2>Как считать</h2></div><p>Короткая памятка, чтобы статическая страница не превратилась в «вечную правду» после следующего обновления сайта.</p></div>
+        <div class="method">
+          <strong>Источник:</strong> Yandex Metrika Reports API, счётчик <code>106857835</code>, полная точность, атрибуция Cross-device last significant. Выгружено 14 июля 2026 по московскому времени.
+          <ul>
+            <li>Основной срез: 7–14 июля; 14 июля — неполный день. База: 14 июня–14 июля.</li>
+            <li>Показатели целей на странице — уникальные пользователи цели, не количество событий.</li>
+            <li>Staff-mode зафиксирован у 3 пользователей недели. Он показан как контроль качества данных, но не вычтен из raw KPI: параметр <code>traffic_type</code> присутствует не у всех 920 пользователей.</li>
+            <li>Блоки считаются по параметру <code>section_id</code>; пользователь мог попасть в секцию через CTA, а не только скроллом.</li>
+            <li>Unknown direct означает отсутствие надёжного UTM/referrer, а не доказанный ручной ввод адреса.</li>
+            <li>Ad blocker может полностью не отправить визит. Такой человек не станет «external» — его вообще не будет в Метрике.</li>
+            <li>Факт оплаты дополнительно сверяется с payment backend; цель <code>completed</code> — аналитический сигнал, не бухгалтерский реестр.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

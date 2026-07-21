@@ -13,14 +13,15 @@ Structured source: `website-ops/update-rules.json`
 | Production/staging QA dashboards | `AIM Site Agent Evaluation` | Manual; biweekly Monday 07:00 UTC on even ISO weeks; monthly day 1 at 08:00 UTC | GitHub Actions `site-qa.yml` | `reports/latest/*`, `reports/history/*`, GitHub Pages dashboard |
 | DeviceCloud preflight | `AI Mindset Device Cloud QA` | Manual; monthly day 2 at 09:00 UTC | GitHub Actions `device-cloud.yml` | Job summary now; provider session evidence later |
 | Surikat Telegram intake | `Surikat Vasily` | Cloud Run webhook while service is active; local LaunchAgent is rollback only | Telegram webhook to Cloud Run `aim-surikat-vasily` | Telegram reactions/questions, Linear issues, owner-gated LLM site-audit replies |
+| Team, labs, and recurring-link freshness | `Freshness Surikat` (public name TBD) | Team monthly; links weekly; labs on discovery and daily around lifecycle deadlines | Local policy engine now; future scheduler and optional authorized work-chat webhook | Deduplicated team/lab/link obligations and Vasily handoffs |
 | Bot operating rules and Website Hub sync | `AIM Site Ops Sync` | On every meaningful bot runtime/behavior change; local preview auto-sync on `/aim-site-hub/` | Manual Codex work or `node local-preview/sync-bot-operating-rules-summary.mjs` | `website-ops/bot-operating-rules.*`, Hub bot-rule cards, task ledger |
 | Website Hub refresh | `AIM Site Ops Sync` | On meaningful operational/UI/doc changes; generated summaries refreshed by local preview auto-sync | Manual Codex work or sync scripts | Local hub preview, LAN/mobile preview, task ledger |
 | Design feedback evaluation dashboard | `AIM Design Evaluation` | On every explicit design rating/rejection; automated rating evaluator every 4 hours while active; before new design-generation runs | Page Design Lab site rating, Sonya Telegram rating, manual Codex work, or Codex automation `aim-design-rating-evaluator` | Updated design feedback registry, dashboard, generator guardrails, task ledger |
-| Surikat Sonya design review bot | `Surikat Sonya` | Nightly candidate scan and daytime DM review delivery when review windows are known | Local catalog publisher, manual `/review`, Cloud Run webhook, or future schedule after night design output | Telegram screenshot cards, 0-10 ratings, GCS catalog/inventory, feedback registry events, Sonya-to-Vasily handoff, Vertex AI / Cloud Storage media path |
-| Homepage full design generator | `AIM Homepage Full Design Generator` | Weekly on Monday at 09:40 Europe/Lisbon after initial manual burst | Codex automation `aim-homepage-full-design-generator` | One complete light-theme homepage prototype, README, manifest entry, task ledger |
-| AIM Night Design Pursuit | `AIM Night Design Pursuit` | Daily at 00:05 Europe/Lisbon; can work until 06:45 | Codex automation `aim-night-design-pursuit` | Diverse review-only homepage/payment/element designs, manifests, night report, task ledger |
-| Homepage element design generator | `AIM Homepage Element Design Generator` | Weekly on Friday at 10:20 Europe/Lisbon after initial manual burst | Codex automation `aim-homepage-element-design-generator` | One focused homepage block/element prototype, README, manifest entry, task ledger |
-| Local Codex bug continuation | `Codex automation bug` | Paused while night-design lane is active | Codex app cron automation with prompt `continue this task` | Continued local bug pass, `~/.codex/automations/bug/memory.md`, inbox handoff |
+| Surikat Sonya design review bot | `Surikat Sonya` | Policy-v2 catalog refresh every 30 minutes while the local publisher is loaded; Telegram delivery only on explicit/manual review flow | Local catalog publisher, manual `/review`, or Cloud Run webhook | Telegram screenshot cards, 0-10 ratings, GCS catalog/inventory, feedback registry events, Sonya-to-Vasily handoff, Vertex AI / Cloud Storage media path |
+| Homepage full design generator | `AIM Homepage Full Design Generator` | **PAUSED**; former cadence was Monday 09:40 Europe/Lisbon | Codex automation `aim-homepage-full-design-generator`; resume only from a new user-approved generation plan | One complete light-theme homepage prototype, README, manifest entry, task ledger |
+| AIM Night Design Pursuit | `AIM Night Design Pursuit` | **PAUSED**; former quiet-window cadence was 00:05–06:05 Europe/Lisbon | Codex automation `aim-night-design-pursuit`; resume only from a new user-approved generation plan | Diverse review-only homepage/payment/element designs, manifests, night report, task ledger |
+| Homepage element design generator | `AIM Homepage Element Design Generator` | **PAUSED**; former cadence was Friday 10:20 Europe/Lisbon | Codex automation `aim-homepage-element-design-generator`; resume only from a new user-approved generation plan | One focused homepage block/element prototype, README, manifest entry, task ledger |
+| Local Codex bug continuation | `Codex automation bug` | **PAUSED** independently; the night-design lane is also paused | Codex app cron automation with prompt `continue this task` | Continued local bug pass, `~/.codex/automations/bug/memory.md`, inbox handoff |
 | Tool registry | `AIM Site Ops Sync` | On every new reusable review or design tool | `node local-preview/sync-tool-registry-summary.mjs` or local preview auto-sync on `/aim-site-hub/` | `website-ops/tool-registry.json`, `aim-site-hub.html` grouped tool cards |
 
 ## Rules
@@ -87,7 +88,17 @@ Structured source: `website-ops/update-rules.json`
 - Telegram voice/audio/video-note attachments must be transcribed through
   Gemini/Vertex before routing; the transcript counts as effective text for URL
   extraction, semantic classification, and private owner context memory.
-- URL-backed aliases are part of chat context: if a thread names a linked URL `ai-native` or another clear alias, future owner task commands may use that alias without repeating the URL.
+- Group links, UTM links, analytics notes, and edited chat notes are context only:
+  they must not start a crawl/audit unless the current owner message is in DM or
+  directly addresses Vasily and asks him to check, audit, review, QA, inspect, or
+  rerun.
+- URL-backed aliases are part of chat context: if a thread names a linked URL
+  `ai-native` or another clear alias, future directly addressed owner task
+  commands may use that alias without repeating the URL. Alias memory is not
+  task authorization by itself.
+- Telegram edits/retries of the same source message are deduped for the LLM task
+  source window; owner `остановись/стоп/не запускай проверки` pauses new LLM
+  checks in that chat/thread for several hours unless explicitly resumed or rerun.
 - In Vasily/QA language, `QA сайта` refers to the AIM Site Agent Evaluation dashboard. An ai-native visual QA pass should create a separate AI Native dashboard page and add it to the top choose-site dashboard selector once the local QA/Codex runner is connected.
 - When an owner-gated long LLM/QA task is actually accepted, Surikat should immediately reply to the original source-chat message with a short `Принято...`; the final result comes later as a separate message.
 - This immediate acceptance reply is only for task-mode work, not normal bug intake.
@@ -108,6 +119,29 @@ Structured source: `website-ops/update-rules.json`
   Vasily GCS state prefix; if hydrate fails while enabled, the webhook is
   acknowledged without changing behavior.
 - Owner-only tuning commands are restricted to Anca/@stavenski.
+
+### Freshness Surikat
+
+- Source package: `Bots/Website Freshness Bot/`.
+- Once per month, show one neutral list of published team names and ask whether
+  the list and spelling are current. Omit Ira and Sasha from the list entirely.
+- Do not ask separate questions about individuals and do not infer or propose
+  named additions, departures, removals, or activity levels from chat context.
+- Before a laboratory page exists, propose a nearest-lab listing with season and
+  year only. Once the page is discoverable, use its latest confirmed start date
+  and schedule removal from every recruitment list for start plus seven days.
+- S26 is already linked from the staging homepage at `/labs-custom/s26/`; its current
+  start is 3 August 2026 and its current recruitment-removal checkpoint is
+  10 August 2026. Recompute this if the source date changes.
+- Page discovery means sitemap/internal-link/configured-route/confirmed-chat
+  discovery plus semantic lab classification. It is not proof of Google index
+  status.
+- Recurring links are checked for status, final redirect destination, visible
+  meaning, and repeated occurrences. One problem becomes one obligation with all
+  source locations.
+- The checked-in implementation is monitoring/proposal-only until a Telegram
+  token, scheduler, durable state, work-chat scope, and any Sanity write contract
+  are explicitly configured.
 
 ### Bot Operating Rules Sync
 
@@ -160,14 +194,15 @@ Structured source: `website-ops/update-rules.json`
 - Source folder: `Bots/Telegram Design Taste Bot - Sonya/`.
 - Cloud Run deployment notes live in `Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md`.
 - Sonya sends design-lab screenshots to Anca and Sasha in Telegram DM and records inline `0-10` button ratings into `design-feedback-dashboard/data/design-feedback-registry.json`.
-- Curated/scheduled review sends only candidates with `sonyaScore > 5/10`; manual broad review requests may draw from `inventory.json` to inspect unrated candidates, but still use review-only artifacts, pacing, and owner approval/commands.
+- Sonya policy v2 admits a candidate to curated or broad review only when the manifest has exact `status: active-review`, `showInGallery: true`, passed QA and visual-audit gates, matching current bundle fingerprints, a screenshot, `reviewFocus`, and `designDelta`. Manual broad review may bypass Sonya's score, never these hard gates.
+- A passed visual audit supersedes legacy `brandFitGate: not-evaluated`; explicit brand-fit `blocked`, `rejected`, or `needs-rework` still blocks review. Payments/elements without a passed visual audit remain internal backlog.
 - Sasha must press `/start` once before Sonya can DM him. On first contact she asks: `Саша, когда ты не заебан работой и готов смотреть сайты, которые я скидываю?`
 - Secrets stay outside tracked files: Telegram token in Keychain service `aim_surikat_sonya_bot_token` locally or Secret Manager in Cloud Run; Gemini key in Keychain or local `.env`/Creative Inbox fallback.
 - Cloud credits path must use `SONYA_LLM_PROVIDER=vertex` with `VERTEX_PROJECT_ID` inside the credit-linked Google Cloud project. Plain `GEMINI_API_KEY` is only the Gemini Developer API fallback.
 - Cloud Run webhook mode exposes `POST /telegram`, `GET /health`, protected `POST /review-queue`, and protected admin/helper endpoints such as `/agent-link`, `/group-intro`, `/scan-candidates`, and `/conversation-log`; do not run Telegram polling and webhook mode at the same time.
 - `SONYA_GCS_BUCKET` enables Cloud Storage upload for incoming Telegram media; large Vertex AI audio/video analysis uses the stored `gs://...` URI.
 - Cloud Run uses the GCS state mirror for owner/dispatch/log/registry/handoff surfaces. If hydrate fails while enabled, the webhook acknowledges without side effects instead of overwriting durable state from stale local files.
-- Cloud Run reads review cards from GCS `catalog.json` / `inventory.json`; the local catalog publisher owns scoring, screenshot capture, stale-lock cleanup, published-only public links, and GCS publication.
+- Cloud Run reads only policy-v2 review cards from GCS `catalog.json` / `inventory.json`; stale legacy records without revision-bound eligibility are ignored. The local publisher runs every 30 minutes, caps broad inventory at 12, and skips all uploads when eligible inputs are unchanged.
 - Current live health should expose `mode=webhook`, `genaiProvider=vertex`, `groupChatEnabled=true`, `groupVideoReplyEnabled=true`, `autoReviewEnabled=false`, `requireSendApproval=true`, and `sashaProactiveDmEnabled=false`.
 - Runtime Veo is configured but disabled and expired. The repo Dockerfile runtime has `ffmpeg` available, so real Telegram `video_note` output is possible only if the owner explicitly reopens paid generation and health reports `runtimeVeo.ffmpegAvailable=true`; buildpack/source deploys without `ffmpeg` must not enable `sendAsVideoNote`.
 - Each rating is passed to the page generators through `website-ops/design-generator-feedback-handoff.jsonl`, including the rated artifact, Pages/local URL, rater, Sonya diagnosis, target automation ids, and the next-design brief.
@@ -209,6 +244,7 @@ Structured source: `website-ops/update-rules.json`
 
 - Source doc: `website-ops/night-design-pursuit.md`.
 - Automation: `aim-night-design-pursuit`.
+- Current status: **PAUSED**. The remaining bullets describe the historical run contract and apply only if the user approves a new generation plan.
 - Owner-approved resource window: `00:00-07:00 Europe/Lisbon`.
 - The worker may quit nonessential apps/processes inside that window: Telegram, Obsidian, Pencil, Linear, extra Terminal sessions, stale subagents, and stale local servers not needed for validation.
 - It must preserve Codex, needed browser/Arc, OS services, Finder, Yandex Disk/sync services, and active Creative Taste Bot/code-animation automation processes.
@@ -225,6 +261,7 @@ Structured source: `website-ops/update-rules.json`
 ### AIM Gemini Page Generation Sprint
 
 - Automation: `aim-gemini-page-generation-sprint`.
+- Current status: **PAUSED / completed one-off sprint**. It must not resume without a new user-approved generation plan.
 - Purpose: one-off Gemini-first test for AI Mindset review-only page artifacts.
 - Route: Gemini visual scout -> Codex implementation -> local/browser QA.
 - It must read the agent route experiment protocol and queue before generating.
@@ -247,7 +284,7 @@ Structured source: `website-ops/update-rules.json`
 - This is a local Codex automation that lives outside the repo at `~/.codex/automations/bug/`.
 - `automation.toml` defines the schedule, workspace, model, and the generic prompt `continue this task`.
 - `memory.md` is the readable run journal: it shows what the automation inspected, what it changed, what it verified, and what remained unresolved.
-- In practice this automation is a night/maintenance continuation worker for unfinished bug-style threads in the AIM workspace. It is currently optional and can remain paused while the AIM Night Design Pursuit lane is active.
+- In practice this automation is a night/maintenance continuation worker for unfinished bug-style threads in the AIM workspace. It is currently optional and paused independently; AIM Night Design Pursuit is also paused.
 - It is not a source of truth for product rules, QA policy, or site content. Those still live in repo docs such as `website-ops/*.json`, `website-ops/*.md`, Surikat docs, and the QA repo.
 - If you need to understand why Codex touched something “by itself”, check `~/.codex/automations/bug/memory.md` first.
 

@@ -17,12 +17,24 @@ bot-like workers. The Website Hub renders the same source through
   should immediately reply in the source chat with a short `Принято...`, then
   return later with the completed result. Ordinary bug intake remains quiet:
   reaction, Linear routing, or one clarification question.
-  Owner DMs, addressed messages, and owner messages with an explicit URL go
-  through the LLM semantic intent router before conversational replies:
+  Owner DMs and directly addressed owner messages go through one LLM semantic
+  intent prepass before task, conversation, stop/resume control, bug intake, or
+  owner-rule handling:
   visual QA/full-pass tasks go to task mode, concrete site breakage goes to bug
-  intake, and questions or discussion stay conversational or silent. This is
-  meaning-based routing, not a narrow task-regexp list; `давай сделаем аудит
-  вот этого сайта ...` is a task because it asks Vasily to do website QA work.
+  intake, owner pause/resume wording controls the LLM task runner, owner durable
+  rule changes persist, and questions or discussion stay conversational or
+  silent. This is meaning-based routing, not a narrow task-regexp list; `давай
+  сделаем аудит вот этого сайта ...` is a task because it asks Vasily to do
+  website QA work.
+  A bare URL, UTM link, analytics note, or edited group note is context only. It
+  must not start a crawl/audit unless the current message is in DM or directly
+  addresses Vasily by reply/mention/name/command and asks him to check, audit,
+  review, QA, inspect, or rerun something.
+  Edits/retries of the same Telegram source message are deduped, and owner
+  stop/pause intent is semantic-first: exact phrases such as `Вась, остановись`
+  are fallback examples, while any direct owner message that means "do not
+  launch checks now" pauses new LLM checks in that chat/thread for several hours
+  unless the owner explicitly resumes or reruns.
   Scope replies to Vasily's own task clarification, such as `всего сайта`,
   continue the pending task instead of becoming chat. Deterministic task
   patterns are fallback only when the LLM intent router is unavailable. In
@@ -45,8 +57,8 @@ bot-like workers. The Website Hub renders the same source through
   `по-человечески`, `живее`, or `без ChatGPT-защиты` is a behavior-tuning
   command: it updates `conversationalReplyStyle` and future LLM wording instead
   of being treated as just another chat question.
-  Broader owner instructions like `запомни правило`, `когда я говорю QA сайта`,
-  `теперь считай...`, or `в следующий раз...` update
+  Broader owner instructions no longer require a fixed `запомни правило`
+  phrase: if the semantic intent is an owner rule update, Vasily stores it in
   `ownerRuntimeInstructions`. Those instructions are injected into future LLM
   conversational and task prompts, but they do not override privacy, read-only
   audit, secret, Linear, or deploy guards.
@@ -58,21 +70,26 @@ bot-like workers. The Website Hub renders the same source through
   form/payment leads. It must use a separate
   `SURIKAT_METRIKA_LEAD_DM_RECIPIENTS` `username=chat_id` delivery map and send
   only recipients that are also in `SURIKAT_METRIKA_LEAD_DM_ALLOWED_USERNAMES`.
-  Normal live staging/payment delivery has two active confirmed DM recipients;
-  `@dan_named` stays approved but inactive in the relay until his private DM
-  route is confirmed. For owner-approved live/night test windows, temporarily
+  Normal live staging/payment delivery has three active confirmed DM recipients
+  (`leadDmActiveRecipientCount=3` in smoke docs/tests): `@stavenski`,
+  `@Irhen_N`, and `@dan_named`. Dan's private DM route is confirmed by his
+  `/start` message to Vasily on 2026-06-22. For owner-approved live/night test windows, temporarily
   narrow relay delivery to owner-only mode and verify `aim-pay-lead-relay` `/readyz`
   reports `leadDmActiveRecipientCount=1` before sending test leads; restore the
   normal map after the window. Successful relay deliveries should write
   `lead_relay_delivered` logs with masked contact, contact hash, delivered
   usernames, and Telegram `messageId` for diagnostics and precise cleanup.
+  Manager-scoped pause/resume must be configured with
+  `SURIKAT_METRIKA_LEAD_DM_MANAGER_USER_IDS` plus
+  `SURIKAT_METRIKA_LEAD_DM_MANAGER_USERNAMES=stavenski,Irhen_N`, so Ira can
+  pause/resume payment lead notifications without becoming a full bot owner.
   After deploy, Vasily `/health` should expose
   `audioTranscriptionEnabled=true`, `metrikaLeadDmAllowlistConfigured=true`,
   `metrikaLeadDmAllowlistCount=3`, `metrikaLeadDmManagerCount=4`, and
   `metrikaLeadDmDeliveryPaused=false` in normal delivery mode. Relay `/readyz`
   should expose `leadDmDeliveryMode=dm_recipient_map`,
-  `leadDmAllowlistCount=3`, `leadDmRecipientMapCount=2`,
-  `leadDmActiveRecipientCount=2`, `leadDmDeliveryPaused=false`,
+  `leadDmAllowlistCount=3`, `leadDmRecipientMapCount=3`,
+  `leadDmActiveRecipientCount=3`, `leadDmDeliveryPaused=false`,
   `leadDmDeliveryControlSource=vasily/state/bot-rules.local.json`,
   `stateGcsEnabled=true`, and `legacyTelegramChatConfigured=false`.
   Owner Telegram commands that tune behavior must persist through the GCS state
@@ -86,21 +103,46 @@ bot-like workers. The Website Hub renders the same source through
   `stateGcsPrefix=vasily/state`.
   He keeps conservative per-thread URL alias memory: if a real linked URL is
   labelled `ai-native` or another explicit name, later owner commands can use
-  that name without repeating the URL.
+  that name without repeating the URL. Alias memory helps only after a direct
+  owner task; it is not permission to treat every future link mention as work.
 - **Surikat Sonya** (`@aim_surikat_sonya_bot`) is the design-review and taste
   memory bot in separate GCP project `project-f40c3e3c-0fca-49de-96d`. She
   sends review-only design candidates, collects `0-10` ratings, and writes
   generator memory. Cloud Run reads review cards from GCS
   `catalog.json`/`inventory.json`; the local catalog publisher owns scoring,
   bounded missing-preview capture, stale-lock cleanup, and GCS catalog
-  publication. Live health currently keeps group replies enabled when addressed,
+  publication. Both curated and owner-broad review are hard-gated by Sonya
+  policy v2: active manifest status, passed QA and visual audit for the same
+  current artifact fingerprint, screenshot, and explicit review focus/delta.
+  Manual commands bypass score only; stale legacy GCS records are rejected.
+  Unchanged catalogs are not re-uploaded. Live health currently keeps group replies enabled when addressed,
   `autoReviewEnabled=false`, `requireSendApproval=true`, and
   `sashaProactiveDmEnabled=false`. Runtime Veo is configured but disabled and
   expired; the repo Dockerfile runtime has `ffmpeg` available for real Telegram
   `video_note` output if the owner explicitly reopens paid generation. Vasily
   should not be redeployed into Sonya's project except as an explicit rollback.
+- **Freshness Surikat** (public name and Telegram username TBD) is the third bot
+  role. Its local rule package lives in `Bots/Website Freshness Bot/`. It owns
+  content freshness rather than generic QA: monthly team reconciliation,
+  laboratory lifecycle, and recurring-link drift. Once per month it shows one
+  neutral list of the published team and asks whether the list and spelling are
+  current. Ira and Sasha are omitted from that list entirely. It does not single
+  out people, infer arrivals/departures from chat activity, or propose adding or
+  removing a named employee.
+  A planned lab without a page should be proposed as the nearest lab using only
+  season and year. After a real lab page is discoverable, the bot reads the
+  current start date and schedules removal from every recruitment surface for
+  start plus seven calendar days. It does not delete the page. For S26, staging
+  homepage currently links `/labs-custom/s26/` with start `2026-08-03`, so the
+  current removal checkpoint is `2026-08-10`; any source date change must
+  recompute that deadline. The checked-in implementation is a local policy
+  engine and test suite, not a deployed Telegram webhook or scheduler yet.
 - **AIM Site Agent Evaluation** is the black-box QA worker. It checks the site
   read-only and reports findings that Vasily can summarize or route.
+Adjacent bots outside this registry (Alex's `@aim_partners_bot`, Dan's
+onboarding/payment bot `@prod_ai_mind_set_bot`) are documented separately in
+`website-ops/adjacent-bots-2026-07.md` — they are not part of the site
+QA/design contour.
 
 ## Sync Contract
 

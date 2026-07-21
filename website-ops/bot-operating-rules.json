@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-06-22",
+  "updatedAt": "2026-07-17",
   "sourceOfTruth": "website-ops/bot-operating-rules.json",
   "rules": [
     {
@@ -23,18 +23,19 @@
       "bot": "Surikat Vasily",
       "area": "telegram",
       "status": "active",
-      "summary": "Vasily listens for AIM/NIMS website bugs, QA questions, link/date/content problems, CTA/form/payment issues, and direct owner commands. In group chats he stays conservative: react or stay silent unless addressed, the message is clearly bug-like, or the owner gives a semantic long audit/QA task with an explicit URL. Voice/audio/video-note messages are transcribed through Gemini/Vertex before routing so spoken owner tasks are handled like typed text.",
+      "summary": "Vasily listens for AIM/NIMS website bugs, QA questions, link/date/content problems, CTA/form/payment issues, and direct owner commands. In group chats he stays conservative: react or stay silent unless addressed or the message is clearly bug-like. Group links, UTM links, analytics notes, and edited chat notes are context only; they do not start long LLM audits unless the current owner message is in DM or directly addresses Vasily and asks him to check, audit, review, QA, inspect, or rerun. Owner DMs and directly addressed owner messages use one LLM semantic intent prepass before task, conversation, stop/resume control, bug intake, or owner-rule handling. Voice/audio/video-note messages are transcribed through Gemini/Vertex before routing so spoken owner tasks are handled like typed text.",
       "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/README.md",
       "checks": [
         "Accepted names include Сурикат Василий, Сурикат, суркат, Вася, Вась, Васек, Васёк, Васька and @aim_surikat_bot.",
-        "Owner DMs, addressed owner messages, and owner messages with an explicit URL are classified by the LLM semantic intent router before conversational replies.",
+        "Owner DMs and directly addressed owner messages are classified by one LLM semantic intent prepass before task execution, conversational replies, stop/resume controls, bug intake, or owner-rule updates.",
+        "A bare URL, UTM link, analytics note, or edited group note is context only and must not start an LLM audit without direct Vasily addressing plus an actionable check/audit/QA/rerun request.",
         "The semantic router decides by meaning, not task regexes: wording such as 'давай сделаем аудит вот этого сайта https://...' is accepted as LLM task mode because it asks Vasily to perform website QA.",
-        "Addressed messages are classified semantically before action: long site/visual QA tasks go to task mode, concrete breakage goes to bug intake, and questions or discussion stay conversational/silent.",
+        "Addressed messages are classified semantically before action: long site/visual QA tasks go to task mode, concrete breakage goes to bug intake, owner stop/resume wording controls the LLM task runner, owner durable rule changes persist, and questions or discussion stay conversational/silent.",
         "If Vasily asks a task clarification and the owner replies with scope such as 'всего сайта', the reply continues the pending audit task instead of falling through to conversational LLM wording.",
         "In owner private chat, follow-up QA questions and pointers such as 'ту же самую' reuse the latest accepted site task URL instead of asking for the URL again.",
         "Telegram voice/audio/video-note messages are transcribed through Gemini/Vertex before routing; the transcript becomes effective text for semantic task/conversation/bug classification and private owner context memory.",
         "Human coordination replies to a report thread, such as tagging a teammate to proofread copy, do not create a new bug only because the replied-to message had a screenshot or bug-like caption.",
-        "Per-thread link aliases are learned from real URLs, Telegram text_link labels, explicit naming phrases, and URL-derived labels; later commands can use the alias without repeating the URL.",
+        "Per-thread link aliases are learned from real URLs, Telegram text_link labels, explicit naming phrases, and URL-derived labels; later directly addressed owner commands can use the alias without repeating the URL, but alias memory is not task authorization by itself.",
         "If a report is clear, use the 👀 reaction instead of noisy text.",
         "If context is missing, ask for page/link, device/browser, screenshot, or expected behavior."
       ]
@@ -61,14 +62,14 @@
       "bot": "Surikat Vasily",
       "area": "llm",
       "status": "active",
-      "summary": "After hard guards and semantic intent classification decide that an addressed/private message is a question, discussion, bot-flow critique, light conversation, or off-topic redirect, Vasily may use Vertex/Gemini to write the final short Telegram wording. This does not make him a generic ChatGPT: the reply stays inside AIM/NIMS website, QA dashboards, staging/production, links, CTA/forms/payment, bot behavior, and routing. Owner feedback like 'говори нормально / не по-ишному / по-человечески' updates conversationalReplyStyle instead of being treated as a normal question. Broader owner instructions like 'запомни правило' or 'когда я говорю QA сайта' update ownerRuntimeInstructions and guide future routing/wording.",
+      "summary": "After hard guards and semantic intent classification decide that an addressed/private message is a question, discussion, bot-flow critique, light conversation, or off-topic redirect, Vasily may use Vertex/Gemini to write the final short Telegram wording. This does not make him a generic ChatGPT: the reply stays inside AIM/NIMS website, QA dashboards, staging/production, links, CTA/forms/payment, bot behavior, and routing. A confident semantic conversation intent can keep bot-behavior discussion conversational even when older question/off-topic regexes would guess wrong. Owner feedback like 'говори нормально / не по-ишному / по-человечески' updates conversationalReplyStyle instead of being treated as a normal question. Broader owner instructions no longer require a fixed 'запомни правило' phrase: semantic owner_rule_update intent updates ownerRuntimeInstructions and guides future routing/wording.",
       "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/runtime-options.md",
       "checks": [
         "SURIKAT_LLM_CHAT_ENABLED controls conversational wording separately from long crawl/audit tasks and from SURIKAT_LLM_INTENT_ROUTER_ENABLED.",
         "The LLM must not accept tasks, create Linear issues, claim screenshots/dashboard files, or invent QA status.",
         "Owner style feedback returns rules_style_updated and persists conversationalReplyStyle through the Vasily GCS state mirror.",
         "Generic owner runtime rules return rules_owner_instruction_updated and do not override Metrika DM allowlists, read-only audit limits, secrets, Linear, or deploy guards.",
-        "Provider failures fall back to deterministic reply variants and deterministic task fallback; LLM semantic routing is the primary owner task-vs-conversation classifier when available."
+        "Provider failures fall back to deterministic reply variants and deterministic task fallback; LLM semantic routing is the primary owner intent classifier for task-vs-conversation, pause/resume, bug report, and owner-rule update decisions when available."
       ]
     },
     {
@@ -77,13 +78,16 @@
       "bot": "Surikat Vasily",
       "area": "llm",
       "status": "active",
-      "summary": "Owner requests like 'сходи проверь сайт, ссылки, даты и названия' or 'давай сделаем аудит вот этого сайта https://...' trigger bounded read-only website QA via Vertex/Gemini. Vasily crawls the target, same-origin pages, linked AIM Labs/sprint pages, and a bounded external-link sample, then answers in DM or the source chat.",
+      "summary": "A direct owner request for a website audit triggers bounded read-only QA via Vertex/Gemini. Vasily crawls the target, same-origin pages, linked AIM Labs/sprint pages, and a bounded external-link sample, then answers in DM or the source chat. A plain group URL or analytics discussion is remembered only as context and does not trigger this mode.",
       "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/runtime-options.md",
       "checks": [
         "SURIKAT_LLM_TASK_OWNER_ONLY stays true unless the owner explicitly opens access.",
-        "The LLM semantic intent router runs before conversational replies, so owner audit/QA tasks with URLs are classified by meaning and cannot be answered as casual chat just because they miss a task regex.",
+        "The LLM semantic intent router runs before conversational replies for owner DMs and directly addressed owner messages, so audit/QA tasks are classified by meaning and cannot be answered as casual chat just because they miss a task regex.",
+        "A plain URL, UTM link, analytics note, or edited chat note is not a site-audit task by itself, even if the URL is an accepted AIM surface.",
         "Visual QA/full pass/dashboard/screenshot requests for ai-native are task-mode requests even when the visible Telegram text hides the full URL in a text_link entity.",
-        "If a previously linked URL was named ai-native or another alias in the same thread, future owner task commands may refer to that alias and should resolve to the remembered URL.",
+        "If a previously linked URL was named ai-native or another alias in the same thread, future directly addressed owner task commands may refer to that alias and should resolve to the remembered URL.",
+        "Same Telegram source-message edits/retries are deduped for the configured LLM task source window; rerun requires explicit repeat/rerun wording.",
+        "Owner stop/pause intent is semantic-first: exact phrases such as 'Вась, остановись', 'стоп', or 'не запускай проверки' are fallback examples, and any direct owner message that means 'pause/stop launching checks' pauses new LLM checks in that chat/thread for the configured pause window unless explicitly resumed or rerun.",
         "In owner private chat, the latest accepted site task target is working context for follow-up QA questions about broken designs, devices/browsers, screenshots, Markdown, or page content.",
         "For 'QA сайта' / ai-native visual QA, the dashboard target is AIM Site Agent Evaluation/reports/latest/dashboard.html; the desired artifact is a separate AI Native dashboard page linked from the top choose-site selector.",
         "Cloud Run LLM mode must not claim screenshots or dashboard files were created unless a local QA/Codex runner actually produced them.",
@@ -113,14 +117,14 @@
       "bot": "Surikat Vasily",
       "area": "privacy",
       "status": "active",
-      "summary": "Metrika/form/payment leads may be sent to personal Telegram messages only for explicit owner-approved recipients. The allowlist and delivery map are separate: @stavenski, @Irhen_N, and @dan_named are approved usernames, but the live relay sends only to confirmed username=chat_id targets. Normal live staging/payment delivery has two active confirmed recipients; owner-approved night tests may temporarily narrow delivery to owner-only mode, but the normal map must be restored after the test window. Successful deliveries must be traceable through lead_relay_delivered logs with masked contact and Telegram messageId. This is not a blanket permission to DM anyone. Recipient expansion remains owner-approved; payment lead notification pause/resume may also be controlled by configured notification managers, currently Anca / @stavenski and Ira / @Irhen_N, through the durable metrikaLeadDmDeliveryPaused state.",
+      "summary": "Metrika/form/payment leads may be sent to personal Telegram messages only for explicit owner-approved recipients. The allowlist and delivery map are separate: @stavenski, @Irhen_N, and @dan_named are approved usernames, and the live relay sends only to confirmed username=chat_id targets. Dan's private DM route is confirmed by his /start message to Vasily on 2026-06-22. Normal live staging/payment delivery uses SURIKAT_METRIKA_LEAD_DM_RECIPIENTS=stavenski=75263878,Irhen_N=125291022,dan_named=7999727989 and has three active confirmed recipients; owner-approved night tests may temporarily narrow delivery to owner-only mode, but the normal map must be restored after the test window. Successful deliveries must be traceable through lead_relay_delivered logs with masked contact and Telegram messageId. This is not a blanket permission to DM anyone. Recipient expansion remains owner-approved; payment lead notification pause/resume may also be controlled by configured notification managers, currently Anca / @stavenski and Ira / @Irhen_N, through the durable metrikaLeadDmDeliveryPaused state.",
       "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/runtime-options.md; Site Repo - ai-mindset-website/cloud-run/telegram-lead-relay/README.md",
       "checks": [
         "Use SURIKAT_METRIKA_LEAD_DM_ALLOWED_USERNAMES or owner-updated metrikaLeadDmAllowedUsernames as the source of truth.",
-        "aim-pay-lead-relay /readyz must expose leadDmDeliveryMode=dm_recipient_map, leadDmAllowlistCount=3, leadDmRecipientMapCount=2, leadDmActiveRecipientCount=2, leadDmDeliveryPaused=false, leadDmDeliveryControlSource=vasily/state/bot-rules.local.json, stateGcsEnabled=true, and legacyTelegramChatConfigured=false in normal delivery mode.",
+        "aim-pay-lead-relay /readyz must expose leadDmDeliveryMode=dm_recipient_map, leadDmAllowlistCount=3, leadDmRecipientMapCount=3, leadDmActiveRecipientCount=3, leadDmDeliveryPaused=false, leadDmDeliveryControlSource=vasily/state/bot-rules.local.json, stateGcsEnabled=true, and legacyTelegramChatConfigured=false in normal delivery mode.",
         "The browser-facing staging service is aim-pay-lead-relay in project aim-surikat-vasily for https://staging.aimindset.org form/payment leads.",
-        "Use SURIKAT_METRIKA_LEAD_DM_RECIPIENTS as the concrete username=chat_id delivery map; normal active production mode has two confirmed DM recipients unless the owner adds more confirmed recipients.",
-        "Use configured manager IDs plus SURIKAT_METRIKA_LEAD_DM_MANAGER_USERNAMES=stavenski,Irhen_N so Ira can ask Surikat to pause/resume payment lead notifications without becoming a full bot owner.",
+        "Use SURIKAT_METRIKA_LEAD_DM_RECIPIENTS as the concrete username=chat_id delivery map; normal active production mode has three confirmed DM recipients: stavenski=75263878, Irhen_N=125291022, and dan_named=7999727989.",
+        "Use SURIKAT_METRIKA_LEAD_DM_MANAGER_USER_IDS plus SURIKAT_METRIKA_LEAD_DM_MANAGER_USERNAMES=stavenski,Irhen_N so Ira can ask Surikat to pause/resume payment lead notifications without becoming a full bot owner.",
         "When a notification manager pauses delivery, Vasily writes metrikaLeadDmDeliveryPaused=true to vasily/state/bot-rules.local.json; aim-pay-lead-relay must read that GCS state and log lead_relay_delivery_paused instead of sending personal Telegram DMs.",
         "Successful aim-pay-lead-relay deliveries must write lead_relay_delivered logs with masked contact, contact hash, delivered usernames, and Telegram messageId for diagnostics and precise cleanup.",
         "For owner-approved live/night test windows, temporarily narrow SURIKAT_METRIKA_LEAD_DM_RECIPIENTS to owner-only delivery and verify aim-pay-lead-relay /readyz reports leadDmActiveRecipientCount=1 before sending test leads.",
@@ -141,7 +145,7 @@
       "checks": [
         "Live health should report mode=webhook, genaiProvider=vertex, groupChatEnabled=true, groupVideoReplyEnabled=true, autoReviewEnabled=false, requireSendApproval=true, and sashaProactiveDmEnabled=false.",
         "runtimeVeo should remain enabled=false and expired=true unless the owner explicitly reopens the paid media-generation window; if reopened with sendAsVideoNote=true, health must report ffmpegAvailable=true.",
-        "Cloud Run reads review cards from GCS catalog.json/inventory.json; the local catalog publisher owns candidate scoring, bounded missing-preview capture, stale-lock cleanup, and GCS catalog publication.",
+        "Cloud Run reads only Sonya policy-v2 review cards from GCS catalog.json/inventory.json. The local publisher runs every 30 minutes, caps hard-eligible broad inventory at 12, skips unchanged uploads, and owns scoring, bounded missing-preview capture, stale-lock cleanup, and GCS publication.",
         "Cloud Run exposes GET /health and POST /telegram protected by TELEGRAM_WEBHOOK_SECRET.",
         "Use SONYA_LLM_PROVIDER=vertex with the credit-linked VERTEX_PROJECT_ID for Cloud Run.",
         "Do not mix local getUpdates polling with Telegram webhook mode.",
@@ -155,15 +159,59 @@
       "bot": "Surikat Sonya",
       "area": "design-feedback",
       "status": "active",
-      "summary": "Sonya sends review-only homepage/payment/element screenshots, collects 0-10 owner ratings, writes the design feedback registry, mirrors fresh state/catalog surfaces to GCS for Cloud Run, and appends keep/change/avoid/promote instructions for future generators.",
+    "summary": "Sonya sends only revision-bound, QA- and visual-audit-passed review artifacts, collects 0-10 owner ratings, writes the design feedback registry, mirrors fresh state/catalog surfaces to GCS for Cloud Run, and appends keep/change/avoid/promote instructions for future generators.",
       "sourceOfTruth": "website-ops/design-feedback-rules.md",
       "checks": [
         "0 is hard reject; 1-3 rejected; 4-6 weak; 7-8 promising; 9-10 strong.",
-        "catalog.json is the curated top selection for normal/scheduled Sonya review; inventory.json is the full screenshot-ready review inventory for owner broad review requests.",
+        "catalog.json is the curated top selection; inventory.json contains only hard-eligible active-review artifacts with passed QA and visual audit for the same current fingerprint.",
+        "Manual broad review may bypass Sonya score but never manifest visibility, QA, visual audit, current revision, screenshot, reviewFocus, or designDelta gates.",
+        "Legacy GCS records without policy-v2 eligibility are rejected rather than replayed.",
         "SONYA_PAGES_LINK_MODE=published-only guards public links: untracked/local-only review labs may be evaluated and screenshotted but must not be advertised as GitHub Pages URLs.",
         "Explicit low owner ratings override cached Sonya self-scores.",
         "Bug-like design/page feedback is handed to Vasily instead of creating Linear issues directly.",
         "Manual broad review means all unrated candidates for the requesting reviewer, paced by per-person limits; it does not dump the entire inventory or bypass already-rated filtering."
+      ]
+    },
+    {
+      "id": "freshness-surikat-team-reconciliation",
+      "title": "Freshness Surikat reconciles the public team monthly",
+      "bot": "Freshness Surikat (public name TBD)",
+      "area": "content-freshness",
+      "status": "specified-local",
+      "summary": "Once per month, show one neutral list of the team names currently published on the site and ask whether the list and spelling are current. Omit Ira and Sasha from the list entirely. Do not single out individuals, infer arrivals or departures from chat activity, or propose adding/removing a named employee.",
+      "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
+      "checks": [
+        "Do not mention Ira or Sasha in the monthly roster question.",
+        "Use exactly one neutral roster-level question, not separate questions or judgments about individuals.",
+        "Working-chat context must not create named add/remove suggestions or employee activity scoring."
+      ]
+    },
+    {
+      "id": "freshness-surikat-lab-lifecycle",
+      "title": "Freshness Surikat owns the lab recruitment lifecycle",
+      "bot": "Freshness Surikat (public name TBD)",
+      "area": "lab-freshness",
+      "status": "specified-local",
+      "summary": "Track each lab from chat-known planning through published page and recruitment removal. Before a page exists, propose a nearest-lab listing with season and year only. Once a semantically valid lab page is discoverable through sitemap, internal link, configured route, or confirmed chat URL, read its current start date and remove every enrollment-list mention exactly seven calendar days after start. A date change recomputes the deadline. The lab page itself may remain as current, waitlist, recap, or archive.",
+      "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
+      "checks": [
+        "S26 is currently linked from the staging homepage recruitment surface at /labs-custom/s26/ with startDate 2026-08-03; the current recruitment-removal checkpoint is 2026-08-10.",
+        "Treat page discovery as site/sitemap/crawl discovery; do not claim Google index status without search-engine evidence.",
+        "Deduplicate all homepage and selling-surface enrollment mentions into one obligation with every source location."
+      ]
+    },
+    {
+      "id": "freshness-surikat-link-watch",
+      "title": "Freshness Surikat deduplicates recurring link drift",
+      "bot": "Freshness Surikat (public name TBD)",
+      "area": "link-freshness",
+      "status": "specified-local",
+      "summary": "Check recurring and changeable links at least weekly. Evaluate HTTP status, final redirect target, visible link meaning, and repeated use across pages. One destination problem creates one obligation listing every occurrence instead of chat noise or duplicate tickets.",
+      "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
+      "checks": [
+        "A 200 response is not sufficient when the final redirect target or semantic destination changed.",
+        "Keep source locations and timestamps as evidence.",
+        "Hand confirmed site defects to Vasily/Linear rather than creating a parallel bug tracker."
       ]
     },
     {
