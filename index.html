@@ -620,7 +620,7 @@
       .map-node.tikhon {
         right: 54px;
         top: 486px;
-        width: 270px;
+        width: 234px;
         min-height: 104px;
         padding: 12px;
         border-color: rgba(111, 151, 255, 0.5);
@@ -629,6 +629,11 @@
 
       .map-node.tikhon .node-main {
         grid-template-columns: 58px minmax(0, 1fr);
+      }
+
+      .map-node.surikat .handoff-list,
+      .map-node.qa-agent .handoff-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .map-node.tikhon .bot-portrait {
@@ -1845,9 +1850,11 @@
               <path class="orange" marker-end="url(#arrow-orange)" d="M778 394 C868 366 954 362 1018 388" />
               <path class="orange" marker-end="url(#arrow-orange)" d="M1032 448 C990 486 948 516 878 536" />
               <path class="orange dashed" marker-end="url(#arrow-orange)" d="M724 522 C708 484 744 452 778 430" />
-              <text x="946" y="276">bug handoff</text>
+              <path class="blue dashed" marker-end="url(#arrow-blue)" d="M856 288 C884 314 906 314 932 296" />
+              <text x="788" y="314">QA-отчёт</text>
+              <text x="1052" y="318">bug handoff</text>
               <text x="760" y="366">дизайн-кандидаты</text>
-              <text x="914" y="502">оценки 0-10</text>
+              <text x="752" y="600">оценки 0-10</text>
               <text x="560" y="512">память генераторам</text>
             </svg>
             <a class="map-node current" href="../aimwebsite0.5/" data-detail="Production: aimindset.org. Staging: staging.aimindset.org. Локальная версия: aimwebsite0.5; адрес задаёт активный preview-сервер." aria-label="Открыть текущий локальный сайт">
@@ -1887,6 +1894,12 @@
                 </span>
               </span>
               <span class="telegram-badge">Telegram: @aim_surikat_bot</span>
+              <span class="handoff-list" aria-hidden="true">
+                <span>QA-отчёт → сводка</span>
+                <span>баги → Linear</span>
+                <span>handoff от Сони</span>
+                <span>заявки с оплаты</span>
+              </span>
             </a>
             <a class="map-node qa-agent" href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html" data-detail="Автоматический black-box worker: открывает production/staging и текущий local preview как внешний пользователь, проверяет CTA, ссылки, скриншоты, даты и читаемость, затем отдает результат Василию." aria-label="Открыть последний QA-дашборд">
               <span class="node-main">
@@ -1902,6 +1915,10 @@
                   <strong>QA-бот сайта</strong>
                   <small>смотрит prod/stage</small>
                 </span>
+              </span>
+              <span class="handoff-list" aria-hidden="true">
+                <span>prod / staging / AI Native</span>
+                <span>report.json → Василию</span>
               </span>
             </a>
             <a class="map-node workshops" href="#review-tools" data-detail="Мастерских несколько: Page Design Lab для страниц и элементов, Payment Page Design Lab для checkout-страниц, popup compare для отдельных popup-состояний, feedback dashboard для рейтингов и памяти." aria-label="Перейти к инструментам и дизайн-мастерским">
@@ -1941,18 +1958,18 @@
               </span>
               <span class="telegram-badge">Telegram: @aim_surikat_sonya_bot</span>
             </a>
-            <a class="map-node tikhon" href="#tikhon" data-detail="Тихон — хранитель свежести: раз в сутки в GitHub Actions сверяет набор на лаборатории, состав команды и повторяющиеся ссылки, приносит владельцу change set с источниками и после явного «применить» готовит PR. Подтверждённые поломки отдаёт Василию." aria-label="Перейти к блоку про Суриката Тихона">
+            <a class="map-node tikhon" href="#tikhon" data-detail="Тихон сторожит даты лабораторий на главной. Раз в сутки просыпается в GitHub Actions: смотрит, писал ли ему владелец, и заново сверяет главную (main-current) с опубликованными страницами лабораторий. Пишет в личку, только если появилось что-то новое. Сам ничего не публикует: после команды «применить» готовит ветку и PR. Подтверждённые поломки передаёт Василию руками — автоматического канала между ботами нет." aria-label="Перейти к блоку про Суриката Тихона">
               <span class="node-main">
                 <span class="bot-portrait tikhon" aria-hidden="true">
                   <img src="local-preview/site-hub-assets/tikhon-avatar-approved-v1.jpeg" alt="" loading="lazy" />
                 </span>
                 <span class="map-copy">
-                  <span class="map-eyebrow">freshness</span>
+                  <span class="map-eyebrow">даты лабораторий</span>
                   <strong>Сурикат Тихон</strong>
-                  <small>набор, команда, ссылки</small>
+                  <small>даты и ссылки на лабы на главной</small>
                 </span>
               </span>
-              <span class="telegram-badge">GitHub Actions · 10:00 МСК · PR-only</span>
+              <span class="telegram-badge">main-current: даты → PR</span>
             </a>
             <a class="map-node feedback" href="../preview/design-feedback-dashboard/" data-detail="Design feedback memory хранит оценки дизайнов из Сони и site-side review: 0-10, keep/change/avoid, negative memory и preferred mechanics. Это память для следующих генераторов и мастерских, а не QA-рейтинг Василия." aria-label="Открыть дизайн feedback dashboard">
               <span class="node-main">
@@ -2612,7 +2629,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">role</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">роль</span><span class="pill">live-manual-runs</span></div>
             <h3>Тихон сторожит правдивость сайта, а не баги и не дизайн</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Третий сурикат следит за тем, остаются ли утверждения сайта правдой: идёт ли ещё набор, тот ли состав команды опубликован, ведут ли повторяющиеся ссылки туда, куда обещает текст. Он не заводит второй баг-трекер и не оценивает дизайн: подтверждённая поломка уходит Василию в Linear, вкус остаётся у Сони. Сайт он молча не меняет — результат это дедуплицированный change set с источниками и датами. Статус на 19.08.2026: все шесть секретов настроены, 18.08 прошло пять успешных прогонов Action, владельцу уходят ответы в Telegram, состояние коммитится в ветку tikhon-state.</li>
@@ -2623,10 +2640,10 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">runtime</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">расписание</span><span class="pill">live-manual-runs</span></div>
             <h3>Тихон живёт в GitHub Actions; расписание ещё не включено</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Один workflow .github/workflows/tikhon-freshness.yml с cron 0 7 * * * (10:00 Europe/Moscow) и понедельничной сводкой. Telegram читается через getUpdates long polling внутри того же прогона: webhook не ставится, Cloud Run и отдельный сервер не нужны. Важно: workflow и код бота есть только в ветке agent/tikhon-github-actions, а GitHub запускает schedule исключительно с дефолтной ветки. Пока ветка не влита в main, ежедневный прогон не срабатывает и Тихон работает только по ручному workflow_dispatch.</li>
+              <li><strong>Rule:</strong> Раз в сутки в 10:00 Europe/Moscow (cron 0 7 * * *) один workflow .github/workflows/tikhon-freshness.yml делает две вещи: читает через getUpdates, писал ли ему владелец, и заново сверяет главную main-current с опубликованными источниками. В личку он пишет только если появился новый change set, пришли новые вводы waitlist или источник не прочитался; по понедельникам тот же прогон добавляет недельную сводку. Webhook не ставится, Cloud Run и отдельный сервер не нужны. Важно: workflow и код бота есть только в ветке agent/tikhon-github-actions, а GitHub запускает schedule исключительно с дефолтной ветки — пока ветка не влита в main, расписание не срабатывает и Тихон работает только по ручному workflow_dispatch.</li>
               <li><strong>Check:</strong> 18.08.2026 прошло пять успешных ручных прогонов (19:24–22:17 UTC); автоматических запусков по расписанию не было ни одного.</li>
               <li><strong>Check:</strong> Прогоны сериализованы concurrency-группой surikat-tikhon-state; без секретов workflow сознательно пропускает прогон и пишет причину в step summary.</li>
               <li><strong>Check:</strong> Telegram webhook для этого token ставить нельзя: один token означает long polling из Actions.</li>
@@ -2645,7 +2662,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">write-path</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">правки через PR</span><span class="pill">live-manual-runs</span></div>
             <h3>Единственная запись Тихона — ветка и PR после «применить»</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> «применить &lt;id&gt;» сначала повторно проверяет фингерпринты источников и только потом разрешает Action создать одну ветку tikhon/&lt;change-set-id&gt; и один PR в eppelas/aimindset-main. Merge, deploy, удаление и локальная запись на маке недоступны. GitHub App Surikat Tikhon установлен только на этот репозиторий с правами Contents и Pull requests read/write; Actions, secrets, администрирование и другие репозитории — no access.</li>
@@ -2656,8 +2673,8 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">lab-freshness</span><span class="pill">live-manual-runs</span></div>
-            <h3>Жизненный цикл набора: сезон до страницы, снятие через 7 дней после старта</h3>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">даты лабораторий</span><span class="pill">live-manual-runs</span></div>
+            <h3>Даты лабораторий на главной: сезон до страницы, снятие набора через 7 дней после старта</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Пока страницы нет, лаборатория показывается только сезоном и годом («ближайшая лаборатория — осень 2026»), а точные даты из чата хранятся как неподтверждённые свидетельства. Когда страница найдена в sitemap, внутренней ссылке, настроенном маршруте или подтверждённой ссылке из чата, Тихон семантически проверяет, что это страница лаборатории, извлекает название, даты и состояние CTA и ставит срок снятия набора: дата старта плюс семь календарных дней. Смена даты старта пересчитывает срок. Прошедшая дата не означает удаление страницы: она может стать текущим потоком, листом ожидания, итогами или архивом.</li>
               <li><strong>Check:</strong> Одна лаборатория, упомянутая в нескольких местах, даёт одно обязательство со списком всех мест, а не пять сообщений.</li>
@@ -2667,7 +2684,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">catalog</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">каталог обучения</span><span class="pill">live-manual-runs</span></div>
             <h3>Строки «Обучения» постоянные, верхних карточек ровно две</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Каждая строка блока «Обучение» — постоянное направление: завершённый поток возвращает свою строку в waitlist, но не удаляет её. Верхние hero-карточки от каталога независимы: это две именованные позиции — «сейчас идёт набор» (только при опубликованном CTA) и «ближайшие лаборатории» (только при подтверждённой будущей записи каталога Learn), а не поиск карточек по старому названию. Тихон читает module bundle публичного каталога learn.aimindset.org, отбрасывает завершённые и прошедшие записи и проверяет страницу ближайшей будущей лаборатории.</li>
@@ -2678,7 +2695,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">content-freshness</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">состав команды</span><span class="pill">live-manual-runs</span></div>
             <h3>Состав команды сверяется раз в месяц одним нейтральным вопросом</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Раз в 30 дней Тихон показывает один нейтральный список опубликованных на сайте имён и задаёт один вопрос: «Команда на сайте: … Список и написание актуальны?». Иру и Сашу в этот список не включает вообще. Он не оценивает людей по отдельности, не выводит из переписки, кто пришёл, ушёл или давно не появлялся, и не предлагает добавить или убрать конкретного сотрудника.</li>
@@ -2689,7 +2706,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">link-freshness</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">ссылки</span><span class="pill">live-manual-runs</span></div>
             <h3>Повторяющиеся ссылки проверяются еженедельно по смыслу</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Повторяющиеся и периодически меняющиеся ссылки проверяются не реже раза в неделю. Важен не только HTTP-ответ, но и конечный адрес после редиректов, текст ссылки и смысловое назначение: «записаться на весенний поток», ведущее на прошлогоднюю страницу, — это проблема при полностью рабочем 200. Одинаковая ссылка в нескольких местах создаёт одно обязательство с перечнем всех мест.</li>
@@ -2711,7 +2728,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">privacy</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">состояние</span><span class="pill">live-manual-runs</span></div>
             <h3>В ветке tikhon-state нет ни токенов, ни личных данных</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Состояние живёт в защищённой ветке tikhon-state (state/tikhon-state.json) и содержит только фингерпринты источников, обработанные Telegram update ID, change sets и короткий audit-log. Токены, тексты сообщений, chat ID, имена и частичные вводы из формы туда не попадают: от Метрики сохраняются только хэши уже отправленных событий.</li>
@@ -2993,9 +3010,10 @@
               <p class="summary">
                 Третий сурикат. Следит не за поломками и не за красотой, а за тем, не врёт ли сайт:
                 идёт ли ещё набор на стартовавшую лабораторию, тот ли состав команды опубликован,
-                ведут ли повторяющиеся ссылки туда, куда обещает текст. Живёт в GitHub Actions
-                (ежедневно 10:00 МСК, по понедельникам недельная сводка), отвечает только владельцу в личке
-                и ничего не меняет молча: максимум — ветка и PR в `main-current` после команды «применить».
+                ведут ли повторяющиеся ссылки туда, куда обещает текст. Раз в сутки просыпается
+                в GitHub Actions: смотрит, писал ли ему владелец, и заново сверяет главную с источниками
+                (по понедельникам — недельная сводка). Отвечает только владельцу в личке и ничего
+                не меняет молча: максимум — ветка и PR в `main-current` после команды «применить».
               </p>
             </div>
             <span class="path">Bots/Website Freshness Bot</span>
@@ -3310,7 +3328,7 @@
                 <li><strong>Команда:</strong> раз в 30 дней один нейтральный вопрос — актуален ли опубликованный список имён и написание.</li>
                 <li><strong>Ссылки:</strong> раз в неделю повторяющиеся ссылки — не только код ответа, но и конечный адрес после редиректов и смысл текста ссылки.</li>
                 <li><strong>Результат:</strong> одна запись = сущность (`team-member`, `lab`, `link`), действие (`ask`, `add`, `update`, `remove`, `review`), уверенность, объяснение, источники с датами, срок и ключ дедупликации.</li>
-                <li><strong>Разделение:</strong> баги — у Василия, дизайн — у Сони; подтверждённый дефект уходит в Linear через Василия, а не во второй трекер.</li>
+                <li><strong>Разделение:</strong> баги — у Василия, дизайн — у Сони; подтверждённый дефект уходит в Linear через Василия, а не во второй трекер. Пока это ручная передача: автоматического канала между ботами нет.</li>
                 <li><strong>Имена:</strong> публичное — Сурикат Тихон, техническое имя пакета — `website-freshness-bot`.</li>
               </ul>
             </article>
@@ -3350,7 +3368,8 @@
               <h3>Расписание и рантайм</h3>
               <ul class="ops-list">
                 <li><strong>Где живёт:</strong> GitHub Actions, workflow `.github/workflows/tikhon-freshness.yml` в репозитории `ai-mindset-org/surikat-family`.</li>
-                <li><strong>Когда:</strong> ежедневно 10:00 Europe/Moscow (cron `0 7 * * *`); понедельничный прогон добавляет недельную сводку.</li>
+                <li><strong>Что делает раз в сутки:</strong> просыпается в 10:00 Europe/Moscow (cron `0 7 * * *`), смотрит, писал ли ему владелец, и заново сверяет главную с источниками. В личку пишет, только если появился новый change set, пришли новые вводы waitlist или он не смог прочитать источник.</li>
+                <li><strong>По понедельникам:</strong> тот же прогон добавляет недельную сводку — даже если правок нет.</li>
                 <li><strong>Telegram:</strong> `getUpdates` long polling внутри того же прогона; webhook для этого token не ставится.</li>
                 <li><strong>Без Cloud Run:</strong> ни сервера, ни webhook, ни частого режима переспрашивания; прогоны сериализованы concurrency-группой `surikat-tikhon-state`.</li>
                 <li><strong>Без секретов:</strong> workflow сознательно пропускает прогон и пишет причину в step summary, а не падает.</li>
