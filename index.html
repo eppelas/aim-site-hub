@@ -2667,7 +2667,7 @@
             <ul class="ops-list">
               <li><strong>Rule:</strong> «применить &lt;id&gt;» сначала повторно проверяет фингерпринты источников и только потом разрешает Action создать одну ветку tikhon/&lt;change-set-id&gt; и один PR в eppelas/aimindset-main. Merge, deploy, удаление и локальная запись на маке недоступны. GitHub App Surikat Tikhon установлен только на этот репозиторий с правами Contents и Pull requests read/write; Actions, secrets, администрирование и другие репозитории — no access.</li>
               <li><strong>Check:</strong> На 19.08.2026 PR ещё ни разу не создавался: в прогонах шаги создания токена App и PR пропущены, потому что ни один change set не подтверждён командой «применить».</li>
-              <li><strong>Check:</strong> Правки ограничены whitelist полей: видимость, заголовок и дата верхних карточек и заголовок, дата, описание, ссылка, CTA строки «Обучения».</li>
+              <li><strong>Check:</strong> Правки ограничены whitelist полей: видимость, заголовок и дата верхних карточек и заголовок, дата, описание, ссылка, CTA строки «Обучения». Планировочный контекст — сезон по данным Learn и ссылка на источник — остаётся в личке владельца: ни в разметку страницы, ни в тело PR он не попадает.</li>
               <li><strong>Check:</strong> Неподтверждённый источник или несовпадение ожидаемого HTML превращаются в вопрос владельцу, а не в запись.</li>
               <li><strong>Source:</strong> Bots/Website Freshness Bot/config/team-runtime.json</li>
             </ul>
@@ -3420,6 +3420,7 @@
                 <li><strong>Чего внутри нет:</strong> токенов, текстов сообщений, chat ID, имён и частичных вводов из формы — от Метрики хранятся только хэши.</li>
                 <li><strong>GitHub App:</strong> `Surikat Tikhon` установлен только на `eppelas/aimindset-main` с правами Contents и Pull requests read/write; Actions, secrets и администрирование — no access.</li>
                 <li><strong>Whitelist правок:</strong> видимость, заголовок и дата верхних карточек; заголовок, дата, описание, ссылка и CTA строки «Обучения».</li>
+                <li><strong>Контекст остаётся в чате:</strong> «когда» по данным Learn и ссылка на источник нужны только владельцу — ни в разметку страницы, ни в тело PR они не уходят.</li>
                 <li><strong>Секреты:</strong> `TIKHON_TELEGRAM_BOT_TOKEN`, `TIKHON_OWNER_TELEGRAM_USER_ID`, `TIKHON_OWNER_TELEGRAM_CHAT_ID`, `TIKHON_METRIKA_OAUTH_TOKEN`, `TIKHON_GITHUB_APP_ID`, `TIKHON_GITHUB_APP_PRIVATE_KEY`.</li>
                 <li><strong>Секреты уже настроены:</strong> все шесть лежат в `ai-mindset-org/surikat-family` с 18.08.2026, включая credentials GitHub App.</li>
                 <li><strong>Что осталось:</strong> влить ветку в `main`, чтобы включилось расписание, и один раз пройти `проверь` → `покажи` → `применить` → тестовый PR без merge.</li>
