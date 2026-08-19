@@ -2641,12 +2641,12 @@
           </article>
           <article class="ops-panel" data-search-item>
             <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">расписание</span><span class="pill">live-manual-runs</span></div>
-            <h3>Тихон живёт в GitHub Actions; расписание ещё не включено</h3>
+            <h3>Проверка раз в неделю, остальные дни — только почта</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Раз в сутки в 10:00 Europe/Moscow (cron 0 7 * * *) один workflow .github/workflows/tikhon-freshness.yml делает две вещи: читает через getUpdates, писал ли ему владелец, и заново сверяет главную main-current с опубликованными источниками. В личку он пишет только если появился новый change set, пришли новые вводы waitlist или источник не прочитался; по понедельникам тот же прогон добавляет недельную сводку. Webhook не ставится, Cloud Run и отдельный сервер не нужны. Важно: workflow и код бота есть только в ветке agent/tikhon-github-actions, а GitHub запускает schedule исключительно с дефолтной ветки — пока ветка не влита в main, расписание не срабатывает и Тихон работает только по ручному workflow_dispatch.</li>
-              <li><strong>Check:</strong> 18.08.2026 прошло пять успешных ручных прогонов (19:24–22:17 UTC); автоматических запусков по расписанию не было ни одного.</li>
-              <li><strong>Check:</strong> Прогоны сериализованы concurrency-группой surikat-tikhon-state; без секретов workflow сознательно пропускает прогон и пишет причину в step summary.</li>
-              <li><strong>Check:</strong> Telegram webhook для этого token ставить нельзя: один token означает long polling из Actions.</li>
+              <li><strong>Rule:</strong> Один workflow .github/workflows/tikhon-freshness.yml запускается ежедневно в 10:00 Europe/Moscow (cron 0 7 * * *), но делает разное: в понедельник это собственно проверка свежести с отчётом владельцу, в остальные дни — только чтение личных сообщений владельца через getUpdates и суточная выгрузка waitlist из Метрики. Если сайт не изменился, будни проходят молча. Отчёт вне понедельника приходит, только если появились правки или владелец сам попросил (ручной режим report-now). Webhook не ставится, Cloud Run и отдельный сервер не нужны.</li>
+              <li><strong>Check:</strong> Ветка влита в main 19.08.2026, поэтому schedule наконец работает: GitHub запускает cron только с дефолтной ветки.</li>
+              <li><strong>Check:</strong> План, в котором одни вопросы и ни одной правки, сам по себе владельца не дёргает.</li>
+              <li><strong>Check:</strong> Сбой выгрузки Метрики записывается в состояние и показывается с недельной проверкой, а не каждый день заново.</li>
               <li><strong>Source:</strong> Bots/Website Freshness Bot/GITHUB_ACTIONS_SETUP.md</li>
             </ul>
           </article>
@@ -3370,14 +3370,15 @@
               <h3>Расписание и рантайм</h3>
               <ul class="ops-list">
                 <li><strong>Где живёт:</strong> GitHub Actions, workflow `.github/workflows/tikhon-freshness.yml` в репозитории `ai-mindset-org/surikat-family`.</li>
-                <li><strong>Что делает раз в сутки:</strong> просыпается в 10:00 Europe/Moscow (cron `0 7 * * *`), смотрит, писал ли ему владелец, и заново сверяет главную с источниками. В личку пишет, только если появился новый change set, пришли новые вводы waitlist или он не смог прочитать источник.</li>
-                <li><strong>По понедельникам:</strong> тот же прогон добавляет недельную сводку — даже если правок нет.</li>
+                <li><strong>Раз в неделю — проверка:</strong> понедельничный прогон сверяет главную с источниками и присылает отчёт, даже если править нечего.</li>
+                <li><strong>В остальные дни:</strong> прогон в 10:00 Europe/Moscow (cron `0 7 * * *`) только смотрит, писал ли ему владелец, и выгружает суточный waitlist из Метрики. Если сайт не менялся — будни проходят молча.</li>
+                <li><strong>Вне понедельника пишет,</strong> только если появились правки или владелец сам попросил отчёт.</li>
                 <li><strong>Telegram:</strong> `getUpdates` long polling внутри того же прогона; webhook для этого token не ставится.</li>
                 <li><strong>Без Cloud Run:</strong> ни сервера, ни webhook, ни частого режима переспрашивания; прогоны сериализованы concurrency-группой `surikat-tikhon-state`.</li>
                 <li><strong>Без секретов:</strong> workflow сознательно пропускает прогон и пишет причину в step summary, а не падает.</li>
                 <li><strong>Ручной прогон:</strong> `workflow_dispatch` с режимами `audit-only` и `audit-and-mailbox`.</li>
                 <li><strong>Что уже было:</strong> 18.08.2026 — пять успешных прогонов (19:24–22:17 UTC): чтение Telegram-апдейтов, сбор change set, ответы владельцу, коммит состояния.</li>
-                <li><strong>Чего не хватает:</strong> расписание не срабатывает. Workflow и код живут только в ветке `agent/tikhon-github-actions`, а GitHub запускает `schedule` только с дефолтной ветки — до влития в `main` все запуски ручные.</li>
+                <li><strong>Расписание включено:</strong> 19.08.2026 ветка влита в `main` (PR #4), workflow теперь на дефолтной ветке — до этого GitHub не запускал cron и все прогоны были ручными.</li>
               </ul>
             </article>
 
