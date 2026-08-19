@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-17",
+  "updatedAt": "2026-08-19",
   "sourceOfTruth": "website-ops/update-rules.json",
   "updateRules": [
     {
@@ -157,22 +157,26 @@
     {
       "id": "website-freshness-surikat",
       "title": "Team, labs, and recurring-link freshness",
-      "ownerAgent": "Freshness Surikat (public name TBD)",
-      "cadence": "team monthly; links weekly; labs on every site/chat discovery and daily around lifecycle deadlines",
-      "trigger": "local policy run now; future authenticated scheduler endpoint and optional Telegram work-chat webhook",
+      "ownerAgent": "Сурикат Тихон",
+      "cadence": "daily 10:00 Europe/Moscow audit and owner-DM mailbox; Monday 10:00 digest; team monthly; links weekly",
+      "trigger": "GitHub Actions scheduled/manual workflow plus Telegram getUpdates long polling; no server or webhook",
       "inputs": [
-        "https://staging.aimindset.org/",
-        "staging sitemap and semantically classified lab pages",
+        "main-current source in eppelas/aimindset-main",
+        "published AIM-domain lab pages and learn.aimindset.org planning evidence",
         "published team surface",
-        "authorized working chat as non-personal scheduling context when connected",
+        "owner-only Telegram DM commands and GitHub Actions secrets",
         "Bots/Website Freshness Bot/config/freshness-policy.json",
-        "Bots/Website Freshness Bot/src/freshness-policy.mjs"
+        "Bots/Website Freshness Bot/src/freshness-policy.mjs",
+        "live waitlist HTML at aimindset-main.web.app and Metrika Logs API counter 106857835"
       ],
       "outputs": [
-        "deduplicated evidence-backed freshness obligations",
+        "deduplicated evidence-backed change sets and PR links",
         "one neutral monthly published-team list excluding Ira and Sasha",
         "lab provisional-listing and recruitment-removal deadlines",
-        "confirmed bug handoff to Surikat Vasily/Linear"
+        "published-lab row promotion from waitlist to dates, canonical link, CTA, and source description; owner may provide a reviewable description override",
+        "confirmed bug handoff to Surikat Vasily/Linear",
+        "review-only PRs; merge and publication remain human actions",
+        "daily owner DM with new waitlist inputs read from Metrika Logs API"
       ],
       "policy": [
         "Omit Ira and Sasha entirely from the monthly roster question.",
@@ -181,7 +185,13 @@
         "Before a lab page exists, propose season-and-year copy without publishing tentative exact dates.",
         "After page discovery, recompute removeRecruitmentAt whenever startDate changes and remove enrollment listings seven calendar days after the latest confirmed start.",
         "Do not remove or hide the lab page itself merely because recruitment ended.",
-        "The bot is monitoring/proposal-only until separate write authorization and a Sanity mutation contract exist."
+        "For a confirmed published lab, replace its matching main-current waitlist row only with source-backed dates, canonical URL, CTA, and description; retain the existing display title unless the mapping explicitly permits a title change.",
+        "The owner may send «описание <id> <текст>» for a proposed published-lab row. Preserve that text for PR review, then re-check sources before creating the PR.",
+        "A permitted owner command creates only a branch and PR through the separate Surikat Tikhon GitHub App; it cannot merge or publish.",
+        "Use the protected tikhon-state branch for fingerprints, change sets, audit history, and processed Telegram update IDs; do not put secrets or owner chat content in it.",
+        "Treat every learning row as a permanent direction: an ended cohort returns only its own row to waitlist, and only the matching hero recruitment card is hidden.",
+        "Fill the two named hero slots — enrolment open and next labs — from the published Learn catalogue module bundle; an unmapped published page becomes an owner question, not an invented mapping.",
+        "Read waitlist inputs only from Metrika Logs API for the last three completed Moscow days, dedupe by non-secret fingerprints, and never relay visitor input through a Cloud Run service or Vasily."
       ]
     },
     {

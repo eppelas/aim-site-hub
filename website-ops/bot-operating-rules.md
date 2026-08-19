@@ -6,6 +6,34 @@ These rules describe the current operating contract for AIM Website bots and
 bot-like workers. The Website Hub renders the same source through
 `local-preview/sync-bot-operating-rules-summary.mjs`.
 
+## Обязательная перенастройка Linear
+
+Перед рабочим запуском Суриката Василия нужно переподключить к нужному проекту
+Linear. Сейчас маршрут настроен на проект `AIM Website`; замены одного
+`LINEAR_API_KEY` недостаточно. Нужно обновить `LINEAR_PROJECT_ID`, проверить
+соответствующие `LINEAR_TEAM_ID`, `LINEAR_STATE_ID` и `LINEAR_LABEL_IDS`,
+задеплоить конфигурацию и создать тестовый тикет через Telegram. Рабочий поток
+можно включать только после проверки, что тестовый тикет попал в правильный
+проект, команду, статус и метку.
+
+## Недельная накопительная память
+
+Оба Суриката — Василий (Cloud Run `00019`) и Соня (Cloud Run `00064`) — раз в
+семь дней обновляют через Gemini свою накопительную текстовую память. Обновление
+запускается лениво: на первом сообщении после истечения срока, в фоне и без
+задержки ответа пользователю.
+
+Соня сжимает оценки и разговоры: устойчивые вкусовые паттерны, причины высоких
+и низких оценок, направления `keep`/`avoid` и договорённости. Василий сжимает
+хвост аудита: повторяющиеся проблемы, созданные Linear-тикеты, стиль общения
+владельца, постоянные просьбы и ложные срабатывания.
+
+Сводка остаётся примерно в пределах 2K символов и добавляется в основные
+рабочие промпты. При каждом обновлении прошлая сводка передаётся Gemini как
+основа: память накапливается, а не строится заново только из свежего хвоста.
+Если память расходится с текущим сообщением, приоритет всегда у текущего
+сообщения.
+
 ## Current Bots
 
 - **Surikat Vasily** (`@aim_surikat_bot`) is the QA/Telegram/Linear dispatcher.
@@ -121,24 +149,110 @@ bot-like workers. The Website Hub renders the same source through
   expired; the repo Dockerfile runtime has `ffmpeg` available for real Telegram
   `video_note` output if the owner explicitly reopens paid generation. Vasily
   should not be redeployed into Sonya's project except as an explicit rollback.
-- **Freshness Surikat** (public name and Telegram username TBD) is the third bot
-  role. Its local rule package lives in `Bots/Website Freshness Bot/`. It owns
-  content freshness rather than generic QA: monthly team reconciliation,
-  laboratory lifecycle, and recurring-link drift. Once per month it shows one
-  neutral list of the published team and asks whether the list and spelling are
-  current. Ira and Sasha are omitted from that list entirely. It does not single
-  out people, infer arrivals/departures from chat activity, or propose adding or
-  removing a named employee.
-  A planned lab without a page should be proposed as the nearest lab using only
-  season and year. After a real lab page is discoverable, the bot reads the
-  current start date and schedules removal from every recruitment surface for
-  start plus seven calendar days. It does not delete the page. For S26, staging
-  homepage currently links `/labs-custom/s26/` with start `2026-08-03`, so the
-  current removal checkpoint is `2026-08-10`; any source date change must
-  recompute that deadline. The checked-in implementation is a local policy
-  engine and test suite, not a deployed Telegram webhook or scheduler yet.
+- **Ownership.** Vasily's Cloud Run runs in the owner's personal cloud on her
+  credits; the Telegram token and Linear API key are hers, and deploy is tied to
+  her Mac. `ai-mindset-org/surikat-family` holds the code, configs, docs,
+  launchd plists, cloud-run README and `env.production.yaml`, and the self-tests.
+  Secrets (Secret Manager/Keychain) and local `data/` state (mirrored in GCS) are
+  deliberately outside git. If the Mac is lost, the Telegram token is recovered
+  through BotFather and everything else from GitHub, Secret Manager and GCS. An
+  optional GitHub Action deploy-on-push needs a deploy-SA key in secrets.
+- **Сурикат Соня is paused at roughly 80% readiness.** Nothing is broken: her
+  premise is to learn the team's shared taste, which requires the team to react
+  to what she sends regularly. Her own styling and the research/discovery
+  pipelines still need work, and she ran on Gemini/Google Cloud, so restarting
+  her elsewhere needs a new billing account. The variant dashboard she produced
+  stays useful on its own.
+- **Сурикат Тихон — хранитель свежести сайта** — третий сурикат. Пакет лежит в
+  `Bots/Website Freshness Bot/`, публичное имя — Сурикат Тихон, техническое имя
+  пакета — `website-freshness-bot`; Telegram-username задаётся только через
+  GitHub Secrets. Он отвечает не за баги (Василий) и не за дизайн (Соня), а за
+  то, остаются ли утверждения сайта правдой: месячная сверка состава команды,
+  жизненный цикл набора на лаборатории и дрейф повторяющихся ссылок. Сайт он
+  молча не меняет: результат — дедуплицированный change set с источниками и
+  датами, а подтверждённая поломка уходит Василию в Linear.
+  **Рантайм.** Один workflow `.github/workflows/tikhon-freshness.yml` в 10:00
+  Europe/Moscow (cron `0 7 * * *`); понедельничный прогон добавляет недельную
+  сводку. Telegram читается через `getUpdates` long polling из того же прогона:
+  ни webhook, ни Cloud Run, ни отдельного сервера. Прогоны сериализованы
+  concurrency-группой `surikat-tikhon-state`; без секретов workflow сознательно
+  пропускает прогон и пишет причину в step summary. Прототип отдельного Cloud
+  Run relay (`cloud-run/waitlist-relay/`) остался в репозитории как код, но из
+  инструкции запуска убран.
+  **Команды.** Только владелец и только в личке: `проверь`, `покажи <id>`,
+  `описание <id> <текст>`, `применить <id>`, `отмена <id>`. Сообщения из групп и
+  чужих DM игнорируются без ответа. Обычный вопрос («расскажи подробнее, что
+  изменится?») не запускает правку: Тихон отвечает разбором активного change
+  set — источники, точные действия и следующая безопасная команда. LLM в этом
+  контуре не участвует.
+  **Запись.** `применить <id>` повторно проверяет фингерпринты источников и
+  только после этого разрешает Action создать одну ветку `tikhon/<id>` и один PR
+  в `eppelas/aimindset-main`. Merge, deploy, удаление и локальная запись на маке
+  недоступны. GitHub App `Surikat Tikhon` установлен только на этот репозиторий
+  с правами Contents и Pull requests read/write. Правки ограничены whitelist
+  полей: видимость/заголовок/дата верхних карточек и
+  заголовок/дата/описание/ссылка/CTA строки «Обучения».
+  **Лаборатории.** До появления страницы — только сезон и год («ближайшая
+  лаборатория — осень 2026»), точные даты из чата остаются неподтверждёнными
+  свидетельствами. После обнаружения страницы (sitemap, внутренняя ссылка,
+  маршрут или подтверждённая ссылка из чата) он извлекает название, даты и
+  состояние CTA и ставит срок снятия набора: старт плюс семь календарных дней;
+  смена даты старта пересчитывает срок. Первым отслеживаемым объектом был S26:
+  старт `2026-08-03`, контрольная дата снятия `2026-08-10`. Страницу он не
+  удаляет — она может стать текущим потоком, листом ожидания, итогами или
+  архивом.
+  **Каталог обучения.** Каждая строка «Обучения» — постоянное направление:
+  завершённый поток возвращает свою строку в `waitlist`, но не удаляет её.
+  Верхние hero-карточки независимы: это две именованные позиции — «сейчас идёт
+  набор» (только при опубликованном CTA) и «ближайшие лаборатории» (только при
+  подтверждённой будущей записи каталога Learn). Тихон читает module bundle
+  публичного каталога `learn.aimindset.org`, отбрасывает завершённые записи и
+  проверяет страницу ближайшей будущей лаборатории; сейчас каталог подтверждает
+  F26 (5 октября — 1 ноября 2026), CTA остаётся `waitlist`. Health и AI-native
+  уже в конфигурации, Product and Design ждёт опубликованного AIM URL. Новая
+  страница без уверенной связи с направлением — вопрос владельцу, а не
+  выдуманное сопоставление.
+  **Waitlist.** Каждый прогон читает HTML живой главной `aimindset-main.web.app`
+  и проверяет контракт формы: Telegram обязателен, у каждой кнопки есть
+  `data-waitlist-topic` и `data-waitlist-code`, payload Метрики несёт
+  `waitlist.topic`, `product_code`, имя поля и частичный ввод, а в счётчике
+  лабораторий `106857835` заведены цели `waitlist_input_started` (`599119093`) и
+  `waitlist_contact_entered` (`599119094`). Раз в сутки Action выгружает из Logs
+  API три последних завершённых московских дня и присылает владельцу только
+  новые вводы. Проверка не имитирует заявку посетителя и не отправляет лид через
+  Василия. На 18.08.2026 живой HTML всё ещё отдаёт старый relay без полного
+  контракта, поэтому Тихон честно сообщает об этой проблеме и не выдаёт
+  отсутствие события за отсутствие лида.
+  **Состояние.** Защищённая ветка `tikhon-state` (`state/tikhon-state.json`)
+  хранит только фингерпринты источников, обработанные update ID, change sets и
+  короткий audit-log (500 update ID, 100 change sets, 2000 фингерпринтов, 500
+  записей журнала). Токены, тексты сообщений, chat ID, имена и частичные вводы
+  туда не попадают. `GITHUB_TOKEN` семейного репозитория пишет только эту ветку;
+  токен GitHub App создаётся временно и только под одобренный PR.
+  **Статус на 19.08.2026 (проверено по GitHub).** Тихон работает. Все шесть
+  секретов настроены 18.08, в тот же день прошло пять успешных прогонов Action
+  (19:24–22:17 UTC): он читал Telegram-апдейты владельца, собирал change set,
+  отвечал в личку и коммитил состояние в ветку `tikhon-state` — там сейчас три
+  change set в статусе `proposed` и три обработанных update ID. PR ещё ни разу не
+  создавался: шаги GitHub App пропускаются, пока change set не подтверждён
+  командой «применить». В Метрике ноль фингерпринтов — событий waitlist пока нет.
+  **Чего не хватает:** расписание не работает. Workflow и код бота живут только в
+  ветке `agent/tikhon-github-actions`, а GitHub запускает `schedule` исключительно
+  с дефолтной ветки, поэтому ежедневный прогон в 10:00 МСК не срабатывает и все
+  запуски пока ручные (`workflow_dispatch`). Чтобы включить расписание, ветку
+  нужно влить в `main`. Рабочие чаты он не читает, краулера и LLM у него нет.
+  Расхождение: в коде `reviewCadenceDays: 30`, а владелец в описании функционала
+  называет 60 дней — интервал сверки команды нужно подтвердить.
 - **AIM Site Agent Evaluation** is the black-box QA worker. It checks the site
-  read-only and reports findings that Vasily can summarize or route.
+  read-only and reports findings that Vasily can summarize or route. The link is
+  one-way: Vasily reads a finished `report.json`, the QA agent never calls him.
+  Today that handoff is broken in production — Cloud Run has no cloud source for
+  `report.json` (no `BOT_QA_REPORT_PATH`), so a successful QA run can publish to
+  GitHub Pages while Vasily still answers with fallback text. Planned fix: the QA
+  runner publishes `report.json` into `vasily-state` and Vasily reads it on
+  hydration. QA findings are deliberately not auto-routed to Linear, and one
+  `reports/latest/report.json` is overwritten by whichever mode ran last, so
+  Vasily cannot choose a per-surface latest.
 Adjacent bots outside this registry (Alex's `@aim_partners_bot`, Dan's
 onboarding/payment bot `@prod_ai_mind_set_bot`) are documented separately in
 `website-ops/adjacent-bots-2026-07.md` — they are not part of the site

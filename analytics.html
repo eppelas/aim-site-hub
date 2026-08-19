@@ -373,7 +373,7 @@
         <a class="action" href="index.html">назад в хаб</a>
         <a class="action" href="metrika-report.html">выводы и графики</a>
         <a class="action" href="#utm-table">UTM-таблица</a>
-        <a class="action" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">открыть Метрику</a>
+        <a class="action" href="#dashboards">дашборды</a>
       </nav>
     </header>
 
@@ -385,17 +385,62 @@
         </div>
         <div>
           <p class="lead">
-            Счётчик 106857835 охватывает AI Native, оплату и staging. В отчётах отдельно
-            учитываются реальные посетители, командные проверки, источники трафика
-            и контакты из формы оплаты.
+            Главная aimindset.org живёт в отдельном счётчике. AI Native и S26 используют
+            общий лабораторный счётчик и разделяются по URL лендинга и product_code на оплате.
           </p>
           <div class="actions">
             <a class="action" href="metrika-report.html">открыть аналитический отчёт</a>
-            <a class="action" href="website-ops/analytics-current-setup.md">текущая настройка</a>
-            <a class="action" href="website-ops/analytics-rules.md">правила отчетов</a>
-            <a class="action" href="website-ops/analytics-surface-map.md">карта счетчиков</a>
-            <a class="action" href="website-ops/utm-link-table.md">markdown-таблица</a>
+            <a class="action" href="md.html?f=website-ops/analytics-current-setup.md">текущая настройка</a>
+            <a class="action" href="md.html?f=website-ops/analytics-rules.md">правила отчетов</a>
+            <a class="action" href="md.html?f=website-ops/analytics-surface-map.md">карта счетчиков</a>
+            <a class="action" href="md.html?f=website-ops/utm-link-table.md">markdown-таблица</a>
           </div>
+        </div>
+      </section>
+
+      <section class="section" id="dashboards">
+        <div class="section-head">
+          <h2>Три дашборда</h2>
+          <p class="section-note">Главная — отдельный счётчик. AI Native и S26 — продуктовые отчёты внутри общего лабораторного счётчика.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="label-row"><span class="pill ok">отдельный счётчик</span><span class="pill">102211004</span></div>
+            <h3>Главная aimindset.org</h3>
+            <p class="summary">
+              Посещения и поведение на главной. Не смешивается с лабораторной оплатой.
+              Счётчик установлен на live, но текущий API-ключ хаба не имеет к нему доступа.
+            </p>
+            <div class="actions">
+              <a class="action" href="https://metrica.yandex.com/overview?id=102211004" target="_blank" rel="noopener noreferrer">открыть счётчик главной</a>
+              <a class="action" href="https://aimindset.org/" target="_blank" rel="noopener noreferrer">открыть сайт</a>
+            </div>
+          </article>
+          <article class="card dark">
+            <div class="label-row"><span class="pill ok">продуктовый отчёт</span><span class="pill">106857835</span></div>
+            <h3>AI Native</h3>
+            <p class="summary">
+              Лендинг ai-native.aimindset.org и payment-события продуктов ain3_mainearly,
+              ain3_main, ain3_teamearly и ain3_team. Внутренний трафик исключается.
+            </p>
+            <div class="actions">
+              <a class="action" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">открыть общий счётчик</a>
+              <a class="action" href="https://ai-native.aimindset.org/" target="_blank" rel="noopener noreferrer">открыть лендинг</a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="label-row"><span class="pill">нужно подключить лендинг</span><span class="pill">s26_main</span></div>
+            <h3>S26</h3>
+            <p class="summary">
+              Оплата уже разделяется по product_code=s26_main в счётчике 106857835.
+              На живом лендинге S26 счётчик пока не найден, поэтому просмотры и CTA ещё теряются.
+            </p>
+            <div class="actions">
+              <a class="action" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">открыть общий счётчик</a>
+              <a class="action" href="https://staging.aimindset.org/labs-custom/s26/" target="_blank" rel="noopener noreferrer">открыть S26</a>
+              <a class="action" href="https://staging.aimindset.org/pay?product=s26_main" target="_blank" rel="noopener noreferrer">проверить /pay</a>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -406,10 +451,10 @@
         <div class="grid">
           <article class="card dark">
             <div class="label-row"><span class="pill ok">счетчик</span><span class="pill">106857835</span></div>
-            <h3>AI Native + оплата</h3>
+            <h3>Общий контур лабораторий + оплата</h3>
             <p class="summary">
-              Счётчик 106857835 собирает данные с `ai-native.aimindset.org` и payment flow
-              на `staging.aimindset.org`. Другие AIM-поверхности в этот охват не входят.
+              Счётчик 106857835 собирает подтверждённые данные AI Native и общие payment-события.
+              Каждый новый лендинг нужно подключать отдельно; S26 пока виден только на этапе /pay.
             </p>
           </article>
           <article class="card">
@@ -543,24 +588,24 @@
 
         <div class="grid">
           <article class="panel wide">
-            <div class="label-row"><span class="pill ok">правило публикации</span><span class="pill">AI Native</span></div>
+            <div class="label-row"><span class="pill ok">правило публикации</span><span class="pill">все продукты</span></div>
             <h3>UTM обязательна перед публикацией</h3>
             <p class="summary">
-              Каждая новая ссылка на AI Native или оплату получает `utm_source`, `utm_medium`,
+              Каждая новая внешняя ссылка на главную, лендинг лаборатории или оплату получает `utm_source`, `utm_medium`,
               `utm_campaign` и `utm_content`. Поле «ответственный» содержит имя человека
               или команды, публикующих ссылку.
             </p>
             <div class="code-lines">
-              <span class="code-line">telegram post: utm_source=telegram&utm_medium=post&utm_campaign=ain3&utm_content=&lt;post_id&gt;</span>
-              <span class="code-line">instagram story: utm_source=instagram&utm_medium=story&utm_campaign=ain3&utm_content=&lt;story_id&gt;</span>
-              <span class="code-line">instagram bio: utm_source=instagram&utm_medium=bio&utm_campaign=ain3&utm_content=bio_link</span>
+              <span class="code-line">AI Native: utm_source=telegram&utm_medium=post&utm_campaign=ain3&utm_content=&lt;post_id&gt;</span>
+              <span class="code-line">S26: utm_source=instagram&utm_medium=story&utm_campaign=s26&utm_content=&lt;story_id&gt;</span>
+              <span class="code-line">Главная: utm_source=instagram&utm_medium=bio&utm_campaign=aim_main&utm_content=bio_link</span>
             </div>
           </article>
           <article class="panel">
             <div class="label-row"><span class="pill ok">названия</span></div>
             <h3>Как заполнять</h3>
             <ul class="list">
-              <li><strong>Кампания:</strong> `ain3`.</li>
+              <li><strong>Кампания:</strong> `ain3`, `s26` или `aim_main`.</li>
               <li><strong>Telegram:</strong> `post`, `bot`, `story`.</li>
               <li><strong>Instagram:</strong> `bio`, `story`, `post`.</li>
               <li><strong>Личные сторис:</strong> organic, не ads.</li>

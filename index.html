@@ -415,6 +415,10 @@
         object-position: 52% 42%;
       }
 
+      .bot-portrait.tikhon img {
+        object-position: 50% 26%;
+      }
+
       .bot-portrait::after {
         content: "";
         position: absolute;
@@ -611,6 +615,26 @@
         min-height: 146px;
         border-color: rgba(255, 193, 122, 0.56);
         background: rgba(18, 15, 11, 0.9);
+      }
+
+      .map-node.tikhon {
+        right: 54px;
+        top: 486px;
+        width: 270px;
+        min-height: 104px;
+        padding: 12px;
+        border-color: rgba(111, 151, 255, 0.5);
+        background: rgba(9, 13, 22, 0.9);
+      }
+
+      .map-node.tikhon .node-main {
+        grid-template-columns: 58px minmax(0, 1fr);
+      }
+
+      .map-node.tikhon .bot-portrait {
+        width: 58px;
+        height: 58px;
+        border-radius: 12px;
       }
 
       .map-node.qa-agent {
@@ -1720,6 +1744,7 @@
         .map-node.workshops,
         .map-node.surikat,
         .map-node.sonya,
+        .map-node.tikhon,
         .map-node.qa-agent,
         .map-node.feedback,
         .map-node.legacy,
@@ -1764,14 +1789,14 @@
           </div>
           <div>
             <p class="hero-lead">
-              Production, staging и локальная версия AI Mindset, а также QA, аналитика,
-              правила, CMS, дизайн-лабы и архивы.
+              Правила, ссылки, скилы и описание всего, связанного с основным сайтом AI Mindset:
+              логика оплат и ботов, описание production, staging, sanity, старые версии дизайна и т.п.
             </p>
             <div class="actions">
               <a class="action" href="https://aimindset.org/" target="_blank" rel="noopener noreferrer">сайт</a>
-              <a class="action" href="../aimwebsite0.5/">локально</a>
               <a class="action" href="https://staging.aimindset.org/" target="_blank" rel="noopener noreferrer">стейджинг</a>
-              <a class="action" href="https://eppelas.github.io/aim-web-design-index/" target="_blank" rel="noopener noreferrer">дизайн-индекс</a>
+              <a class="action" href="https://eppelas.github.io/aim-web-design-index/" target="_blank" rel="noopener noreferrer">архив стилей дизайна</a>
+              <a class="action" href="#design-archive-first-iteration">архив нарисованных элементов</a>
               <a class="action" href="https://eppelas.github.io/aim-site-hub/" target="_blank" rel="noopener noreferrer">hub pages</a>
               <a class="action" href="https://github.com/eppelas/aim-site-hub" target="_blank" rel="noopener noreferrer">repo</a>
               <a class="action" href="sanity-cms.html">CMS</a>
@@ -1786,7 +1811,7 @@
             <div class="map-head">
               <p class="kicker">dependency map</p>
               <h2>Система AIM Website</h2>
-              <p>
+              <p hidden aria-hidden="true">
                 Сайт связан с QA, аналитикой, правилами, дизайн-лабораториями
                 и Telegram-ботами Соней и Василием.
               </p>
@@ -1916,6 +1941,19 @@
               </span>
               <span class="telegram-badge">Telegram: @aim_surikat_sonya_bot</span>
             </a>
+            <a class="map-node tikhon" href="#tikhon" data-detail="Тихон — хранитель свежести: раз в сутки в GitHub Actions сверяет набор на лаборатории, состав команды и повторяющиеся ссылки, приносит владельцу change set с источниками и после явного «применить» готовит PR. Подтверждённые поломки отдаёт Василию." aria-label="Перейти к блоку про Суриката Тихона">
+              <span class="node-main">
+                <span class="bot-portrait tikhon" aria-hidden="true">
+                  <img src="local-preview/site-hub-assets/tikhon-avatar-approved-v1.jpeg" alt="" loading="lazy" />
+                </span>
+                <span class="map-copy">
+                  <span class="map-eyebrow">freshness</span>
+                  <strong>Сурикат Тихон</strong>
+                  <small>набор, команда, ссылки</small>
+                </span>
+              </span>
+              <span class="telegram-badge">GitHub Actions · 10:00 МСК · PR-only</span>
+            </a>
             <a class="map-node feedback" href="../preview/design-feedback-dashboard/" data-detail="Design feedback memory хранит оценки дизайнов из Сони и site-side review: 0-10, keep/change/avoid, negative memory и preferred mechanics. Это память для следующих генераторов и мастерских, а не QA-рейтинг Василия." aria-label="Открыть дизайн feedback dashboard">
               <span class="node-main">
                 <span class="map-glyph glyph-feedback" aria-hidden="true">
@@ -1979,7 +2017,7 @@
                 <span>цели воронки</span>
               </span>
             </a>
-            <a class="map-node legacy" href="https://eppelas.github.io/aim-web-design-index/" target="_blank" rel="noopener noreferrer" data-detail="Дизайн-архив — меньший источник: Style Index, legacy-направления, старые элементы и удачные механики. Он дает семена мастерским, но не управляет сайтом напрямую." aria-label="Открыть дизайн-индекс">
+            <a class="map-node legacy" href="https://eppelas.github.io/aim-web-design-index/" target="_blank" rel="noopener noreferrer" data-detail="Дизайн-архив — меньший источник: Style Index, legacy-направления, старые элементы и удачные механики. Он дает семена мастерским, но не управляет сайтом напрямую." aria-label="Открыть архив стилей дизайна">
               <span class="node-main">
                 <span class="map-glyph glyph-archive" aria-hidden="true">
                   <svg viewBox="0 0 56 48" fill="none">
@@ -2005,7 +2043,7 @@
         <a class="action" data-tab-link="tools" href="#tab-tools">мастерские</a>
         <a class="action" data-tab-link="rules" href="#tab-rules">правила</a>
         <a class="action" data-tab-link="qa" href="#tab-qa">сурикаты и QA</a>
-        <a class="action" data-tab-link="design" href="#tab-design">дизайн-индекс</a>
+        <a class="action" data-tab-link="design" href="#tab-design">архив стилей дизайна</a>
         <a class="action" href="sanity-cms.html">Sanity CMS ↗</a>
         <a class="action" href="analytics.html">Метрика ↗</a>
       </nav>
@@ -2132,22 +2170,23 @@
           <article class="card dark" data-search-item>
             <div class="label-row">
               <span class="pill ok">Метрика</span>
-              <span class="pill">AI Native + payment</span>
+              <span class="pill">главная + AI Native + S26</span>
             </div>
             <div>
               <h3>Охват аналитики</h3>
               <p class="summary">
-                Метрика охватывает AI Native, страницу оплаты и staging. Она показывает путь
-                до цены и оплаты, чтение блоков, источники трафика и внутренние командные визиты.
+                Главная aimindset.org живёт в отдельном счётчике. AI Native и S26 используют
+                общий лабораторный счётчик и разделяются по URL и product_code на оплате.
               </p>
             </div>
             <div class="actions">
               <a class="action" href="analytics.html">открыть страницу аналитики</a>
               <a class="action" href="metrika-report.html">выводы и графики</a>
-              <a class="action" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">открыть Метрику</a>
+              <a class="action" href="https://metrica.yandex.com/overview?id=102211004" target="_blank" rel="noopener noreferrer">Метрика главной</a>
+              <a class="action" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">Метрика лабораторий</a>
               <a class="action" href="md.html?f=website-ops/analytics-current-setup.md">техническая настройка</a>
             </div>
-            <span class="path">analytics.html · счетчик 106857835 · AI Native/payment</span>
+            <span class="path">analytics.html · 102211004 main · 106857835 labs/payment</span>
           </article>
 
           <div class="ops-board">
@@ -2518,13 +2557,13 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">linear</span><span class="pill">active</span></div>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">linear</span><span class="pill">action-required</span></div>
             <h3>Linear and product-rule discipline</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Real bug reports go to Linear with Telegram source evidence and source_key dedupe. Product/payment answers must use website-ops/product-rules.json and product-rules.md, not memory or improvised chat logic.</li>
+              <li><strong>Rule:</strong> Before live ticket intake, reconnect the bot from the current AIM Website Linear project to the intended destination project. Changing LINEAR_API_KEY alone does not switch projects: update LINEAR_PROJECT_ID and verify the matching team, state, and label IDs, then confirm the route with a Telegram-created test issue. Real bug reports must keep Telegram source evidence and source_key dedupe. Product/payment answers must use website-ops/product-rules.json and product-rules.md, not memory or improvised chat logic.</li>
+              <li><strong>Check:</strong> Do not enable normal bug intake until a test issue lands in the intended Linear project, team, state, and label.</li>
               <li><strong>Check:</strong> If LINEAR_API_KEY is missing, save to pending queue and do not drop the report.</li>
               <li><strong>Check:</strong> GitHub/GitHub Pages draft links are excluded surfaces unless the same issue is reproduced on staging/production.</li>
-              <li><strong>Check:</strong> Payment discount logic must match product-rules.json.</li>
               <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/linear-routing.md</li>
             </ul>
           </article>
@@ -2551,6 +2590,17 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Vasily + Sonya</span><span class="pill">memory</span><span class="pill">active</span></div>
+            <h3>Недельная накопительная память Сурикатов</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Василий (Cloud Run 00019) и Соня (Cloud Run 00064) раз в семь дней обновляют через Gemini накопительную текстовую память. Обновление лениво запускается в фоне при первом сообщении после истечения срока и не задерживает ответ. Предыдущая сводка передаётся модели как основа, поэтому подтверждённые наблюдения накапливаются, а не перезаписываются с нуля. Текущее сообщение всегда важнее памяти при конфликте.</li>
+              <li><strong>Check:</strong> Соня сжимает оценки и разговоры: устойчивые вкусовые паттерны, причины высоких и низких оценок, направления keep/avoid и договорённости.</li>
+              <li><strong>Check:</strong> Василий сжимает хвост аудита: повторяющиеся проблемы, созданные Linear-тикеты, стиль общения владельца, постоянные просьбы и ложные срабатывания.</li>
+              <li><strong>Check:</strong> Сводка хранится примерно в пределах 2K символов и добавляется в основные рабочие промпты; технические вызовы вроде анализа медиа не обязаны получать этот контекст.</li>
+              <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/src/telegram-bug-intake.mjs; Bots/Telegram Design Taste Bot - Sonya/src/telegram-design-taste-bot.mjs</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
             <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">design-feedback</span><span class="pill">active</span></div>
             <h3>Sonya ratings become generator memory</h3>
             <ul class="ops-list">
@@ -2562,46 +2612,123 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Freshness Surikat (public name TBD)</span><span class="pill">content-freshness</span><span class="pill">specified-local</span></div>
-            <h3>Freshness Surikat reconciles the public team monthly</h3>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">role</span><span class="pill">live-manual-runs</span></div>
+            <h3>Тихон сторожит правдивость сайта, а не баги и не дизайн</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Once per month, show one neutral list of the team names currently published on the site and ask whether the list and spelling are current. Omit Ira and Sasha from the list entirely. Do not single out individuals, infer arrivals or departures from chat activity, or propose adding/removing a named employee.</li>
-              <li><strong>Check:</strong> Do not mention Ira or Sasha in the monthly roster question.</li>
-              <li><strong>Check:</strong> Use exactly one neutral roster-level question, not separate questions or judgments about individuals.</li>
-              <li><strong>Check:</strong> Working-chat context must not create named add/remove suggestions or employee activity scoring.</li>
+              <li><strong>Rule:</strong> Третий сурикат следит за тем, остаются ли утверждения сайта правдой: идёт ли ещё набор, тот ли состав команды опубликован, ведут ли повторяющиеся ссылки туда, куда обещает текст. Он не заводит второй баг-трекер и не оценивает дизайн: подтверждённая поломка уходит Василию в Linear, вкус остаётся у Сони. Сайт он молча не меняет — результат это дедуплицированный change set с источниками и датами. Статус на 19.08.2026: все шесть секретов настроены, 18.08 прошло пять успешных прогонов Action, владельцу уходят ответы в Telegram, состояние коммитится в ветку tikhon-state.</li>
+              <li><strong>Check:</strong> Публичное имя — Сурикат Тихон, техническое имя пакета — website-freshness-bot; весь код и доки лежат в Bots/Website Freshness Bot/.</li>
+              <li><strong>Check:</strong> Рабочие чаты он не читает, краулера и LLM у него нет: снимок состояния собирается из настроенных URL и discovery-корней.</li>
+              <li><strong>Check:</strong> В tikhon-state лежат три change set в статусе proposed (update-hero-card, promote-learning-row, replace-learning-row) и три обработанных Telegram update ID.</li>
               <li><strong>Source:</strong> Bots/Website Freshness Bot/README.md</li>
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Freshness Surikat (public name TBD)</span><span class="pill">lab-freshness</span><span class="pill">specified-local</span></div>
-            <h3>Freshness Surikat owns the lab recruitment lifecycle</h3>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">runtime</span><span class="pill">live-manual-runs</span></div>
+            <h3>Тихон живёт в GitHub Actions; расписание ещё не включено</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Track each lab from chat-known planning through published page and recruitment removal. Before a page exists, propose a nearest-lab listing with season and year only. Once a semantically valid lab page is discoverable through sitemap, internal link, configured route, or confirmed chat URL, read its current start date and remove every enrollment-list mention exactly seven calendar days after start. A date change recomputes the deadline. The lab page itself may remain as current, waitlist, recap, or archive.</li>
-              <li><strong>Check:</strong> S26 is currently linked from the staging homepage recruitment surface at /labs-custom/s26/ with startDate 2026-08-03; the current recruitment-removal checkpoint is 2026-08-10.</li>
-              <li><strong>Check:</strong> Treat page discovery as site/sitemap/crawl discovery; do not claim Google index status without search-engine evidence.</li>
-              <li><strong>Check:</strong> Deduplicate all homepage and selling-surface enrollment mentions into one obligation with every source location.</li>
+              <li><strong>Rule:</strong> Один workflow .github/workflows/tikhon-freshness.yml с cron 0 7 * * * (10:00 Europe/Moscow) и понедельничной сводкой. Telegram читается через getUpdates long polling внутри того же прогона: webhook не ставится, Cloud Run и отдельный сервер не нужны. Важно: workflow и код бота есть только в ветке agent/tikhon-github-actions, а GitHub запускает schedule исключительно с дефолтной ветки. Пока ветка не влита в main, ежедневный прогон не срабатывает и Тихон работает только по ручному workflow_dispatch.</li>
+              <li><strong>Check:</strong> 18.08.2026 прошло пять успешных ручных прогонов (19:24–22:17 UTC); автоматических запусков по расписанию не было ни одного.</li>
+              <li><strong>Check:</strong> Прогоны сериализованы concurrency-группой surikat-tikhon-state; без секретов workflow сознательно пропускает прогон и пишет причину в step summary.</li>
+              <li><strong>Check:</strong> Telegram webhook для этого token ставить нельзя: один token означает long polling из Actions.</li>
+              <li><strong>Source:</strong> Bots/Website Freshness Bot/GITHUB_ACTIONS_SETUP.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">telegram</span><span class="pill">live-manual-runs</span></div>
+            <h3>Тихон отвечает только владельцу и только на пять команд</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Allowlist — numeric user/chat ID владельца; сообщения из групп и чужих личек игнорируются без ответа. Команды: «проверь», «покажи &lt;id&gt;», «описание &lt;id&gt; &lt;текст&gt;», «применить &lt;id&gt;», «отмена &lt;id&gt;». Обычный вопрос вроде «расскажи подробнее, что именно изменится?» не запускает правку: Тихон отвечает разбором активного change set — источники, точные действия и следующая безопасная команда.</li>
+              <li><strong>Check:</strong> «описание &lt;id&gt; &lt;текст&gt;» только сохраняет текст владельца для будущего review; публикацию Тихон не делает.</li>
+              <li><strong>Check:</strong> Если активного change set нет, он просит написать «проверь», а не придумывает план.</li>
+              <li><strong>Check:</strong> Разбор и ответы детерминированные: LLM в этом контуре не участвует.</li>
+              <li><strong>Source:</strong> Bots/Website Freshness Bot/src/tikhon-team-runtime.mjs</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">write-path</span><span class="pill">live-manual-runs</span></div>
+            <h3>Единственная запись Тихона — ветка и PR после «применить»</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> «применить &lt;id&gt;» сначала повторно проверяет фингерпринты источников и только потом разрешает Action создать одну ветку tikhon/&lt;change-set-id&gt; и один PR в eppelas/aimindset-main. Merge, deploy, удаление и локальная запись на маке недоступны. GitHub App Surikat Tikhon установлен только на этот репозиторий с правами Contents и Pull requests read/write; Actions, secrets, администрирование и другие репозитории — no access.</li>
+              <li><strong>Check:</strong> На 19.08.2026 PR ещё ни разу не создавался: в прогонах шаги создания токена App и PR пропущены, потому что ни один change set не подтверждён командой «применить».</li>
+              <li><strong>Check:</strong> Правки ограничены whitelist полей: видимость, заголовок и дата верхних карточек и заголовок, дата, описание, ссылка, CTA строки «Обучения».</li>
+              <li><strong>Check:</strong> Неподтверждённый источник или несовпадение ожидаемого HTML превращаются в вопрос владельцу, а не в запись.</li>
+              <li><strong>Source:</strong> Bots/Website Freshness Bot/config/team-runtime.json</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">lab-freshness</span><span class="pill">live-manual-runs</span></div>
+            <h3>Жизненный цикл набора: сезон до страницы, снятие через 7 дней после старта</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Пока страницы нет, лаборатория показывается только сезоном и годом («ближайшая лаборатория — осень 2026»), а точные даты из чата хранятся как неподтверждённые свидетельства. Когда страница найдена в sitemap, внутренней ссылке, настроенном маршруте или подтверждённой ссылке из чата, Тихон семантически проверяет, что это страница лаборатории, извлекает название, даты и состояние CTA и ставит срок снятия набора: дата старта плюс семь календарных дней. Смена даты старта пересчитывает срок. Прошедшая дата не означает удаление страницы: она может стать текущим потоком, листом ожидания, итогами или архивом.</li>
+              <li><strong>Check:</strong> Одна лаборатория, упомянутая в нескольких местах, даёт одно обязательство со списком всех мест, а не пять сообщений.</li>
+              <li><strong>Check:</strong> Канонической поверхностью набора считается ссылка из действующего блока набора на главной; похожие страницы остаются связанными, но не подменяют канонический URL по совпадению slug.</li>
+              <li><strong>Check:</strong> Обнаружение страницы — это факт сайта, sitemap или краула, а не подтверждение индексации поисковиком. Первым отслеживаемым объектом был S26: старт 2026-08-03, контрольная дата снятия 2026-08-10.</li>
               <li><strong>Source:</strong> Bots/Website Freshness Bot/README.md</li>
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Freshness Surikat (public name TBD)</span><span class="pill">link-freshness</span><span class="pill">specified-local</span></div>
-            <h3>Freshness Surikat deduplicates recurring link drift</h3>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">catalog</span><span class="pill">live-manual-runs</span></div>
+            <h3>Строки «Обучения» постоянные, верхних карточек ровно две</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Check recurring and changeable links at least weekly. Evaluate HTTP status, final redirect target, visible link meaning, and repeated use across pages. One destination problem creates one obligation listing every occurrence instead of chat noise or duplicate tickets.</li>
-              <li><strong>Check:</strong> A 200 response is not sufficient when the final redirect target or semantic destination changed.</li>
-              <li><strong>Check:</strong> Keep source locations and timestamps as evidence.</li>
-              <li><strong>Check:</strong> Hand confirmed site defects to Vasily/Linear rather than creating a parallel bug tracker.</li>
+              <li><strong>Rule:</strong> Каждая строка блока «Обучение» — постоянное направление: завершённый поток возвращает свою строку в waitlist, но не удаляет её. Верхние hero-карточки от каталога независимы: это две именованные позиции — «сейчас идёт набор» (только при опубликованном CTA) и «ближайшие лаборатории» (только при подтверждённой будущей записи каталога Learn), а не поиск карточек по старому названию. Тихон читает module bundle публичного каталога learn.aimindset.org, отбрасывает завершённые и прошедшие записи и проверяет страницу ближайшей будущей лаборатории.</li>
+              <li><strong>Check:</strong> Сейчас каталог подтверждает F26 (5 октября — 1 ноября 2026): это даёт дату для hero и строки «Обучения», а CTA остаётся waitlist, пока отдельная страница не подтвердит открытый набор.</li>
+              <li><strong>Check:</strong> Health и AI-native уже в конфигурации; Product and Design остаётся waitlist, пока нет опубликованного AIM URL для этого направления.</li>
+              <li><strong>Check:</strong> Новая опубликованная страница без уверенной связи с существующим направлением — вопрос владельцу, а не выдуманное сопоставление.</li>
+              <li><strong>Source:</strong> Bots/Website Freshness Bot/config/team-runtime.json</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">content-freshness</span><span class="pill">live-manual-runs</span></div>
+            <h3>Состав команды сверяется раз в месяц одним нейтральным вопросом</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Раз в 30 дней Тихон показывает один нейтральный список опубликованных на сайте имён и задаёт один вопрос: «Команда на сайте: … Список и написание актуальны?». Иру и Сашу в этот список не включает вообще. Он не оценивает людей по отдельности, не выводит из переписки, кто пришёл, ушёл или давно не появлялся, и не предлагает добавить или убрать конкретного сотрудника.</li>
+              <li><strong>Check:</strong> Ира и Саша не упоминаются в месячном вопросе. Расхождение: в коде reviewCadenceDays=30, а владелец в описании функционала называет 60 дней — интервал нужно подтвердить.</li>
+              <li><strong>Check:</strong> Ровно один вопрос уровня списка, без отдельных вопросов и суждений о людях.</li>
+              <li><strong>Check:</strong> Рабочий чат может помочь выбрать спокойный момент для сверки, но не превращается в рейтинг активности сотрудников.</li>
               <li><strong>Source:</strong> Bots/Website Freshness Bot/README.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">link-freshness</span><span class="pill">live-manual-runs</span></div>
+            <h3>Повторяющиеся ссылки проверяются еженедельно по смыслу</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Повторяющиеся и периодически меняющиеся ссылки проверяются не реже раза в неделю. Важен не только HTTP-ответ, но и конечный адрес после редиректов, текст ссылки и смысловое назначение: «записаться на весенний поток», ведущее на прошлогоднюю страницу, — это проблема при полностью рабочем 200. Одинаковая ссылка в нескольких местах создаёт одно обязательство с перечнем всех мест.</li>
+              <li><strong>Check:</strong> Ответ 200 недостаточен, если изменился конечный адрес редиректа или смысл назначения.</li>
+              <li><strong>Check:</strong> Места-источники и даты сохраняются как доказательства.</li>
+              <li><strong>Check:</strong> Подтверждённые дефекты сайта передаются Василию/Linear вместо параллельного трекера.</li>
+              <li><strong>Source:</strong> Bots/Website Freshness Bot/README.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">waitlist</span><span class="pill">awaiting-site-release</span></div>
+            <h3>Waitlist приходит через Метрику, а не через сервер</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Каждый ежедневный прогон читает HTML живой главной aimindset-main.web.app и проверяет контракт формы: форма существует, Telegram обязателен, у каждой кнопки есть явные data-waitlist-topic и data-waitlist-code, payload Метрики несёт waitlist.topic, product_code, имя поля и частичный ввод, а в общем счётчике лабораторий 106857835 заведены JavaScript-цели waitlist_input_started (599119093) и waitlist_contact_entered (599119094). Раз в сутки Action выгружает из Logs API три последних завершённых московских дня (перекрытие ради поздних визитов) и присылает владельцу только новые вводы.</li>
+              <li><strong>Check:</strong> Проверка не имитирует заявку посетителя и не отправляет лид через Василия или Cloud Run.</li>
+              <li><strong>Check:</strong> На 19.08.2026 в состоянии ноль фингерпринтов событий: живой HTML всё ещё отдаёт старый relay без полного контракта Метрики. Тихон честно сообщает об этой проблеме и не выдаёт отсутствие события за отсутствие лида; отчёт появится после reviewed release канонического v5-исходника.</li>
+              <li><strong>Check:</strong> Сбой контракта даёт одно дедуплицированное review-сообщение владельцу, а не поток алертов.</li>
+              <li><strong>Source:</strong> Bots/Website Freshness Bot/src/tikhon-metrika-logs.mjs</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">privacy</span><span class="pill">live-manual-runs</span></div>
+            <h3>В ветке tikhon-state нет ни токенов, ни личных данных</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Состояние живёт в защищённой ветке tikhon-state (state/tikhon-state.json) и содержит только фингерпринты источников, обработанные Telegram update ID, change sets и короткий audit-log. Токены, тексты сообщений, chat ID, имена и частичные вводы из формы туда не попадают: от Метрики сохраняются только хэши уже отправленных событий.</li>
+              <li><strong>Check:</strong> Объёмы ограничены: 500 последних update ID, 100 change sets, 2000 фингерпринтов Метрики, 500 записей журнала.</li>
+              <li><strong>Check:</strong> GITHUB_TOKEN семейного репозитория пишет только эту state-ветку; токен GitHub App создаётся временно и только под одобренный PR.</li>
+              <li><strong>Check:</strong> Конкурентные прогоны Action сериализованы, чтобы состояние не разъезжалось.</li>
+              <li><strong>Source:</strong> Bots/Website Freshness Bot/src/tikhon-team-runtime.mjs</li>
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
             <div class="label-row"><span class="pill ok">AIM Site Agent Evaluation</span><span class="pill">qa</span><span class="pill">active</span></div>
             <h3>AIM Site Agent Evaluation reports to Vasily</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> The black-box QA worker checks production/staging links, CTA, screenshots, blank bands, dates, and agent-readability. Vasily is the Telegram dispatcher that can summarize or route those findings.</li>
-              <li><strong>Check:</strong> QA reports are read-only and should not edit the website.</li>
-              <li><strong>Check:</strong> High-severity findings fail the QA run and should be visible in reports/latest.</li>
-              <li><strong>Check:</strong> Manual or scheduled QA does not replace human review before push/deploy.</li>
+              <li><strong>Rule:</strong> Black-box QA worker открывает production, staging и AI Native как внешний посетитель: собирает маршруты из конфига, sitemap и внутренних ссылок, проверяет ссылки и назначения CTA, ищет устаревшие даты, проверяет agent-readability и снимает визуальные baseline в Chromium, Firefox и WebKit. Результат — reports/latest/report.json, summary.md и дашборды по поверхностям. Связь с Василием односторонняя: он читает готовый JSON, а QA-агент его не вызывает и команд от него не получает.</li>
+              <li><strong>Check:</strong> Быстрый owner-аудит Василия из Telegram — это ограниченный обход HTML и ссылок, а не CLI QA-репозитория: он не создаёт report.json, baseline, Playwright-скриншоты или dashboard.</li>
+              <li><strong>Check:</strong> Полного transaction runner, который кликает CTA, заполняет форму и подтверждает оплату, в текущем src/ нет: проверяются ссылки и их назначения.</li>
+              <li><strong>Check:</strong> QA findings не маршрутизируются в Linear автоматически: Linear появляется через intake и решение Василия.</li>
               <li><strong>Source:</strong> AIM Site Agent Evaluation/README.md</li>
             </ul>
           </article>
@@ -2614,6 +2741,39 @@
               <li><strong>Check:</strong> Do not publish remote changes without the required review/push authorization path.</li>
               <li><strong>Check:</strong> Every meaningful bot rule or architecture change must update website-ops/bot-operating-rules.json first; the Website Hub summary is regenerated from that source by local-preview/sync-bot-operating-rules-summary.mjs and the local preview auto-sync.</li>
               <li><strong>Source:</strong> website-ops/rules-and-pipelines.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">qa</span><span class="pill">action-required</span></div>
+            <h3>Ответ Василия о состоянии сайта сейчас без цифр</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Задумано: на вопрос «что там с сайтом?» Василий отвечает свежими цифрами последнего QA-прогона — сколько страниц проверено, сколько находок, какие критичные. Сейчас это не работает: в production-конфигурации Cloud Run не задан BOT_QA_REPORT_PATH и нет облачного источника report.json, свежий отчёт живёт только на маке. Фикс: QA-раннер публикует report.json в vasily-state, Василий читает его при гидрации.</li>
+              <li><strong>Check:</strong> Пока облачного отчёта нет, Василий отвечает fallback-текстом и не имеет права утверждать, что полный visual QA выполнен.</li>
+              <li><strong>Check:</strong> Один reports/latest/report.json перезаписывается последним режимом: выбирать отдельный latest для production, staging или AI Native Василий не умеет.</li>
+              <li><strong>Check:</strong> Автоматического канала «каждый finding → Василий → Linear» нет намеренно: один неудачный прогон не должен молча создать десятки задач.</li>
+              <li><strong>Source:</strong> Bots/AIM Site QA Agent/QA-INVENTORY.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">ownership</span><span class="pill">action-required</span></div>
+            <h3>Василий живёт на личных доступах владельца</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Cloud Run работает в личном облаке владельца на её кредитах; Telegram token и Linear API-ключ тоже её. Деплой привязан к маку. В репозиторий ai-mindset-org/surikat-family перенесены код, конфиги, доки, launchd-plists, cloud-run README и env.production.yaml, self-тесты. Намеренно не в гите: секреты (Secret Manager/Keychain) и локальное состояние data/, которое живёт в GCS.</li>
+              <li><strong>Check:</strong> При потере мака Telegram token восстанавливается через BotFather, всё остальное поднимается из GitHub, Secret Manager и GCS.</li>
+              <li><strong>Check:</strong> Опционально: GitHub Action deploy-on-push в surikat-family — нужен ключ deploy-SA в GitHub Secrets.</li>
+              <li><strong>Check:</strong> Перенос на командный биллинг и командные ключи — отдельная незакрытая задача.</li>
+              <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/cloud-run/README.md</li>
+            </ul>
+          </article>
+          <article class="ops-panel" data-search-item>
+            <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">status</span><span class="pill">paused</span></div>
+            <h3>Соня приостановлена на ~80% готовности</h3>
+            <ul class="ops-list">
+              <li><strong>Rule:</strong> Соня выключена не из-за поломки. Её идея — понять общий вкус команды, а для этого команда должна регулярно реагировать на то, что она приносит; без этого копилка вкуса не набирается. Дополнительно требуют доработки её собственная стилистика и research/discovery pipelines. Она жила на Gemini и Google Cloud, поэтому при переносе нужен новый биллинг.</li>
+              <li><strong>Check:</strong> Дашборд с вариантами элементов и главной остаётся полезным артефактом: варианты можно доводить и брать на сайт.</li>
+              <li><strong>Check:</strong> Возобновление имеет смысл только вместе с договорённостью команды регулярно оценивать присланное.</li>
+              <li><strong>Check:</strong> Перед перезапуском нужен отдельный биллинг Google Cloud и доработка стилистики и discovery.</li>
+              <li><strong>Source:</strong> Bots/Telegram Design Taste Bot - Sonya/README.md</li>
             </ul>
           </article>
           <!-- BOT_OPERATING_RULES_SUMMARY_END -->
@@ -2708,8 +2868,8 @@
 
       <section class="section" id="qa" data-tab="qa">
         <div class="section-head">
-          <h2>Сурикат и QA-агенты</h2>
-          <p class="section-note">Василий принимает QA-сигналы из Telegram и передаёт результаты людям; Соня собирает дизайн-оценки; автоматические workers проверяют сайт и создают варианты страниц и элементов.</p>
+          <h2>Сурикаты и QA-агенты</h2>
+          <p class="section-note">Василий принимает QA-сигналы из Telegram и передаёт результаты людям; Соня собирает дизайн-оценки; Тихон сторожит свежесть набора, команды и ссылок; автоматические workers проверяют сайт и создают варианты страниц и элементов.</p>
         </div>
         <div class="ops-layout">
           <article class="card dark" data-search-item>
@@ -2754,6 +2914,9 @@
                 <li><strong>Visual:</strong> desktop / tablet / mobile, baselines, diff, пустые блоки и retry при подозрении на lazy-load.</li>
                 <li><strong>Freshness:</strong> даты лабораторий, прошедшие события, старые Luma/внешние CTA.</li>
                 <li><strong>Agent-readability:</strong> `llms.txt`, markdown mirrors, JSON-LD, semantic HTML, canonical и sitemap.</li>
+                <li><strong>CTA по назначению:</strong> оплата, форма, Telegram, бот, waitlist, событие, документ, knowledge base или соседний сайт — правила проверяют ожидаемый тип и допустимые домены, незнакомые маршруты уходят на ручную проверку.</li>
+                <li><strong>Prod vs staging:</strong> migration map связывает старые и новые маршруты и показывает пропавшие страницы, намеренно закрытые поверхности и контентный drift.</li>
+                <li><strong>Граница:</strong> это анализ ссылок и назначений, а не transaction runner — он не кликает CTA, не заполняет форму и не подтверждает оплату.</li>
               </ul>
             </article>
 
@@ -2765,6 +2928,19 @@
                 <li><strong>Маршруты:</strong> `config/routes.production.json`, `config/routes.staging.json`.</li>
                 <li><strong>Экраны и браузеры:</strong> `config/browser-matrix.json`.</li>
                 <li><strong>Правила и логика:</strong> `src/`, `docs/`, `TODO.md`.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill warn">не соединено</span></div>
+              <h3>Где обрывается связь с Василием</h3>
+              <ul class="ops-list">
+                <li><strong>Что работает:</strong> QA создаёт `report.json`, сводку, дашборды и скриншоты; Actions публикует их на GitHub Pages; локальный Василий умеет прочитать локальный `report.json` и сделать сводку.</li>
+                <li><strong>Cloud Run Василия:</strong> не содержит папку `AIM Site Agent Evaluation` и не имеет облачного источника `report.json`.</li>
+                <li><strong>QA workflow:</strong> не кладёт отчёт в GCS-state Василия и не дёргает его webhook.</li>
+                <li><strong>Findings → Linear:</strong> автоматического канала нет намеренно — один неудачный прогон не должен создать десятки задач.</li>
+                <li><strong>Один latest:</strong> `reports/latest/report.json` перезаписывается последним режимом, отдельный latest для production, staging и AI Native Василий выбирать не умеет.</li>
+                <li><strong>Следствие:</strong> полный QA может успешно пройти и появиться на Pages, а Василий в облаке всё равно ответит fallback-текстом.</li>
               </ul>
             </article>
 
@@ -2799,7 +2975,7 @@
             <span class="path">Bots/Telegram Bug Intake Bot - Linear</span>
           </a>
           <a class="card dark wide" data-search-item href="#sonya">
-            <div class="label-row"><span class="pill ok">design taste bot</span><span class="pill">Telegram → ratings</span><span class="pill">Vertex / Cloud Run live</span></div>
+            <div class="label-row"><span class="pill ok">design taste bot</span><span class="pill">Telegram → ratings</span><span class="pill warn">приостановлена · ~80%</span></div>
             <div>
               <h3>Сурикат Соня</h3>
               <p class="summary">
@@ -2809,6 +2985,20 @@
               </p>
             </div>
             <span class="path">Bots/Telegram Design Taste Bot - Sonya</span>
+          </a>
+          <a class="card dark wide" data-search-item href="#tikhon">
+            <div class="label-row"><span class="pill ok">хранитель свежести</span><span class="pill">GitHub Actions → Telegram → PR</span><span class="pill warn">ждёт секретов</span></div>
+            <div>
+              <h3>Сурикат Тихон</h3>
+              <p class="summary">
+                Третий сурикат. Следит не за поломками и не за красотой, а за тем, не врёт ли сайт:
+                идёт ли ещё набор на стартовавшую лабораторию, тот ли состав команды опубликован,
+                ведут ли повторяющиеся ссылки туда, куда обещает текст. Живёт в GitHub Actions
+                (ежедневно 10:00 МСК, по понедельникам недельная сводка), отвечает только владельцу в личке
+                и ничего не меняет молча: максимум — ветка и PR в `main-current` после команды «применить».
+              </p>
+            </div>
+            <span class="path">Bots/Website Freshness Bot</span>
           </a>
           <a class="card" data-search-item href="https://eppelas.github.io/aim-site-agent-evaluation/reports/latest/dashboard.html">
             <div class="label-row"><span class="pill">подключаемый QA-агент</span></div>
@@ -2826,7 +3016,7 @@
             </div>
             <span class="path">AIM Site Agent Evaluation/reports/latest/dashboard.html</span>
           </a>
-          <a class="card" data-search-item href="website-ops/fos-landing/README.md">
+          <a class="card" data-search-item href="md.html?f=website-ops/fos-landing/README.md">
             <div class="label-row"><span class="pill ok">linked FOS</span><span class="pill">parent app</span></div>
             <div>
               <h3>FOS Role Adaptive</h3>
@@ -2899,6 +3089,18 @@
           </div>
           <div class="ops-board">
             <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill warn">приостановлена</span><span class="pill">~80% готовности</span></div>
+              <h3>Почему выключена</h3>
+              <ul class="ops-list">
+                <li><strong>Не поломка:</strong> идея была в том, чтобы она поняла общий вкус команды, а для этого команде надо постоянно реагировать на присланное.</li>
+                <li><strong>Что копится без реакции:</strong> ничего — копилка вкуса не набирается, и её собственная оценка не становится точнее.</li>
+                <li><strong>Что доделать:</strong> её стилистику и research/discovery pipelines.</li>
+                <li><strong>Что осталось полезного:</strong> дашборд с вариантами элементов и главной — их можно доводить и брать на сайт.</li>
+                <li><strong>Перенос:</strong> жила на Gemini и Google Cloud, при переносе нужен новый биллинг.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
               <div class="label-row"><span class="pill ok">telegram</span></div>
               <h3>Review delivery</h3>
               <ul class="ops-list">
@@ -2935,6 +3137,21 @@
             </article>
 
             <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">фильтр</span></div>
+              <h3>Как она решает, что показывать</h3>
+              <ul class="ops-list">
+                <li><strong>Допуск:</strong> только помеченные как готовые к ревью, прошедшие технические проверки и проверку на соответствие бренду, со свежим скриншотом и внятным описанием изменения.</li>
+                <li><strong>Свежесть картинки:</strong> скриншот должен соответствовать нынешней версии макета, а не прошлой неделе.</li>
+                <li><strong>Свой порог:</strong> ставит оценку до показа и ниже шести из десяти человеку не несёт.</li>
+                <li><strong>Учёт вкуса:</strong> в свою оценку подмешивает накопленные прошлые оценки владельца.</li>
+                <li><strong>Пачками:</strong> за раз несколько карточек (Анке больше, Саше меньше), дальше «есть ещё» и ждёт, пока текущую добьют.</li>
+                <li><strong>Без повторов:</strong> помнит уже оценённое, включая оценки, поставленные в дашборде, и приносит только в тот чат, откуда попросили.</li>
+                <li><strong>«Покажи всё»:</strong> снимает свой фильтр качества, но по-прежнему отдаёт только неоценённое; ссылку на макет даёт, только если он реально опубликован.</li>
+                <li><strong>Курьер:</strong> по внутренней команде может отправить одно короткое сообщение со ссылкой без карточек; по умолчанию адресат — Анка.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
               <div class="label-row"><span class="pill">cloud</span></div>
               <h3>Google Cloud режим</h3>
               <ul class="ops-list">
@@ -2966,6 +3183,9 @@
                 <li><strong>Что ловит:</strong> баги, сбои, тормоза, странное поведение, неправильные ссылки, сломанные блоки, проблемы CTA и форм.</li>
                 <li><strong>Голос/аудио:</strong> voice, audio и video-note сначала транскрибируются через Gemini/Vertex; дальше transcript идет в тот же semantic routing.</li>
                 <li><strong>Как отвечает:</strong> если все понятно, ставит `👀`; если мало данных, просит страницу/ссылку, устройство/браузер или скрин.</li>
+                <li><strong>Отличает сайт от «не сайта»:</strong> жалобу на чужие черновики или GitHub вежливо отклоняет и объясняет, что смотрит на живой сайт и staging.</li>
+                <li><strong>Узнаёт места сайта:</strong> понимает, что речь про оплату, лист ожидания или страницу лаборатории, даже если ссылки нет и прислан только скриншот.</li>
+                <li><strong>Если Linear недоступен:</strong> жалоба уходит в очередь и задача заводится позже, ничего не теряется.</li>
                 <li><strong>Локальный аудит:</strong> все новые входящие update, которые Сурикат реально увидел, пишутся в `data/audit-log.jsonl`.</li>
               </ul>
             </article>
@@ -3010,12 +3230,53 @@
             </article>
 
             <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">команды словами</span></div>
+              <h3>Настройка прямо в чате</h3>
+              <ul class="ops-list">
+                <li><strong>Кто может:</strong> whitelist конкретных пользователей; полное tuning — у владельца.</li>
+                <li><strong>`не лезь`:</strong> перестаёт отвечать на общие вопросы в группе, только на прямые обращения.</li>
+                <li><strong>`отвечай свободнее`:</strong> возвращается к обычному режиму.</li>
+                <li><strong>`замолчи в этой ветке`:</strong> умолкает в конкретном обсуждении.</li>
+                <li><strong>`запомни: …`:</strong> произвольное правило («когда я пишу QA сайта, я имею в виду вот этот дашборд»), которое он учитывает дальше всегда.</li>
+                <li><strong>`стоп проверки` / `продолжай`:</strong> пауза и возобновление собственных обходов сайта.</li>
+                <li><strong>Почему это сильная сторона:</strong> настройки меняются словами, без правки кода, и запоминаются насовсем.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">заявки</span></div>
+              <h3>Рассылка заявок с оплаты</h3>
+              <ul class="ops-list">
+                <li><strong>Кто отправляет:</strong> отдельный маленький сервис-relay, а Василий хранит правила — кому можно присылать и включена ли рассылка вообще.</li>
+                <li><strong>Команды:</strong> «поставь заявки на паузу» или «можно присылать вот этому человеку» пишутся в чат, и рассылка действительно меняется.</li>
+                <li><strong>Права:</strong> кроме владельца, пауза и возобновление доступны Ирине.</li>
+                <li><strong>Хотелка:</strong> задавать прямо в чате формат сообщений и частоту.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill warn">сломано</span><span class="pill warn">перенести</span></div>
+              <h3>Что чинить и что переносить</h3>
+              <ul class="ops-list">
+                <li><strong>Ответ «что там с сайтом?» без цифр:</strong> в прод-env не задан `BOT_QA_REPORT_PATH`, свежий `report.json` живёт только на маке — в Cloud Run Василий отвечает fallback-текстом.</li>
+                <li><strong>Фикс:</strong> QA-раннер публикует `report.json` в `vasily-state`, Василий читает его при гидрации.</li>
+                <li><strong>Личные доступы:</strong> Cloud Run работает в личном облаке владельца на её кредитах, Telegram token и Linear API-ключ тоже её.</li>
+                <li><strong>Деплой привязан к маку:</strong> по желанию — GitHub Action deploy-on-push в `surikat-family`, нужен ключ deploy-SA в GitHub Secrets.</li>
+                <li><strong>Что уже в гите:</strong> код, конфиги, доки, launchd-plists, cloud-run README и `env.production.yaml`, self-тесты.</li>
+                <li><strong>Что намеренно не в гите:</strong> секреты (Secret Manager/Keychain) и локальное состояние `data/` — оно живёт в GCS.</li>
+                <li><strong>При потере мака:</strong> token восстанавливается через BotFather, всё остальное поднимается из GitHub, Secret Manager и GCS.</li>
+                <li><strong>Хотелка:</strong> сам перепроверяет найденную ошибку — где именно она и из-за чего произошла.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
               <div class="label-row"><span class="pill ok">manager</span></div>
               <h3>Связка с QA-ботом сайта</h3>
               <ul class="ops-list">
                 <li><strong>Сурикат:</strong> диспетчер, голос в Telegram, маршрутизация в Linear, дайджесты людям.</li>
                 <li><strong>AIM Site Agent Evaluation:</strong> worker, который запускает black-box проверки, генерирует `reports/latest/report.json` и dashboard.</li>
                 <li><strong>Возможности:</strong> чтение latest QA report и маршрутизация findings; новые прогоны запускаются через QA/Actions.</li>
+                <li><strong>Реестр:</strong> <a href="md.html?f=website-ops/bot-operating-rules.md#current-bots">QA worker и Василий: роли и ограничения</a>.</li>
               </ul>
             </article>
 
@@ -3027,6 +3288,131 @@
                 <li><strong>QA Actions:</strong> `site-qa.yml`, `device-cloud.yml`, `ci.yml`.</li>
                 <li><strong>QA Pages:</strong> `https://eppelas.github.io/aim-site-agent-evaluation/`.</li>
                 <li><strong>Surikat runtime:</strong> основной runtime теперь Cloud Run service `aim-surikat-vasily`; workflow scaffold `.github/workflows/telegram-bug-intake.yml` остаётся legacy/fallback, не production delivery.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+
+        <div class="dark-band" id="tikhon" data-search-item>
+          <div class="section-head">
+            <h2>Сурикат Тихон</h2>
+            <p class="section-note">Хранитель свежести сайта: сторожит, остаются ли правдой набор на лаборатории, состав команды и повторяющиеся ссылки. Результат его работы — дедуплицированный change set с источниками и датами, а не молчаливая правка.</p>
+            <button class="card-media" type="button" data-src="local-preview/site-hub-assets/tikhon-avatar-approved-v1.jpeg" data-title="Сурикат Тихон" data-caption="Утверждённый аватар третьего суриката: хранитель свежести сайта.">
+              <img src="local-preview/site-hub-assets/tikhon-avatar-approved-v1.jpeg" alt="Аватар Суриката Тихона" loading="lazy" />
+            </button>
+          </div>
+          <div class="ops-board">
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">роль</span></div>
+              <h3>Что он сторожит</h3>
+              <ul class="ops-list">
+                <li><strong>Лаборатории:</strong> не висит ли «идёт набор» на потоке, который уже стартовал.</li>
+                <li><strong>Команда:</strong> раз в 30 дней один нейтральный вопрос — актуален ли опубликованный список имён и написание.</li>
+                <li><strong>Ссылки:</strong> раз в неделю повторяющиеся ссылки — не только код ответа, но и конечный адрес после редиректов и смысл текста ссылки.</li>
+                <li><strong>Результат:</strong> одна запись = сущность (`team-member`, `lab`, `link`), действие (`ask`, `add`, `update`, `remove`, `review`), уверенность, объяснение, источники с датами, срок и ключ дедупликации.</li>
+                <li><strong>Разделение:</strong> баги — у Василия, дизайн — у Сони; подтверждённый дефект уходит в Linear через Василия, а не во второй трекер.</li>
+                <li><strong>Имена:</strong> публичное — Сурикат Тихон, техническое имя пакета — `website-freshness-bot`.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill warn">границы</span></div>
+              <h3>Чего он не делает</h3>
+              <ul class="ops-list">
+                <li><strong>Не меняет сайт молча:</strong> любая правка сначала становится предложением с доказательствами.</li>
+                <li><strong>Не мержит и не публикует:</strong> merge, deploy и релиз остаются человеческими действиями.</li>
+                <li><strong>Не пишет локально:</strong> `применить` не трогает файлы на маке, только ветку и PR.</li>
+                <li><strong>Не оценивает людей:</strong> не выводит из переписки, кто пришёл или ушёл, и не предлагает убрать конкретного сотрудника; Иру и Сашу в месячный список не включает вообще.</li>
+                <li><strong>Не удаляет страницы:</strong> прошедшая дата снимает только приглашение записаться; страница может стать текущим потоком, листом ожидания, итогами или архивом.</li>
+                <li><strong>Не выдумывает соответствия:</strong> новая страница без уверенной связи с направлением — вопрос владельцу, а не догадка.</li>
+                <li><strong>Не имитирует заявку:</strong> проверка waitlist не отправляет тестовый лид и не идёт через Василия.</li>
+                <li><strong>Не читает рабочие чаты:</strong> краулера и LLM у него нет — снимок состояния собирается из настроенных URL и discovery-корней.</li>
+                <li><strong>Ещё не создавал PR:</strong> шаги GitHub App в прогонах пропускаются, пока change set не подтверждён командой «применить» — на 19.08 ни одной ветки `tikhon/*` в `aimindset-main` нет.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">telegram</span></div>
+              <h3>Команды в личке</h3>
+              <ul class="ops-list">
+                <li><strong>Кто может писать:</strong> только владелец; группы и чужие лички игнорируются без ответа (allowlist по numeric user/chat ID).</li>
+                <li><strong>`проверь`:</strong> немедленно собрать или обновить change set.</li>
+                <li><strong>`покажи &lt;id&gt;`:</strong> показать доказательства и точный смысл правки.</li>
+                <li><strong>`описание &lt;id&gt; &lt;текст&gt;`:</strong> заменить описание подтверждённой лаборатории своим текстом — он сохраняется для review, но не публикуется.</li>
+                <li><strong>`применить &lt;id&gt;`:</strong> перепроверить источники и разрешить создание PR.</li>
+                <li><strong>`отмена &lt;id&gt;`:</strong> отменить ещё не подготовленный PR.</li>
+                <li><strong>Обычный вопрос:</strong> «расскажи подробнее, что изменится?» не запускает правку — Тихон отвечает разбором активного change set и подсказывает следующую безопасную команду.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">cadence</span><span class="pill">runtime</span></div>
+              <h3>Расписание и рантайм</h3>
+              <ul class="ops-list">
+                <li><strong>Где живёт:</strong> GitHub Actions, workflow `.github/workflows/tikhon-freshness.yml` в репозитории `ai-mindset-org/surikat-family`.</li>
+                <li><strong>Когда:</strong> ежедневно 10:00 Europe/Moscow (cron `0 7 * * *`); понедельничный прогон добавляет недельную сводку.</li>
+                <li><strong>Telegram:</strong> `getUpdates` long polling внутри того же прогона; webhook для этого token не ставится.</li>
+                <li><strong>Без Cloud Run:</strong> ни сервера, ни webhook, ни частого режима переспрашивания; прогоны сериализованы concurrency-группой `surikat-tikhon-state`.</li>
+                <li><strong>Без секретов:</strong> workflow сознательно пропускает прогон и пишет причину в step summary, а не падает.</li>
+                <li><strong>Ручной прогон:</strong> `workflow_dispatch` с режимами `audit-only` и `audit-and-mailbox`.</li>
+                <li><strong>Что уже было:</strong> 18.08.2026 — пять успешных прогонов (19:24–22:17 UTC): чтение Telegram-апдейтов, сбор change set, ответы владельцу, коммит состояния.</li>
+                <li><strong>Чего не хватает:</strong> расписание не срабатывает. Workflow и код живут только в ветке `agent/tikhon-github-actions`, а GitHub запускает `schedule` только с дефолтной ветки — до влития в `main` все запуски ручные.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill ok">labs</span></div>
+              <h3>Лаборатории и каталог обучения</h3>
+              <ul class="ops-list">
+                <li><strong>До страницы:</strong> только сезон и год («ближайшая лаборатория — осень 2026»); точные даты из чата остаются неподтверждёнными свидетельствами.</li>
+                <li><strong>После страницы:</strong> название, даты и состояние CTA из источника, срок снятия набора — старт плюс 7 календарных дней; смена даты старта пересчитывает срок.</li>
+                <li><strong>Дедупликация:</strong> одна лаборатория в пяти местах = одно обязательство со списком всех мест.</li>
+                <li><strong>Строки «Обучения» постоянные:</strong> завершённый поток возвращает свою строку в `waitlist`, но не удаляет направление.</li>
+                <li><strong>Две верхние карточки:</strong> «сейчас идёт набор» появляется только при опубликованном CTA, «ближайшие лаборатории» — только при подтверждённой будущей записи каталога Learn.</li>
+                <li><strong>Каталог:</strong> читается module bundle публичного каталога `learn.aimindset.org`; сейчас подтверждён F26 — 5 октября — 1 ноября 2026, CTA пока `waitlist`.</li>
+                <li><strong>Первый объект:</strong> S26 — старт `2026-08-03`, контрольная дата снятия `2026-08-10`.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">waitlist</span><span class="pill warn">ждёт релиза</span></div>
+              <h3>Waitlist и Метрика</h3>
+              <ul class="ops-list">
+                <li><strong>Что проверяет каждый день:</strong> HTML живой главной `aimindset-main.web.app` — форма на месте, Telegram обязателен, у каждой кнопки есть `data-waitlist-topic` и `data-waitlist-code`.</li>
+                <li><strong>Payload:</strong> `waitlist.topic`, `product_code`, имя поля и частичный ввод должны уходить в Метрику.</li>
+                <li><strong>Счётчик:</strong> общий счётчик лабораторий `106857835`, цели `waitlist_input_started` (`599119093`) и `waitlist_contact_entered` (`599119094`).</li>
+                <li><strong>Отчёт:</strong> раз в сутки Action выгружает из Logs API три последних завершённых московских дня и присылает владельцу только новые вводы.</li>
+                <li><strong>Сейчас:</strong> живой HTML всё ещё отдаёт старый relay без полного контракта, поэтому Тихон честно репортит проблему и не выдаёт отсутствие события за отсутствие лида; отчёт появится после reviewed release канонического v5-исходника.</li>
+                <li><strong>Прототип relay:</strong> отдельный Cloud Run `cloud-run/waitlist-relay/` остался в репозитории как код, но из инструкции запуска убран.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill warn">secrets</span><span class="pill">state</span></div>
+              <h3>Состояние и доступы</h3>
+              <ul class="ops-list">
+                <li><strong>Состояние:</strong> защищённая ветка `tikhon-state`, файл `state/tikhon-state.json` — сейчас там три change set в статусе `proposed` и три обработанных update ID.</li>
+                <li><strong>Что внутри:</strong> фингерпринты источников, обработанные Telegram update ID, change sets и короткий audit-log (500 update ID, 100 change sets, 2000 фингерпринтов, 500 записей журнала).</li>
+                <li><strong>Чего внутри нет:</strong> токенов, текстов сообщений, chat ID, имён и частичных вводов из формы — от Метрики хранятся только хэши.</li>
+                <li><strong>GitHub App:</strong> `Surikat Tikhon` установлен только на `eppelas/aimindset-main` с правами Contents и Pull requests read/write; Actions, secrets и администрирование — no access.</li>
+                <li><strong>Whitelist правок:</strong> видимость, заголовок и дата верхних карточек; заголовок, дата, описание, ссылка и CTA строки «Обучения».</li>
+                <li><strong>Секреты:</strong> `TIKHON_TELEGRAM_BOT_TOKEN`, `TIKHON_OWNER_TELEGRAM_USER_ID`, `TIKHON_OWNER_TELEGRAM_CHAT_ID`, `TIKHON_METRIKA_OAUTH_TOKEN`, `TIKHON_GITHUB_APP_ID`, `TIKHON_GITHUB_APP_PRIVATE_KEY`.</li>
+                <li><strong>Секреты уже настроены:</strong> все шесть лежат в `ai-mindset-org/surikat-family` с 18.08.2026, включая credentials GitHub App.</li>
+                <li><strong>Что осталось:</strong> влить ветку в `main`, чтобы включилось расписание, и один раз пройти `проверь` → `покажи` → `применить` → тестовый PR без merge.</li>
+              </ul>
+            </article>
+
+            <article class="ops-panel" data-search-item>
+              <div class="label-row"><span class="pill">edit</span></div>
+              <h3>Где править Тихона</h3>
+              <ul class="ops-list">
+                <li><strong>Рабочий каталог:</strong> `Bots/Website Freshness Bot/`.</li>
+                <li><strong>Политика и правила:</strong> `config/freshness-policy.json`, `src/freshness-policy.mjs`.</li>
+                <li><strong>Командный рантайм:</strong> `src/tikhon-team-runtime.mjs`, `src/tikhon-action-run.mjs`, `src/tikhon-pr.mjs`, `src/tikhon-metrika-logs.mjs`.</li>
+                <li><strong>Цели, каталог и target-репозиторий:</strong> `config/team-runtime.json`.</li>
+                <li><strong>Инструкции запуска:</strong> `GITHUB_ACTIONS_SETUP.md`, инвентаризация — `FRESHNESS-INVENTORY.md`.</li>
+                <li><strong>Тесты:</strong> `npm test`; локальный пилот главной — `npm run local:main -- --config config/local-main-pilot.json` (с `--apply` пишет только разрешённые правки и делает датированный бэкап).</li>
+                <li><strong>Реестр правил:</strong> <a href="md.html?f=website-ops/bot-operating-rules.md#current-bots">Сурикат Тихон в реестре правил ботов</a>.</li>
               </ul>
             </article>
           </div>
@@ -3065,14 +3451,14 @@
 
       <section class="section" id="legacy" data-tab="design">
         <div class="section-head">
-          <h2>Дизайн-индекс</h2>
+          <h2>Архив стилей дизайна</h2>
           <p class="section-note">Архивы готовых страниц, визуальных состояний и экспериментов с отдельными блоками.</p>
         </div>
         <article class="card green wide index-card" id="design-archive" data-search-item>
           <div>
             <div class="label-row"><span class="pill ok">главный архив</span></div>
             <div>
-              <h3>Опубликованный дизайн-индекс</h3>
+              <h3>Опубликованный архив стилей дизайна</h3>
               <p class="summary">Опубликованные визуальные направления с переключаемыми превью прошлых вариантов.</p>
             </div>
             <div class="actions">
@@ -3082,12 +3468,12 @@
             <span class="path">eppelas.github.io/aim-web-design-index/</span>
           </div>
           <div class="archive-browser" aria-label="Скриншоты прошлых дизайн-вариантов AIM Website">
-            <button class="card-media archive-preview" id="archive-preview-button" type="button" data-src="local-preview/site-hub-screenshots/design-index-desktop.png" data-title="Опубликованный дизайн-индекс" data-caption="Локальный скриншот /style-index/ с карточками опубликованных legacy-направлений.">
-              <img id="archive-preview-image" src="local-preview/site-hub-screenshots/design-index-desktop.png" alt="Скриншот опубликованного дизайн-индекса AIM" loading="lazy" />
+            <button class="card-media archive-preview" id="archive-preview-button" type="button" data-src="local-preview/site-hub-screenshots/design-index-desktop.png" data-title="Опубликованный архив стилей дизайна" data-caption="Локальный скриншот /style-index/ с карточками опубликованных legacy-направлений.">
+              <img id="archive-preview-image" src="local-preview/site-hub-screenshots/design-index-desktop.png" alt="Скриншот опубликованного архива стилей дизайна AIM" loading="lazy" />
             </button>
             <div class="archive-thumbs">
-              <button class="archive-thumb" type="button" aria-selected="true" data-gallery-src="local-preview/site-hub-screenshots/design-index-desktop.png" data-gallery-title="Опубликованный дизайн-индекс" data-gallery-caption="Локальный скриншот /style-index/ с карточками опубликованных legacy-направлений.">
-                <img src="local-preview/site-hub-screenshots/design-index-desktop.png" alt="Миниатюра дизайн-индекса AIM" loading="lazy" />
+              <button class="archive-thumb" type="button" aria-selected="true" data-gallery-src="local-preview/site-hub-screenshots/design-index-desktop.png" data-gallery-title="Опубликованный архив стилей дизайна" data-gallery-caption="Локальный скриншот /style-index/ с карточками опубликованных legacy-направлений.">
+                <img src="local-preview/site-hub-screenshots/design-index-desktop.png" alt="Миниатюра архива стилей дизайна AIM" loading="lazy" />
               </button>
               <button class="archive-thumb" type="button" aria-selected="false" data-gallery-src="local-preview/site-hub-screenshots/legacy-style-29-kampong.png" data-gallery-title="Style 29 — kampong organic type" data-gallery-caption="Один из прошлых опубликованных вариантов дизайна AIM Website.">
                 <img src="local-preview/site-hub-screenshots/legacy-style-29-kampong.png" alt="Миниатюра Style 29 kampong organic type" loading="lazy" />
@@ -3112,19 +3498,19 @@
         </article>
         <article class="card dark wide index-card design-iteration-card" id="design-archive-first-iteration" data-search-item>
           <div>
-            <div class="label-row"><span class="pill info">первая итерация</span><span class="pill">dump styles</span></div>
+            <div class="label-row"><span class="pill info">Elements Library</span><span class="pill">Соня</span></div>
             <div>
-              <h3>Visual Elements Library</h3>
-              <p class="summary">Первая большая dump-style галерея: 400 процедурных и математических visual states, пронумерованных от 001 до 400 и разложенных по 20 категориям. Это архив визуальных зерен и механик, а не готовых страниц.</p>
+              <h3>Архив нарисованных элементов</h3>
+              <p class="summary">Elements Library: 400 отдельных визуальных элементов и экспериментов в 20 категориях. Большинство работ сделано Соней.</p>
             </div>
             <div class="actions">
-              <a class="action" href="https://eppelas.github.io/visual-elements-library/" target="_blank" rel="noopener noreferrer">открыть галерею</a>
+              <a class="action" href="https://eppelas.github.io/visual-elements-library/" target="_blank" rel="noopener noreferrer">открыть Elements Library</a>
               <a class="action" href="https://github.com/eppelas/visual-elements-library" target="_blank" rel="noopener noreferrer">GitHub-репозиторий</a>
             </div>
             <span class="path">eppelas/visual-elements-library · 400 generative states</span>
           </div>
-          <button class="card-media" type="button" data-src="local-preview/site-hub-screenshots/visual-elements-library-preview.png" data-title="Visual Elements Library" data-caption="Первая большая style dump-галерея: 400 генеративных visual states в 20 категориях.">
-            <img src="local-preview/site-hub-screenshots/visual-elements-library-preview.png" alt="Скриншот Visual Elements Library с карточками генеративных стилей" loading="lazy" />
+          <button class="card-media" type="button" data-src="local-preview/site-hub-screenshots/visual-elements-library-preview.png" data-title="Архив нарисованных элементов" data-caption="Elements Library: 400 визуальных элементов и экспериментов в 20 категориях; большинство сделано Соней.">
+            <img src="local-preview/site-hub-screenshots/visual-elements-library-preview.png" alt="Скриншот Elements Library — архива нарисованных элементов" loading="lazy" />
           </button>
         </article>
         <article class="card wide index-card design-iteration-card" id="design-blocks-lab" data-search-item>
@@ -3327,6 +3713,7 @@
         qa: 'qa',
         sonya: 'qa',
         surikat: 'qa',
+        tikhon: 'qa',
         legacy: 'design',
         'design-archive': 'design',
       };

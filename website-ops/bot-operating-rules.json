@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-17",
+  "updatedAt": "2026-08-19",
   "sourceOfTruth": "website-ops/bot-operating-rules.json",
   "rules": [
     {
@@ -102,10 +102,11 @@
       "title": "Linear and product-rule discipline",
       "bot": "Surikat Vasily",
       "area": "linear",
-      "status": "active",
-      "summary": "Real bug reports go to Linear with Telegram source evidence and source_key dedupe. Product/payment answers must use website-ops/product-rules.json and product-rules.md, not memory or improvised chat logic.",
+      "status": "action-required",
+      "summary": "Before live ticket intake, reconnect the bot from the current AIM Website Linear project to the intended destination project. Changing LINEAR_API_KEY alone does not switch projects: update LINEAR_PROJECT_ID and verify the matching team, state, and label IDs, then confirm the route with a Telegram-created test issue. Real bug reports must keep Telegram source evidence and source_key dedupe. Product/payment answers must use website-ops/product-rules.json and product-rules.md, not memory or improvised chat logic.",
       "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/linear-routing.md",
       "checks": [
+        "Do not enable normal bug intake until a test issue lands in the intended Linear project, team, state, and label.",
         "If LINEAR_API_KEY is missing, save to pending queue and do not drop the report.",
         "GitHub/GitHub Pages draft links are excluded surfaces unless the same issue is reproduced on staging/production.",
         "Payment discount logic must match product-rules.json."
@@ -154,12 +155,26 @@
       ]
     },
     {
+      "id": "shared-surikat-weekly-long-memory",
+      "title": "Недельная накопительная память Сурикатов",
+      "bot": "Surikat Vasily + Sonya",
+      "area": "memory",
+      "status": "active",
+      "summary": "Василий (Cloud Run 00019) и Соня (Cloud Run 00064) раз в семь дней обновляют через Gemini накопительную текстовую память. Обновление лениво запускается в фоне при первом сообщении после истечения срока и не задерживает ответ. Предыдущая сводка передаётся модели как основа, поэтому подтверждённые наблюдения накапливаются, а не перезаписываются с нуля. Текущее сообщение всегда важнее памяти при конфликте.",
+      "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/src/telegram-bug-intake.mjs; Bots/Telegram Design Taste Bot - Sonya/src/telegram-design-taste-bot.mjs",
+      "checks": [
+        "Соня сжимает оценки и разговоры: устойчивые вкусовые паттерны, причины высоких и низких оценок, направления keep/avoid и договорённости.",
+        "Василий сжимает хвост аудита: повторяющиеся проблемы, созданные Linear-тикеты, стиль общения владельца, постоянные просьбы и ложные срабатывания.",
+        "Сводка хранится примерно в пределах 2K символов и добавляется в основные рабочие промпты; технические вызовы вроде анализа медиа не обязаны получать этот контекст."
+      ]
+    },
+    {
       "id": "sonya-design-memory",
       "title": "Sonya ratings become generator memory",
       "bot": "Surikat Sonya",
       "area": "design-feedback",
       "status": "active",
-    "summary": "Sonya sends only revision-bound, QA- and visual-audit-passed review artifacts, collects 0-10 owner ratings, writes the design feedback registry, mirrors fresh state/catalog surfaces to GCS for Cloud Run, and appends keep/change/avoid/promote instructions for future generators.",
+      "summary": "Sonya sends only revision-bound, QA- and visual-audit-passed review artifacts, collects 0-10 owner ratings, writes the design feedback registry, mirrors fresh state/catalog surfaces to GCS for Cloud Run, and appends keep/change/avoid/promote instructions for future generators.",
       "sourceOfTruth": "website-ops/design-feedback-rules.md",
       "checks": [
         "0 is hard reject; 1-3 rejected; 4-6 weak; 7-8 promising; 9-10 strong.",
@@ -173,45 +188,143 @@
       ]
     },
     {
-      "id": "freshness-surikat-team-reconciliation",
-      "title": "Freshness Surikat reconciles the public team monthly",
-      "bot": "Freshness Surikat (public name TBD)",
-      "area": "content-freshness",
-      "status": "specified-local",
-      "summary": "Once per month, show one neutral list of the team names currently published on the site and ask whether the list and spelling are current. Omit Ira and Sasha from the list entirely. Do not single out individuals, infer arrivals or departures from chat activity, or propose adding/removing a named employee.",
+      "id": "tikhon-role-boundary",
+      "title": "Тихон сторожит правдивость сайта, а не баги и не дизайн",
+      "bot": "Сурикат Тихон",
+      "area": "role",
+      "status": "live-manual-runs",
+      "summary": "Третий сурикат следит за тем, остаются ли утверждения сайта правдой: идёт ли ещё набор, тот ли состав команды опубликован, ведут ли повторяющиеся ссылки туда, куда обещает текст. Он не заводит второй баг-трекер и не оценивает дизайн: подтверждённая поломка уходит Василию в Linear, вкус остаётся у Сони. Сайт он молча не меняет — результат это дедуплицированный change set с источниками и датами. Статус на 19.08.2026: все шесть секретов настроены, 18.08 прошло пять успешных прогонов Action, владельцу уходят ответы в Telegram, состояние коммитится в ветку tikhon-state.",
       "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
       "checks": [
-        "Do not mention Ira or Sasha in the monthly roster question.",
-        "Use exactly one neutral roster-level question, not separate questions or judgments about individuals.",
-        "Working-chat context must not create named add/remove suggestions or employee activity scoring."
+        "Публичное имя — Сурикат Тихон, техническое имя пакета — website-freshness-bot; весь код и доки лежат в Bots/Website Freshness Bot/.",
+        "Рабочие чаты он не читает, краулера и LLM у него нет: снимок состояния собирается из настроенных URL и discovery-корней.",
+        "В tikhon-state лежат три change set в статусе proposed (update-hero-card, promote-learning-row, replace-learning-row) и три обработанных Telegram update ID."
       ]
     },
     {
-      "id": "freshness-surikat-lab-lifecycle",
-      "title": "Freshness Surikat owns the lab recruitment lifecycle",
-      "bot": "Freshness Surikat (public name TBD)",
+      "id": "tikhon-github-actions-runtime",
+      "title": "Тихон живёт в GitHub Actions; расписание ещё не включено",
+      "bot": "Сурикат Тихон",
+      "area": "runtime",
+      "status": "live-manual-runs",
+      "summary": "Один workflow .github/workflows/tikhon-freshness.yml с cron 0 7 * * * (10:00 Europe/Moscow) и понедельничной сводкой. Telegram читается через getUpdates long polling внутри того же прогона: webhook не ставится, Cloud Run и отдельный сервер не нужны. Важно: workflow и код бота есть только в ветке agent/tikhon-github-actions, а GitHub запускает schedule исключительно с дефолтной ветки. Пока ветка не влита в main, ежедневный прогон не срабатывает и Тихон работает только по ручному workflow_dispatch.",
+      "sourceOfTruth": "Bots/Website Freshness Bot/GITHUB_ACTIONS_SETUP.md",
+      "checks": [
+        "18.08.2026 прошло пять успешных ручных прогонов (19:24–22:17 UTC); автоматических запусков по расписанию не было ни одного.",
+        "Прогоны сериализованы concurrency-группой surikat-tikhon-state; без секретов workflow сознательно пропускает прогон и пишет причину в step summary.",
+        "Telegram webhook для этого token ставить нельзя: один token означает long polling из Actions."
+      ]
+    },
+    {
+      "id": "tikhon-owner-only-commands",
+      "title": "Тихон отвечает только владельцу и только на пять команд",
+      "bot": "Сурикат Тихон",
+      "area": "telegram",
+      "status": "live-manual-runs",
+      "summary": "Allowlist — numeric user/chat ID владельца; сообщения из групп и чужих личек игнорируются без ответа. Команды: «проверь», «покажи <id>», «описание <id> <текст>», «применить <id>», «отмена <id>». Обычный вопрос вроде «расскажи подробнее, что именно изменится?» не запускает правку: Тихон отвечает разбором активного change set — источники, точные действия и следующая безопасная команда.",
+      "sourceOfTruth": "Bots/Website Freshness Bot/src/tikhon-team-runtime.mjs",
+      "checks": [
+        "«описание <id> <текст>» только сохраняет текст владельца для будущего review; публикацию Тихон не делает.",
+        "Если активного change set нет, он просит написать «проверь», а не придумывает план.",
+        "Разбор и ответы детерминированные: LLM в этом контуре не участвует."
+      ]
+    },
+    {
+      "id": "tikhon-pr-only-write-path",
+      "title": "Единственная запись Тихона — ветка и PR после «применить»",
+      "bot": "Сурикат Тихон",
+      "area": "write-path",
+      "status": "live-manual-runs",
+      "summary": "«применить <id>» сначала повторно проверяет фингерпринты источников и только потом разрешает Action создать одну ветку tikhon/<change-set-id> и один PR в eppelas/aimindset-main. Merge, deploy, удаление и локальная запись на маке недоступны. GitHub App Surikat Tikhon установлен только на этот репозиторий с правами Contents и Pull requests read/write; Actions, secrets, администрирование и другие репозитории — no access.",
+      "sourceOfTruth": "Bots/Website Freshness Bot/config/team-runtime.json",
+      "checks": [
+        "На 19.08.2026 PR ещё ни разу не создавался: в прогонах шаги создания токена App и PR пропущены, потому что ни один change set не подтверждён командой «применить».",
+        "Правки ограничены whitelist полей: видимость, заголовок и дата верхних карточек и заголовок, дата, описание, ссылка, CTA строки «Обучения».",
+        "Неподтверждённый источник или несовпадение ожидаемого HTML превращаются в вопрос владельцу, а не в запись."
+      ]
+    },
+    {
+      "id": "tikhon-lab-lifecycle",
+      "title": "Жизненный цикл набора: сезон до страницы, снятие через 7 дней после старта",
+      "bot": "Сурикат Тихон",
       "area": "lab-freshness",
-      "status": "specified-local",
-      "summary": "Track each lab from chat-known planning through published page and recruitment removal. Before a page exists, propose a nearest-lab listing with season and year only. Once a semantically valid lab page is discoverable through sitemap, internal link, configured route, or confirmed chat URL, read its current start date and remove every enrollment-list mention exactly seven calendar days after start. A date change recomputes the deadline. The lab page itself may remain as current, waitlist, recap, or archive.",
+      "status": "live-manual-runs",
+      "summary": "Пока страницы нет, лаборатория показывается только сезоном и годом («ближайшая лаборатория — осень 2026»), а точные даты из чата хранятся как неподтверждённые свидетельства. Когда страница найдена в sitemap, внутренней ссылке, настроенном маршруте или подтверждённой ссылке из чата, Тихон семантически проверяет, что это страница лаборатории, извлекает название, даты и состояние CTA и ставит срок снятия набора: дата старта плюс семь календарных дней. Смена даты старта пересчитывает срок. Прошедшая дата не означает удаление страницы: она может стать текущим потоком, листом ожидания, итогами или архивом.",
       "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
       "checks": [
-        "S26 is currently linked from the staging homepage recruitment surface at /labs-custom/s26/ with startDate 2026-08-03; the current recruitment-removal checkpoint is 2026-08-10.",
-        "Treat page discovery as site/sitemap/crawl discovery; do not claim Google index status without search-engine evidence.",
-        "Deduplicate all homepage and selling-surface enrollment mentions into one obligation with every source location."
+        "Одна лаборатория, упомянутая в нескольких местах, даёт одно обязательство со списком всех мест, а не пять сообщений.",
+        "Канонической поверхностью набора считается ссылка из действующего блока набора на главной; похожие страницы остаются связанными, но не подменяют канонический URL по совпадению slug.",
+        "Обнаружение страницы — это факт сайта, sitemap или краула, а не подтверждение индексации поисковиком. Первым отслеживаемым объектом был S26: старт 2026-08-03, контрольная дата снятия 2026-08-10."
       ]
     },
     {
-      "id": "freshness-surikat-link-watch",
-      "title": "Freshness Surikat deduplicates recurring link drift",
-      "bot": "Freshness Surikat (public name TBD)",
-      "area": "link-freshness",
-      "status": "specified-local",
-      "summary": "Check recurring and changeable links at least weekly. Evaluate HTTP status, final redirect target, visible link meaning, and repeated use across pages. One destination problem creates one obligation listing every occurrence instead of chat noise or duplicate tickets.",
+      "id": "tikhon-learning-catalog-and-hero",
+      "title": "Строки «Обучения» постоянные, верхних карточек ровно две",
+      "bot": "Сурикат Тихон",
+      "area": "catalog",
+      "status": "live-manual-runs",
+      "summary": "Каждая строка блока «Обучение» — постоянное направление: завершённый поток возвращает свою строку в waitlist, но не удаляет её. Верхние hero-карточки от каталога независимы: это две именованные позиции — «сейчас идёт набор» (только при опубликованном CTA) и «ближайшие лаборатории» (только при подтверждённой будущей записи каталога Learn), а не поиск карточек по старому названию. Тихон читает module bundle публичного каталога learn.aimindset.org, отбрасывает завершённые и прошедшие записи и проверяет страницу ближайшей будущей лаборатории.",
+      "sourceOfTruth": "Bots/Website Freshness Bot/config/team-runtime.json",
+      "checks": [
+        "Сейчас каталог подтверждает F26 (5 октября — 1 ноября 2026): это даёт дату для hero и строки «Обучения», а CTA остаётся waitlist, пока отдельная страница не подтвердит открытый набор.",
+        "Health и AI-native уже в конфигурации; Product and Design остаётся waitlist, пока нет опубликованного AIM URL для этого направления.",
+        "Новая опубликованная страница без уверенной связи с существующим направлением — вопрос владельцу, а не выдуманное сопоставление."
+      ]
+    },
+    {
+      "id": "tikhon-team-reconciliation",
+      "title": "Состав команды сверяется раз в месяц одним нейтральным вопросом",
+      "bot": "Сурикат Тихон",
+      "area": "content-freshness",
+      "status": "live-manual-runs",
+      "summary": "Раз в 30 дней Тихон показывает один нейтральный список опубликованных на сайте имён и задаёт один вопрос: «Команда на сайте: … Список и написание актуальны?». Иру и Сашу в этот список не включает вообще. Он не оценивает людей по отдельности, не выводит из переписки, кто пришёл, ушёл или давно не появлялся, и не предлагает добавить или убрать конкретного сотрудника.",
       "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
       "checks": [
-        "A 200 response is not sufficient when the final redirect target or semantic destination changed.",
-        "Keep source locations and timestamps as evidence.",
-        "Hand confirmed site defects to Vasily/Linear rather than creating a parallel bug tracker."
+        "Ира и Саша не упоминаются в месячном вопросе. Расхождение: в коде reviewCadenceDays=30, а владелец в описании функционала называет 60 дней — интервал нужно подтвердить.",
+        "Ровно один вопрос уровня списка, без отдельных вопросов и суждений о людях.",
+        "Рабочий чат может помочь выбрать спокойный момент для сверки, но не превращается в рейтинг активности сотрудников."
+      ]
+    },
+    {
+      "id": "tikhon-link-watch",
+      "title": "Повторяющиеся ссылки проверяются еженедельно по смыслу",
+      "bot": "Сурикат Тихон",
+      "area": "link-freshness",
+      "status": "live-manual-runs",
+      "summary": "Повторяющиеся и периодически меняющиеся ссылки проверяются не реже раза в неделю. Важен не только HTTP-ответ, но и конечный адрес после редиректов, текст ссылки и смысловое назначение: «записаться на весенний поток», ведущее на прошлогоднюю страницу, — это проблема при полностью рабочем 200. Одинаковая ссылка в нескольких местах создаёт одно обязательство с перечнем всех мест.",
+      "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
+      "checks": [
+        "Ответ 200 недостаточен, если изменился конечный адрес редиректа или смысл назначения.",
+        "Места-источники и даты сохраняются как доказательства.",
+        "Подтверждённые дефекты сайта передаются Василию/Linear вместо параллельного трекера."
+      ]
+    },
+    {
+      "id": "tikhon-waitlist-metrika",
+      "title": "Waitlist приходит через Метрику, а не через сервер",
+      "bot": "Сурикат Тихон",
+      "area": "waitlist",
+      "status": "awaiting-site-release",
+      "summary": "Каждый ежедневный прогон читает HTML живой главной aimindset-main.web.app и проверяет контракт формы: форма существует, Telegram обязателен, у каждой кнопки есть явные data-waitlist-topic и data-waitlist-code, payload Метрики несёт waitlist.topic, product_code, имя поля и частичный ввод, а в общем счётчике лабораторий 106857835 заведены JavaScript-цели waitlist_input_started (599119093) и waitlist_contact_entered (599119094). Раз в сутки Action выгружает из Logs API три последних завершённых московских дня (перекрытие ради поздних визитов) и присылает владельцу только новые вводы.",
+      "sourceOfTruth": "Bots/Website Freshness Bot/src/tikhon-metrika-logs.mjs",
+      "checks": [
+        "Проверка не имитирует заявку посетителя и не отправляет лид через Василия или Cloud Run.",
+        "На 19.08.2026 в состоянии ноль фингерпринтов событий: живой HTML всё ещё отдаёт старый relay без полного контракта Метрики. Тихон честно сообщает об этой проблеме и не выдаёт отсутствие события за отсутствие лида; отчёт появится после reviewed release канонического v5-исходника.",
+        "Сбой контракта даёт одно дедуплицированное review-сообщение владельцу, а не поток алертов."
+      ]
+    },
+    {
+      "id": "tikhon-state-privacy",
+      "title": "В ветке tikhon-state нет ни токенов, ни личных данных",
+      "bot": "Сурикат Тихон",
+      "area": "privacy",
+      "status": "live-manual-runs",
+      "summary": "Состояние живёт в защищённой ветке tikhon-state (state/tikhon-state.json) и содержит только фингерпринты источников, обработанные Telegram update ID, change sets и короткий audit-log. Токены, тексты сообщений, chat ID, имена и частичные вводы из формы туда не попадают: от Метрики сохраняются только хэши уже отправленных событий.",
+      "sourceOfTruth": "Bots/Website Freshness Bot/src/tikhon-team-runtime.mjs",
+      "checks": [
+        "Объёмы ограничены: 500 последних update ID, 100 change sets, 2000 фингерпринтов Метрики, 500 записей журнала.",
+        "GITHUB_TOKEN семейного репозитория пишет только эту state-ветку; токен GitHub App создаётся временно и только под одобренный PR.",
+        "Конкурентные прогоны Action сериализованы, чтобы состояние не разъезжалось."
       ]
     },
     {
@@ -220,12 +333,12 @@
       "bot": "AIM Site Agent Evaluation",
       "area": "qa",
       "status": "active",
-      "summary": "The black-box QA worker checks production/staging links, CTA, screenshots, blank bands, dates, and agent-readability. Vasily is the Telegram dispatcher that can summarize or route those findings.",
+      "summary": "Black-box QA worker открывает production, staging и AI Native как внешний посетитель: собирает маршруты из конфига, sitemap и внутренних ссылок, проверяет ссылки и назначения CTA, ищет устаревшие даты, проверяет agent-readability и снимает визуальные baseline в Chromium, Firefox и WebKit. Результат — reports/latest/report.json, summary.md и дашборды по поверхностям. Связь с Василием односторонняя: он читает готовый JSON, а QA-агент его не вызывает и команд от него не получает.",
       "sourceOfTruth": "AIM Site Agent Evaluation/README.md",
       "checks": [
-        "QA reports are read-only and should not edit the website.",
-        "High-severity findings fail the QA run and should be visible in reports/latest.",
-        "Manual or scheduled QA does not replace human review before push/deploy."
+        "Быстрый owner-аудит Василия из Telegram — это ограниченный обход HTML и ссылок, а не CLI QA-репозитория: он не создаёт report.json, baseline, Playwright-скриншоты или dashboard.",
+        "Полного transaction runner, который кликает CTA, заполняет форму и подтверждает оплату, в текущем src/ нет: проверяются ссылки и их назначения.",
+        "QA findings не маршрутизируются в Linear автоматически: Linear появляется через intake и решение Василия."
       ]
     },
     {
@@ -241,6 +354,48 @@
         "Do not publish remote changes without the required review/push authorization path.",
         "Every meaningful bot rule or architecture change must update website-ops/bot-operating-rules.json first; the Website Hub summary is regenerated from that source by local-preview/sync-bot-operating-rules-summary.mjs and the local preview auto-sync.",
         "Keep bot behavior changes synchronized across code, README/runtime docs, update rules, Hub, and TASK_VERIFICATION_CANVAS.md."
+      ]
+    },
+    {
+      "id": "vasily-qa-status-answer-broken",
+      "title": "Ответ Василия о состоянии сайта сейчас без цифр",
+      "bot": "Surikat Vasily",
+      "area": "qa",
+      "status": "action-required",
+      "summary": "Задумано: на вопрос «что там с сайтом?» Василий отвечает свежими цифрами последнего QA-прогона — сколько страниц проверено, сколько находок, какие критичные. Сейчас это не работает: в production-конфигурации Cloud Run не задан BOT_QA_REPORT_PATH и нет облачного источника report.json, свежий отчёт живёт только на маке. Фикс: QA-раннер публикует report.json в vasily-state, Василий читает его при гидрации.",
+      "sourceOfTruth": "Bots/AIM Site QA Agent/QA-INVENTORY.md",
+      "checks": [
+        "Пока облачного отчёта нет, Василий отвечает fallback-текстом и не имеет права утверждать, что полный visual QA выполнен.",
+        "Один reports/latest/report.json перезаписывается последним режимом: выбирать отдельный latest для production, staging или AI Native Василий не умеет.",
+        "Автоматического канала «каждый finding → Василий → Linear» нет намеренно: один неудачный прогон не должен молча создать десятки задач."
+      ]
+    },
+    {
+      "id": "vasily-ownership-and-autonomy",
+      "title": "Василий живёт на личных доступах владельца",
+      "bot": "Surikat Vasily",
+      "area": "ownership",
+      "status": "action-required",
+      "summary": "Cloud Run работает в личном облаке владельца на её кредитах; Telegram token и Linear API-ключ тоже её. Деплой привязан к маку. В репозиторий ai-mindset-org/surikat-family перенесены код, конфиги, доки, launchd-plists, cloud-run README и env.production.yaml, self-тесты. Намеренно не в гите: секреты (Secret Manager/Keychain) и локальное состояние data/, которое живёт в GCS.",
+      "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/cloud-run/README.md",
+      "checks": [
+        "При потере мака Telegram token восстанавливается через BotFather, всё остальное поднимается из GitHub, Secret Manager и GCS.",
+        "Опционально: GitHub Action deploy-on-push в surikat-family — нужен ключ deploy-SA в GitHub Secrets.",
+        "Перенос на командный биллинг и командные ключи — отдельная незакрытая задача."
+      ]
+    },
+    {
+      "id": "sonya-paused-status",
+      "title": "Соня приостановлена на ~80% готовности",
+      "bot": "Surikat Sonya",
+      "area": "status",
+      "status": "paused",
+      "summary": "Соня выключена не из-за поломки. Её идея — понять общий вкус команды, а для этого команда должна регулярно реагировать на то, что она приносит; без этого копилка вкуса не набирается. Дополнительно требуют доработки её собственная стилистика и research/discovery pipelines. Она жила на Gemini и Google Cloud, поэтому при переносе нужен новый биллинг.",
+      "sourceOfTruth": "Bots/Telegram Design Taste Bot - Sonya/README.md",
+      "checks": [
+        "Дашборд с вариантами элементов и главной остаётся полезным артефактом: варианты можно доводить и брать на сайт.",
+        "Возобновление имеет смысл только вместе с договорённостью команды регулярно оценивать присланное.",
+        "Перед перезапуском нужен отдельный биллинг Google Cloud и доработка стилистики и discovery."
       ]
     }
   ]

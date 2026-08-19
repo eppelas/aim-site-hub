@@ -1,8 +1,12 @@
 # Правила аналитики AIM Website
 
-Updated: 2026-06-30
+Updated: 2026-07-23
 
-Это правила чтения отчетов по AI Native, payment flow и staging-зеркалу. Не использовать их как карту всей production-аналитики AIM, пока такой workstream явно не открыт.
+Это правила чтения отчётов главной `aimindset.org`, лабораторных лендингов и общего payment flow.
+Исторический счётчик главной — `102211004`; AI Native, S26 и следующие
+лаборатории используют общий счётчик `106857835` и разделяются продуктовыми
+сегментами. Новые waitlist-вводы, которые читает Сурикат Тихон, записываются
+именно в `106857835`.
 
 ## Главное правило отчета
 
@@ -66,6 +70,28 @@ Cookie живет 180 дней на браузер/профиль/устройс
 4. Повторить отдельно для каждого регулярного места работы. Мобильный/VPN IP
    включать только если человек реально всегда работает через него.
 
+## Что размечается заново, а что переиспользуется
+
+Для каждой новой страницы лаборатории заново настраиваются:
+
+- установка общего счётчика `106857835` на самом лендинге;
+- события просмотра важных блоков этой страницы;
+- идентификаторы CTA: блок, место кнопки и `product_code` тарифа;
+- проверка Вебвизора, карты кликов, ссылок и `traffic_type`;
+- сохранённый продуктовый отчёт: `URL лендинга OR product_code оплаты`, с исключением
+  `traffic_type=internal`.
+
+Не настраиваются заново:
+
+- счётчик на общей странице `/pay`;
+- цели `pay_page_loaded`, `pay_contact_entered`, `pay_checkout_clicked`,
+  `pay_provider_redirected`, `pay_completed`, `pay_error`;
+- отправка payment-событий: `/pay` уже добавляет полученный `product_code`.
+
+UTM относятся не к странице как таковой, а к конкретной опубликованной ссылке. Для двух постов,
+двух stories или двух bot-flow нужны разные `utm_content`, даже если все ссылки ведут на один
+лендинг или один тариф.
+
 ## UTM-схема
 
 Use lowercase values.
@@ -75,7 +101,7 @@ Telegram post:
 ```text
 utm_source=telegram
 utm_medium=post
-utm_campaign=ain3
+utm_campaign=<lab_code>
 utm_content=<post_id>
 ```
 
@@ -84,7 +110,7 @@ Telegram bot:
 ```text
 utm_source=telegram
 utm_medium=bot
-utm_campaign=ain3
+utm_campaign=<lab_code>
 utm_content=<bot_or_flow_id>
 ```
 
@@ -93,7 +119,7 @@ Instagram bio:
 ```text
 utm_source=instagram
 utm_medium=bio
-utm_campaign=ain3
+utm_campaign=<lab_code>
 utm_content=bio_link
 ```
 
@@ -102,7 +128,7 @@ Instagram story:
 ```text
 utm_source=instagram
 utm_medium=story
-utm_campaign=ain3
+utm_campaign=<lab_code>
 utm_content=<story_id>
 ```
 
@@ -111,9 +137,15 @@ Email/Substack:
 ```text
 utm_source=email | substack
 utm_medium=email
-utm_campaign=ain3
+utm_campaign=<lab_code>
 utm_content=<mailing_id>
 ```
+
+Текущие значения кампании:
+
+- AI Native: `utm_campaign=ain3`;
+- S26: `utm_campaign=s26`;
+- главная AIM без привязки к лаборатории: `utm_campaign=aim_main`.
 
 ## UTM-таблица
 

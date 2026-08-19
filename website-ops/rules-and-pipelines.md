@@ -100,6 +100,7 @@ Current update surfaces:
 | Production/staging QA dashboards | `AIM Site Agent Evaluation` | Manual; biweekly Monday 07:00 UTC on even ISO weeks; monthly day 1 at 08:00 UTC |
 | DeviceCloud preflight | `AI Mindset Device Cloud QA` | Manual; monthly day 2 at 09:00 UTC |
 | Surikat Telegram intake | `Surikat Vasily` | Cloud Run webhook while service is active; local LaunchAgent is rollback only |
+| Team, labs, and recurring-link freshness | `Сурикат Тихон` | GitHub Actions daily 10:00 Europe/Moscow; Monday 10:00 owner digest; team monthly; links weekly |
 | Bot operating rules and Website Hub sync | `AIM Site Ops Sync` | On every meaningful bot runtime/behavior change; local preview auto-sync on `/aim-site-hub/` |
 | Website Hub refresh | `AIM Site Ops Sync` | On meaningful operational/UI/doc changes |
 | Design feedback evaluation dashboard | `AIM Design Evaluation` | On every explicit design rating/rejection, every 4 hours by `aim-design-rating-evaluator`, and before new design-generation runs |
@@ -124,11 +125,58 @@ Required order:
    are refreshed.
 4. Update `TASK_VERIFICATION_CANVAS.md` with the current request/status.
 
-For Vasily, long owner-gated LLM/QA tasks and short conversational LLM replies
-are separate controls. The task path may crawl pages and then ask the LLM to
-summarize evidence; the conversational path only writes final wording after the
-semantic intent layer has already decided the message is a question/discussion,
-not a bug and not a task.
+### Freshness Surikat boundary
+
+The third Surikat has a separate functional package at
+`Bots/Website Freshness Bot/`. It owns content lifecycle, not Vasily's generic
+QA intake and not Sonya's design review. Its deterministic rules aggregate
+evidence into obligations; confirmed defects can be handed to Vasily/Linear.
+
+- Monthly team reconciliation uses one neutral list of published names and one
+  question about whether the list and spelling are current. Ira and Sasha are
+  omitted entirely. The bot does not single out people or infer/propose named
+  additions, departures, removals, or activity levels from chat context.
+- Planned labs can enter the nearest-lab list before a page exists, but only as
+  season and year. Once a semantically valid lab page is found, its latest start
+  date controls `removeRecruitmentAt = startDate + 7 calendar days`.
+- Recruitment removal applies to homepage/sidebar/selling-list mentions, not to
+  deleting the lab page. Date changes recompute the deadline.
+- A published lab can promote its matching `main-current` row from `waitlist`
+  to dates, canonical URL, CTA, and source description. An owner can send
+  `описание <id> <текст>` as a reviewable description override; `применить`
+  must recheck the evidence before a PR is made.
+- Every `main-current` learning row is a permanent direction: an ended cohort
+  returns only its own row to `waitlist` instead of being deleted. The two hero
+  slots are named positions — "enrolment open" and "next labs" — and are filled
+  from the published Learn catalogue module bundle (currently F26, 2026-10-05 —
+  2026-11-01, CTA still `waitlist`).
+- Waitlist capture is Metrika-only: each debounced input snapshot, including
+  name and partial text, is written to counter `106857835` with an explicit lab
+  topic and `product_code`. The daily Action reads the last three completed
+  Moscow days from Logs API and DMs the owner only new inputs; there is no
+  Cloud Run relay in the live path and nothing is routed through Vasily. State
+  keeps hashes only, never names or partial text.
+- Repeated link drift is deduplicated by destination/action and retains all
+  source locations.
+- The GitHub Actions runtime uses owner-only Telegram `getUpdates` polling and
+  a protected `tikhon-state` branch, so it needs no Cloud Run or webhook. An
+  explicitly confirmed change set may create a narrow PR for `main-current` in
+  `eppelas/aimindset-main`; Tikhon cannot merge, deploy, delete, or alter access.
+
+For Vasily, one semantic intent prepass should classify owner DMs and directly
+addressed owner messages before action. Long owner-gated LLM/QA tasks and short
+conversational LLM replies are separate controls. The task path may crawl pages
+and then ask the LLM to summarize evidence; the conversational path only writes
+final wording after the semantic intent layer has already decided the message is
+a question/discussion, not a bug, task, stop/resume control, or owner-rule
+update.
+Group links, UTM links, analytics notes, and edited chat notes are context only:
+they may refresh per-thread URL memory, but they must not start a crawl/audit
+unless the current owner message is in DM or directly addresses Vasily and
+semantically asks him to check, audit, review, QA, inspect, or rerun. Same-source
+Telegram edits/retries are deduped; owner stop/pause intent is semantic-first
+and pauses new LLM checks in that chat/thread for several hours unless
+explicitly resumed or rerun.
 Telegram voice/audio/video-note inputs are transcribed through Gemini/Vertex
 before that split, and the transcript is treated as the effective message text
 for routing and owner context memory.
@@ -168,8 +216,8 @@ Live Vasily health should currently expose `mode=webhook`,
 `metrikaLeadDmAllowlistCount=3`, `metrikaLeadDmManagerCount=4`, and
 `metrikaLeadDmDeliveryPaused=false`. The browser-facing lead relay `/readyz`
 should expose `leadDmDeliveryMode=dm_recipient_map`,
-`leadDmAllowlistCount=3`, `leadDmRecipientMapCount=2`,
-`leadDmActiveRecipientCount=2`, `leadDmDeliveryPaused=false`,
+`leadDmAllowlistCount=3`, `leadDmRecipientMapCount=3`,
+`leadDmActiveRecipientCount=3`, `leadDmDeliveryPaused=false`,
 `leadDmDeliveryControlSource=vasily/state/bot-rules.local.json`,
 `stateGcsEnabled=true`, and `legacyTelegramChatConfigured=false`.
 
@@ -194,6 +242,11 @@ These automations create review-only light-theme HTML prototypes before anything
 - After new homepage, element, or payment page variants are added, refresh `homepage-design-lab/assets/previews/` with `node "V3 Site Repo - aimwebsite0.5/homepage-design-lab/scripts/capture-page-design-previews.mjs"`.
 - The first manual burst created multiple variants for quick review; recurring automation should stay rare by default to avoid unnecessary local machine load.
 - Every run must write `index.html`, `README.md`, and a `manifest.json` entry that names sources, idea, borrowed formal mechanics, and what was not copied.
+- Every run must apply `website-ops/design-brand-fit-gate.md` before default
+  gallery/Sonya eligibility. A generated HTML file is only inventory until
+  technical QA passes, Brand Fit Gate passes, a screenshot exists, and the
+  manifest records how fresh research evolved the design beyond recent
+  candidates.
 - Every run that changes visible review artifacts must keep the screenshot gallery current before handoff, unless preview capture is explicitly blocked and noted.
 - Every run must apply active rejected ratings and strong negative feedback from the design feedback dashboard.
 - Do not create fake proof: no review blocks without real reviews, no archive/project cards without real links.
@@ -393,14 +446,17 @@ Current runtime truths:
   polling should not run while the webhook is active.
 - Each Telegram bot has exactly one delivery owner at a time: webhook or
   `getUpdates` polling, never both.
-- Vasily classifies addressed messages semantically before acting: visual
-  QA/full-pass/audit/check instructions are long task-mode work, concrete site
-  breakage is bug intake, and questions or discussion are conversational/silent.
+- Vasily classifies addressed owner/private messages semantically before
+  acting: visual QA/full-pass/audit/check instructions are long task-mode work,
+  concrete site breakage is bug intake, stop/resume controls pause/unpause the
+  LLM task runner, owner durable rules persist, and questions or discussion are
+  conversational/silent.
 - Telegram `text_link` entity URLs count as task URLs even when the visible text
   only shows a short label such as `ai-native`.
 - Vasily keeps conservative URL-backed aliases per Telegram chat/thread: if a
   linked URL is labelled `ai-native` or another explicit name, later owner
-  commands can refer to that name without repeating the URL.
+  commands can refer to that name without repeating the URL. Alias memory is not
+  task authorization by itself.
 - In Vasily/QA wording, `QA сайта` points to the AIM Site Agent Evaluation
   dashboard. AI Native visual QA should become a separate dashboard page linked
   from the top choose-site selector after the local QA/Codex runner is wired.

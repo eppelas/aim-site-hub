@@ -87,15 +87,24 @@
         padding: 1px 3px;
       }
       #content .code-copy {
-        border: 1px solid var(--soft); border-radius: 999px;
+        position: relative; display: inline-grid; place-items: center;
+        width: 30px; height: 30px; padding: 0;
+        border: 1px solid var(--soft); border-radius: 7px;
         background: var(--bg); color: var(--ink); cursor: pointer;
-        font: 700 10px/1.1 ui-monospace, SFMono-Regular, Menlo, monospace;
-        letter-spacing: 0.04em; padding: 7px 10px;
       }
+      #content .code-copy::before,
+      #content .code-copy::after {
+        content: ''; position: absolute; width: 10px; height: 12px;
+        border: 1px solid currentColor; border-radius: 2px;
+      }
+      #content .code-copy::before { transform: translate(-2px, 2px); }
+      #content .code-copy::after { transform: translate(2px, -2px); background: var(--bg); }
       #content pre > .code-copy { position: absolute; top: 10px; right: 10px; }
-      #content td > .code-copy { margin-left: 8px; padding: 5px 8px; }
+      #content td > .code-copy { margin-left: 8px; vertical-align: middle; }
       #content .code-copy:hover,
       #content .code-copy:focus-visible { border-color: #9be33a; color: #9be33a; }
+      #content .code-copy.is-copied { border-color: #9be33a; color: #9be33a; }
+      #content .code-copy.is-copy-error { border-color: var(--accent); color: var(--accent); }
       #content img {
         display: block; width: 100%; height: auto; margin: 14px 0 28px;
         border: 1px solid var(--soft); border-radius: 12px;
@@ -151,9 +160,37 @@
       #content.payment-guide table { margin: 24px 0 40px; }
       #content.payment-guide th,
       #content.payment-guide td { padding: 10px 12px; line-height: 1.55; }
+      #content.payment-guide #faq {
+        font-size: 26px; margin: 3.2em 0 0.9em;
+        color: var(--ink); border-left: 0; padding-left: 0;
+      }
+      #content.payment-guide .faq-list {
+        display: grid; gap: 16px; margin: 0 0 52px;
+      }
+      #content.payment-guide .faq-item {
+        margin: 0; padding: 24px 26px 25px;
+        border: 1px solid var(--soft); border-left: 3px solid var(--ok);
+        border-radius: 12px; background: rgba(255, 250, 240, 0.035);
+      }
+      #content.payment-guide .faq-question {
+        display: block; margin: 0 0 13px;
+        color: var(--ink); font-size: 17px; line-height: 1.42;
+      }
+      #content.payment-guide .faq-question::before,
+      #content.payment-guide .faq-answer::before {
+        display: block; margin-bottom: 7px;
+        font-size: 9px; font-weight: 700; line-height: 1;
+        letter-spacing: 0.14em; text-transform: uppercase;
+      }
+      #content.payment-guide .faq-question::before { content: 'Вопрос'; color: var(--ok); }
+      #content.payment-guide .faq-answer {
+        display: block; max-width: 76ch;
+        color: rgba(255, 250, 240, 0.72); line-height: 1.75;
+      }
+      #content.payment-guide .faq-answer::before { content: 'Ответ'; color: var(--muted); }
       #content.payment-guide hr { border: 0; margin: 72px 0 0; }
       #content.payment-guide hr + h2 { margin-top: 0; }
-      #content.payment-guide td > .code-copy { min-height: 36px; }
+      #content.payment-guide td > .code-copy { width: 32px; height: 32px; }
       .err { color: var(--accent); }
       @media (max-width: 640px) {
         main { padding: 22px 14px 64px; }
@@ -168,7 +205,11 @@
         #content.payment-guide hr { margin-top: 54px; }
         #content.payment-guide img { margin: 22px 0 40px; }
         #content.payment-guide th, #content.payment-guide td { padding: 9px 10px; }
-        #content.payment-guide td > .code-copy { min-height: 40px; }
+        #content.payment-guide .code-copy { width: 36px; height: 36px; }
+        #content.payment-guide #faq { font-size: 23px; margin-top: 2.8em; }
+        #content.payment-guide .faq-list { gap: 12px; margin-bottom: 42px; }
+        #content.payment-guide .faq-item { padding: 19px 17px 20px; border-radius: 10px; }
+        #content.payment-guide .faq-question { font-size: 15px; margin-bottom: 12px; }
       }
     </style>
   </head>
@@ -305,7 +346,34 @@
             let tariffTable = tariffHeading?.nextElementSibling || null;
             while (tariffTable && tariffTable.tagName !== 'TABLE') tariffTable = tariffTable.nextElementSibling;
             tariffTable?.classList.add('tariff-code-table');
+            const faqHeading = content.querySelector('#faq');
+            if (faqHeading) {
+              const faqList = document.createElement('div');
+              faqList.className = 'faq-list';
+              let faqNode = faqHeading.nextElementSibling;
+              while (faqNode && !/^H[23]$/.test(faqNode.tagName)) {
+                const nextFaqNode = faqNode.nextElementSibling;
+                const question = faqNode.tagName === 'P' ? faqNode.querySelector(':scope > strong') : null;
+                if (question) {
+                  faqNode.classList.add('faq-item');
+                  question.classList.add('faq-question');
+                  const answer = document.createElement('span');
+                  answer.className = 'faq-answer';
+                  while (question.nextSibling) answer.appendChild(question.nextSibling);
+                  faqNode.appendChild(answer);
+                  faqList.appendChild(faqNode);
+                }
+                faqNode = nextFaqNode;
+              }
+              faqHeading.after(faqList);
+            }
             const copyExact = async (value, button) => {
+              const defaultLabel = button.getAttribute('aria-label') || 'Копировать код';
+              const resetState = () => {
+                button.classList.remove('is-copied', 'is-copy-error');
+                button.setAttribute('aria-label', defaultLabel);
+                button.title = defaultLabel;
+              };
               const area = document.createElement('textarea');
               area.value = value;
               area.style.position = 'fixed';
@@ -318,14 +386,17 @@
                 await navigator.clipboard.writeText(value);
               } catch (_) {
                 if (!legacyCopied) {
-                  button.textContent = 'Не скопировано';
-                  setTimeout(() => { button.textContent = 'Копировать'; }, 1600);
+                  button.classList.add('is-copy-error');
+                  button.setAttribute('aria-label', 'Не удалось скопировать');
+                  button.title = 'Не удалось скопировать';
+                  setTimeout(resetState, 1600);
                   return;
                 }
               }
-              const label = button.textContent;
-              button.textContent = 'Скопировано';
-              setTimeout(() => { button.textContent = label; }, 1200);
+              button.classList.add('is-copied');
+              button.setAttribute('aria-label', 'Скопировано');
+              button.title = 'Скопировано';
+              setTimeout(resetState, 1200);
             };
             content.querySelectorAll('pre').forEach((pre) => {
               const code = pre.querySelector('code');
@@ -333,7 +404,8 @@
               const button = document.createElement('button');
               button.type = 'button';
               button.className = 'code-copy';
-              button.textContent = 'Копировать код';
+              button.setAttribute('aria-label', 'Копировать код');
+              button.title = 'Копировать код';
               button.addEventListener('click', () => copyExact(code.textContent, button));
               pre.appendChild(button);
             });
@@ -343,8 +415,8 @@
               const button = document.createElement('button');
               button.type = 'button';
               button.className = 'code-copy';
-              button.textContent = 'Копировать';
               button.setAttribute('aria-label', `Копировать код ${value}`);
+              button.title = `Копировать код ${value}`;
               button.addEventListener('click', () => copyExact(value, button));
               code.parentElement.appendChild(button);
             });

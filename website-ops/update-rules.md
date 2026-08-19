@@ -13,7 +13,7 @@ Structured source: `website-ops/update-rules.json`
 | Production/staging QA dashboards | `AIM Site Agent Evaluation` | Manual; biweekly Monday 07:00 UTC on even ISO weeks; monthly day 1 at 08:00 UTC | GitHub Actions `site-qa.yml` | `reports/latest/*`, `reports/history/*`, GitHub Pages dashboard |
 | DeviceCloud preflight | `AI Mindset Device Cloud QA` | Manual; monthly day 2 at 09:00 UTC | GitHub Actions `device-cloud.yml` | Job summary now; provider session evidence later |
 | Surikat Telegram intake | `Surikat Vasily` | Cloud Run webhook while service is active; local LaunchAgent is rollback only | Telegram webhook to Cloud Run `aim-surikat-vasily` | Telegram reactions/questions, Linear issues, owner-gated LLM site-audit replies |
-| Team, labs, and recurring-link freshness | `Freshness Surikat` (public name TBD) | Team monthly; links weekly; labs on discovery and daily around lifecycle deadlines | Local policy engine now; future scheduler and optional authorized work-chat webhook | Deduplicated team/lab/link obligations and Vasily handoffs |
+| Team, labs, and recurring-link freshness | `Сурикат Тихон` | Daily 10:00 Europe/Moscow audit; Monday digest; team monthly; links weekly | GitHub Actions plus owner-only Telegram `getUpdates`; no server/webhook | Evidence-backed change sets, review-only PRs for `main-current`, and Vasily handoffs |
 | Bot operating rules and Website Hub sync | `AIM Site Ops Sync` | On every meaningful bot runtime/behavior change; local preview auto-sync on `/aim-site-hub/` | Manual Codex work or `node local-preview/sync-bot-operating-rules-summary.mjs` | `website-ops/bot-operating-rules.*`, Hub bot-rule cards, task ledger |
 | Website Hub refresh | `AIM Site Ops Sync` | On meaningful operational/UI/doc changes; generated summaries refreshed by local preview auto-sync | Manual Codex work or sync scripts | Local hub preview, LAN/mobile preview, task ledger |
 | Design feedback evaluation dashboard | `AIM Design Evaluation` | On every explicit design rating/rejection; automated rating evaluator every 4 hours while active; before new design-generation runs | Page Design Lab site rating, Sonya Telegram rating, manual Codex work, or Codex automation `aim-design-rating-evaluator` | Updated design feedback registry, dashboard, generator guardrails, task ledger |
@@ -120,9 +120,13 @@ Structured source: `website-ops/update-rules.json`
   acknowledged without changing behavior.
 - Owner-only tuning commands are restricted to Anca/@stavenski.
 
-### Freshness Surikat
+### Сурикат Тихон
 
-- Source package: `Bots/Website Freshness Bot/`.
+- Source package: `Bots/Website Freshness Bot/`; public name: `Сурикат Тихон — хранитель свежести сайта`.
+- GitHub Actions runs the audit and owner-DM command mailbox daily at 10:00
+  Europe/Moscow and sends a Monday digest at 10:00. It uses Telegram
+  `getUpdates`, not a server/webhook; unanswered questions stay open without
+  extra polling or reminders.
 - Once per month, show one neutral list of published team names and ask whether
   the list and spelling are current. Omit Ira and Sasha from the list entirely.
 - Do not ask separate questions about individuals and do not infer or propose
@@ -130,18 +134,37 @@ Structured source: `website-ops/update-rules.json`
 - Before a laboratory page exists, propose a nearest-lab listing with season and
   year only. Once the page is discoverable, use its latest confirmed start date
   and schedule removal from every recruitment list for start plus seven days.
-- S26 is already linked from the staging homepage at `/labs-custom/s26/`; its current
-  start is 3 August 2026 and its current recruitment-removal checkpoint is
-  10 August 2026. Recompute this if the source date changes.
+- S26 was the first tracked object: linked from the staging homepage at
+  `/labs-custom/s26/`, start 3 August 2026, recruitment-removal checkpoint
+  10 August 2026. Any source date change recomputes such a deadline.
 - Page discovery means sitemap/internal-link/configured-route/confirmed-chat
   discovery plus semantic lab classification. It is not proof of Google index
   status.
 - Recurring links are checked for status, final redirect destination, visible
   meaning, and repeated occurrences. One problem becomes one obligation with all
   source locations.
-- The checked-in implementation is monitoring/proposal-only until a Telegram
-  token, scheduler, durable state, work-chat scope, and any Sanity write contract
-  are explicitly configured.
+- State is committed only to the protected `tikhon-state` branch. Owner commands
+  can create a narrow content branch and PR for `main-current`; the dedicated
+  GitHub App cannot merge or publish. BotFather, owner allowlist and GitHub App
+  secrets must be configured before the first live run.
+- When a published lab confirms enrolment, its matching `main-current` row can
+  move from `waitlist` to source-backed dates, canonical URL, CTA, and
+  description. `описание <id> <текст>` supplies a reviewable owner override;
+  `применить <id>` rechecks the sources before any PR is created.
+- Every learning row is a permanent direction: an ended cohort returns only its
+  own row to `waitlist`. The two hero slots are named positions — "enrolment
+  open" and "next labs" — filled from the published Learn catalogue module
+  bundle (currently F26, 5 October — 1 November 2026, CTA still `waitlist`).
+- Waitlist capture is Metrika-only. Each debounced input snapshot, including
+  name and partial text, is written to counter `106857835` with an explicit lab
+  topic and `product_code`; the counter needs the `waitlist_input_started`
+  (`599119093`) and `waitlist_contact_entered` (`599119094`) JavaScript goals.
+  The daily Action reads the last three completed Moscow days from Logs API and
+  DMs the owner only new inputs. No Cloud Run relay is in the live path, nothing
+  is routed through Vasily, and state keeps hashes only — never names or partial
+  text. Until the canonical v5 homepage source is released, the live HTML still
+  serves the old relay, and Tikhon reports that as a problem instead of claiming
+  there are no leads.
 
 ### Bot Operating Rules Sync
 
