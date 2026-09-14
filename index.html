@@ -2078,8 +2078,9 @@
             <div class="label-row"><span class="pill">Wild</span><span class="pill ok">проверено на трёх страницах</span></div>
             <div>
               <h3>Wild и общие компоненты</h3>
-              <p class="summary">Главная, «Для команд» и non-profit редактируются в Google на компьютере по паролю 0281. Сохранение записывает текст в Google, запускает коммит в GitHub и публикацию обеих версий; редактор показывает подтверждённый этап и позволяет повторить синхронизацию при ошибке. Сохранение и точное восстановление исходных текстов проверены на всех трёх страницах. Публичный сайт — без редактора. Верхнее меню, футер и обучение общие; подменю принадлежит странице.</p>
+              <p class="summary">Главная, «Для команд» и non-profit редактируются в Google на компьютере после ввода пароля. Сохранение записывает текст в Google, запускает коммит в GitHub и публикацию обеих версий; редактор показывает подтверждённый этап и позволяет повторить синхронизацию при ошибке. Сохранение и точное восстановление исходных текстов проверены на всех трёх страницах. Публичный сайт — без редактора. Верхнее меню, футер и обучение общие; подменю принадлежит странице.</p>
             </div>
+            <details><summary>Пароль редактора</summary><p><code>0281</code></p></details>
             <div class="actions">
               <a class="action" href="https://aimindset-wild.web.app/" target="_blank" rel="noopener noreferrer">Google: главная</a>
               <a class="action" href="https://aimindset-wild.web.app/ai-mindset-consulting/" target="_blank" rel="noopener noreferrer">Google: для команд</a>
@@ -2089,8 +2090,11 @@
               <a class="action" href="http://172.20.10.9:4469/" target="_blank" rel="noopener noreferrer">Локально на телефоне</a>
               <a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/MANDATORY_INSTRUCTIONS.md" target="_blank" rel="noopener noreferrer">Обязательная инструкция</a>
               <a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/docs/team-handoff.md" target="_blank" rel="noopener noreferrer">Передача команде</a>
+              <a class="action" href="https://eppelas.github.io/aimindset-main/wild/release-manifest.json" target="_blank" rel="noopener noreferrer">Текущая версия</a>
+              <a class="action" href="https://github.com/eppelas/aimindset-main/actions" target="_blank" rel="noopener noreferrer">Сохранения и публикации</a>
             </div>
           </article>
+          <article class="card" id="main-current-release" data-search-item><div class="label-row"><span class="pill">Main</span></div><div><h3>Основная экспериментальная версия</h3><p class="summary">Main сохранён отдельно от Wild. V3 со своим CMS и staging — отдельная версия сайта.</p></div><div class="actions"><a class="action" href="https://aimindset-main.web.app/" target="_blank" rel="noopener noreferrer">Main в Google</a><a class="action" href="https://eppelas.github.io/aimindset-main/" target="_blank" rel="noopener noreferrer">Main на Pages</a></div></article>
           <a class="card dark wide" data-search-item href="../aimwebsite0.5/">
             <div class="label-row"><span class="pill ok">локально</span></div>
             <div>
@@ -2540,13 +2544,13 @@
 
           <!-- BOT_OPERATING_RULES_SUMMARY_START -->
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">runtime</span><span class="pill">active</span></div>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">runtime</span><span class="pill">configured-health-verified</span></div>
             <h3>Vasily Cloud Run owns Telegram delivery</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> @aim_surikat_bot is served by Cloud Run service aim-surikat-vasily in dedicated Google Cloud project aim-surikat-vasily, separate from Surikat Sonya&#039;s project. Telegram webhook delivery goes to /telegram with max_connections=1; the local launchd poller must stay disabled while the webhook is set. The old Sonya-project Vasily Cloud Run services are rollback only unless the webhook/site secrets are intentionally moved back.</li>
+              <li><strong>Check:</strong> Проверка 14.09.2026: health HTTP 200; реальная Telegram-доставка отдельно не проверялась.</li>
               <li><strong>Check:</strong> Health endpoint https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/health must report mode=webhook, genaiProvider=vertex, vertexProjectConfigured=true, audioTranscriptionEnabled=true, stateGcsEnabled=true, linearConfigured=true, metrikaLeadDmAllowlistConfigured=true, metrikaLeadDmAllowlistCount=3, metrikaLeadDmManagerCount=4, and metrikaLeadDmDeliveryPaused=false in normal delivery mode.</li>
               <li><strong>Check:</strong> Telegram getWebhookInfo must point to https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/telegram and pending_update_count should normally be 0.</li>
-              <li><strong>Check:</strong> Rollback is deleteWebhook, then launchctl enable/bootstrap ai.aim.surikat.bot.</li>
               <li><strong>Source:</strong> Bots/Telegram Bug Intake Bot - Linear/cloud-run/README.md</li>
             </ul>
           </article>
@@ -2617,13 +2621,13 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">runtime</span><span class="pill">active</span></div>
+            <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">runtime</span><span class="pill">configured-health-verified</span></div>
             <h3>Sonya Cloud Run owns design-review Telegram</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> @aim_surikat_sonya_bot runs as Cloud Run webhook aim-surikat-sonya in the Sonya Google Cloud project project-f40c3e3c-0fca-49de-96d. Local polling should not run while webhook mode is active. Sonya uses Vertex AI for the Google Cloud credits path and Cloud Storage for media/state/catalog surfaces. Cloud Run can answer in groups when addressed, but auto-review remains off and send approval remains required. Runtime Veo is configured but currently disabled/expired; the repo Dockerfile runtime has ffmpeg available for real Telegram video_note output if the owner explicitly re-enables that mode. Vasily must not be deployed into this project except as an explicit rollback.</li>
+              <li><strong>Check:</strong> Проверка 14.09.2026: health HTTP 200; реальная Telegram-доставка отдельно не проверялась.</li>
               <li><strong>Check:</strong> Live health should report mode=webhook, genaiProvider=vertex, groupChatEnabled=true, groupVideoReplyEnabled=true, autoReviewEnabled=false, requireSendApproval=true, and sashaProactiveDmEnabled=false.</li>
               <li><strong>Check:</strong> runtimeVeo should remain enabled=false and expired=true unless the owner explicitly reopens the paid media-generation window; if reopened with sendAsVideoNote=true, health must report ffmpegAvailable=true.</li>
-              <li><strong>Check:</strong> Cloud Run reads only Sonya policy-v2 review cards from GCS catalog.json/inventory.json. The local publisher runs every 30 minutes, caps hard-eligible broad inventory at 12, skips unchanged uploads, and owns scoring, bounded missing-preview capture, stale-lock cleanup, and GCS publication.</li>
               <li><strong>Source:</strong> Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md</li>
             </ul>
           </article>
@@ -2650,7 +2654,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">роль</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">роль</span><span class="pill">workflow-observed-2026-09-14</span></div>
             <h3>Тихон сторожит правдивость сайта, а не баги и не дизайн</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Третий сурикат следит за тем, остаются ли утверждения сайта правдой: идёт ли ещё набор, тот ли состав команды опубликован, ведут ли повторяющиеся ссылки туда, куда обещает текст. Он не заводит второй баг-трекер и не оценивает дизайн: подтверждённая поломка уходит Василию в Linear, вкус остаётся у Сони. Сайт он молча не меняет — результат это дедуплицированный change set с источниками и датами. Статус на 19.08.2026: все шесть секретов настроены, 18.08 прошло пять успешных прогонов Action, владельцу уходят ответы в Telegram, состояние коммитится в ветку tikhon-state.</li>
@@ -2661,10 +2665,10 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">расписание</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">расписание</span><span class="pill">workflow-observed-2026-09-14</span></div>
             <h3>Проверка раз в неделю, остальные дни — только почта</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Один workflow .github/workflows/tikhon-freshness.yml запускается ежедневно в 10:00 Europe/Moscow (cron 0 7 * * *), но делает разное: в понедельник это собственно проверка свежести с отчётом владельцу, в остальные дни — только чтение личных сообщений владельца через getUpdates и суточная выгрузка waitlist из Метрики. Если сайт не изменился, будни проходят молча. Отчёт вне понедельника приходит, только если появились правки или владелец сам попросил (ручной режим report-now). Webhook не ставится, Cloud Run и отдельный сервер не нужны.</li>
+              <li><strong>Rule:</strong> Workflow Surikat Tikhon freshness находится в ai-mindset-org/surikat-family; последний просмотренный запуск 34837509539 от 14.09.2026 завершился success. Расписание и режим следует читать в действующем workflow. Успех Action не является отдельным доказательством доставки сообщения владельцу; сообщений при ревизии не отправляли.</li>
               <li><strong>Check:</strong> Ветка влита в main 19.08.2026, поэтому schedule наконец работает: GitHub запускает cron только с дефолтной ветки.</li>
               <li><strong>Check:</strong> План, в котором одни вопросы и ни одной правки, сам по себе владельца не дёргает.</li>
               <li><strong>Check:</strong> Сбой выгрузки Метрики записывается в состояние и показывается с недельной проверкой, а не каждый день заново.</li>
@@ -2672,7 +2676,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">telegram</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">telegram</span><span class="pill">workflow-observed-2026-09-14</span></div>
             <h3>Отчёт Тихона читается сверху вниз, а согласие — это «да»</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Allowlist — numeric user/chat ID владельца; сообщения из групп и чужих личек игнорируются без ответа. Отчёт приходит четырьмя частями: верхние карточки, блок «Обучение», «что поменять» с построчным до/после и «решать вам». В первых двух частях видно и что совпало с источником, и что разошлось, и что проверить не удалось. В конце — обычный вопрос: ответ «да» (а также «давай», «ок», «применяй») подтверждает единственный предложенный план и запускает подготовку ветки и PR.</li>
@@ -2683,7 +2687,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">правки через PR</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">правки через PR</span><span class="pill">workflow-observed-2026-09-14</span></div>
             <h3>Единственная запись Тихона — ветка и PR после «применить»</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> «применить &lt;id&gt;» сначала повторно проверяет фингерпринты источников и только потом разрешает Action создать одну ветку tikhon/&lt;change-set-id&gt; и один PR в eppelas/aimindset-main. Merge, deploy, удаление и локальная запись на маке недоступны. GitHub App Surikat Tikhon установлен только на этот репозиторий с правами Contents и Pull requests read/write; Actions, secrets, администрирование и другие репозитории — no access.</li>
@@ -2694,7 +2698,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">даты лабораторий</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">даты лабораторий</span><span class="pill">workflow-observed-2026-09-14</span></div>
             <h3>Даты лабораторий на главной: сезон до страницы, снятие набора через 7 дней после старта</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Пока страницы нет, лаборатория показывается только сезоном и годом («ближайшая лаборатория — осень 2026»), а точные даты из чата хранятся как неподтверждённые свидетельства. Когда страница найдена в sitemap, внутренней ссылке, настроенном маршруте или подтверждённой ссылке из чата, Тихон семантически проверяет, что это страница лаборатории, извлекает название, даты и состояние CTA и ставит срок снятия набора: дата старта плюс семь календарных дней. Смена даты старта пересчитывает срок. Прошедшая дата не означает удаление страницы: она может стать текущим потоком, листом ожидания, итогами или архивом.</li>
@@ -2705,7 +2709,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">каталог обучения</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">каталог обучения</span><span class="pill">workflow-observed-2026-09-14</span></div>
             <h3>Learn — только «лаборатория планируется», а не страница лаборатории</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> learn.aimindset.org — база знаний и источник данных, а не страница лаборатории. Из каталога Learn можно узнать, что поток планируется, но нельзя брать оттуда точные даты и ссылку на покупку: строка и верхняя карточка остаются в waitlist без дат, пока у лаборатории не появится собственная опубликованная страница. Каждая строка блока «Обучение» — постоянное направление: завершённый поток возвращает свою строку в waitlist, но не удаляет её. Верхних карточек ровно две — «сейчас идёт набор» (только при опубликованном CTA) и «ближайшие лаборатории» (только название запланированной лаборатории, без дат и ссылки).</li>
@@ -2716,7 +2720,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">состав команды</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">состав команды</span><span class="pill">workflow-observed-2026-09-14</span></div>
             <h3>Состав команды сверяется раз в месяц одним нейтральным вопросом</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Раз в 30 дней Тихон показывает один нейтральный список опубликованных на сайте имён и задаёт один вопрос: «Команда на сайте: … Список и написание актуальны?». Иру и Сашу в этот список не включает вообще. Он не оценивает людей по отдельности, не выводит из переписки, кто пришёл, ушёл или давно не появлялся, и не предлагает добавить или убрать конкретного сотрудника.</li>
@@ -2727,7 +2731,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">ссылки</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">ссылки</span><span class="pill">workflow-observed-2026-09-14</span></div>
             <h3>Повторяющиеся ссылки проверяются еженедельно по смыслу</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Повторяющиеся и периодически меняющиеся ссылки проверяются не реже раза в неделю. Важен не только HTTP-ответ, но и конечный адрес после редиректов, текст ссылки и смысловое назначение: «записаться на весенний поток», ведущее на прошлогоднюю страницу, — это проблема при полностью рабочем 200. Одинаковая ссылка в нескольких местах создаёт одно обязательство с перечнем всех мест.</li>
@@ -2738,10 +2742,10 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">waitlist</span><span class="pill">live</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">waitlist</span><span class="pill">workflow-observed-2026-09-14</span></div>
             <h3>Waitlist приходит через Метрику, а не через сервер</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Каждый ежедневный прогон читает HTML живой главной aimindset-main.web.app и проверяет контракт формы: форма существует, Telegram обязателен, у каждой кнопки есть явные data-waitlist-topic и data-waitlist-code, payload Метрики несёт waitlist.topic, product_code, имя поля и частичный ввод, а в общем счётчике лабораторий 106857835 заведены JavaScript-цели waitlist_input_started (599119093) и waitlist_contact_entered (599119094). Раз в сутки Action выгружает из Logs API три последних завершённых московских дня (перекрытие ради поздних визитов) и присылает владельцу только новые вводы.</li>
+              <li><strong>Rule:</strong> Тихон проверяет контракт waitlist и Метрики на контролируемых страницах. 14.09.2026 блокировка origin исправлена в production и проверена с Google Wild и Pages; API-тест одной разрешённой waitlist-заявки: 3 доставки, 0 ошибок; нажатие кнопки в браузере отдельно не проверено. Не трактовать наличие формы, HTTP 200 или успешный Action как успешную доставку лида.</li>
               <li><strong>Check:</strong> Проверка не имитирует заявку посетителя и не отправляет лид через Василия или Cloud Run.</li>
               <li><strong>Check:</strong> 19.08.2026 живая главная отдаёт полный контракт: четыре кнопки с data-waitlist-topic и data-waitlist-code, счётчик 106857835 и обе цели. Проверка Тихона по этому пункту больше не жалуется; ежедневный отчёт появится, когда в Logs API придут первые события.</li>
               <li><strong>Check:</strong> Сбой контракта даёт одно дедуплицированное review-сообщение владельцу, а не поток алертов.</li>
@@ -2749,7 +2753,7 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">состояние</span><span class="pill">live-manual-runs</span></div>
+            <div class="label-row"><span class="pill ok">Сурикат Тихон</span><span class="pill">состояние</span><span class="pill">workflow-observed-2026-09-14</span></div>
             <h3>В ветке tikhon-state нет ни токенов, ни личных данных</h3>
             <ul class="ops-list">
               <li><strong>Rule:</strong> Состояние живёт в защищённой ветке tikhon-state (state/tikhon-state.json) и содержит только фингерпринты источников, обработанные Telegram update ID, change sets и короткий audit-log. Токены, тексты сообщений, chat ID, имена и частичные вводы из формы туда не попадают: от Метрики сохраняются только хэши уже отправленных событий.</li>
@@ -2782,10 +2786,10 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">qa</span><span class="pill">action-required</span></div>
-            <h3>Ответ Василия о состоянии сайта сейчас без цифр</h3>
+            <div class="label-row"><span class="pill ok">Surikat Vasily</span><span class="pill">qa</span><span class="pill">handoff-not-rechecked</span></div>
+            <h3>QA-отчёт для Василия: облачная передача требует проверки</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Задумано: на вопрос «что там с сайтом?» Василий отвечает свежими цифрами последнего QA-прогона — сколько страниц проверено, сколько находок, какие критичные. Сейчас это не работает: в production-конфигурации Cloud Run не задан BOT_QA_REPORT_PATH и нет облачного источника report.json, свежий отчёт живёт только на маке. Фикс: QA-раннер публикует report.json в vasily-state, Василий читает его при гидрации.</li>
+              <li><strong>Rule:</strong> Код QA worker и Telegram-слой Василия разделены. Локальная инвентаризация отмечает отсутствующий cloud handoff свежего report.json; в этой ревизии доставка отчёта Василию не проверялась. Успешный Metrika pull не означает успешный полный аудит сайта.</li>
               <li><strong>Check:</strong> Пока облачного отчёта нет, Василий отвечает fallback-текстом и не имеет права утверждать, что полный visual QA выполнен.</li>
               <li><strong>Check:</strong> Один reports/latest/report.json перезаписывается последним режимом: выбирать отдельный latest для production, staging или AI Native Василий не умеет.</li>
               <li><strong>Check:</strong> Автоматического канала «каждый finding → Василий → Linear» нет намеренно: один неудачный прогон не должен молча создать десятки задач.</li>
@@ -2804,13 +2808,13 @@
             </ul>
           </article>
           <article class="ops-panel" data-search-item>
-            <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">status</span><span class="pill">paused</span></div>
-            <h3>Соня приостановлена на ~80% готовности</h3>
+            <div class="label-row"><span class="pill ok">Surikat Sonya</span><span class="pill">status</span><span class="pill">delivery-not-rechecked</span></div>
+            <h3>Соня: runtime доступен, генераторы приостановлены</h3>
             <ul class="ops-list">
-              <li><strong>Rule:</strong> Соня выключена не из-за поломки. Её идея — понять общий вкус команды, а для этого команда должна регулярно реагировать на то, что она приносит; без этого копилка вкуса не набирается. Дополнительно требуют доработки её собственная стилистика и research/discovery pipelines. Она жила на Gemini и Google Cloud, поэтому при переносе нужен новый биллинг.</li>
+              <li><strong>Rule:</strong> Ночные массовые генераторы и homepage full/element automations остаются PAUSED по текущим automation.toml. Cloud Run Сони доступен по health; текущая Telegram-доставка и готовность сценариев не перепроверены, процент готовности не используется как метрика.</li>
               <li><strong>Check:</strong> Дашборд с вариантами элементов и главной остаётся полезным артефактом: варианты можно доводить и брать на сайт.</li>
               <li><strong>Check:</strong> Возобновление имеет смысл только вместе с договорённостью команды регулярно оценивать присланное.</li>
-              <li><strong>Check:</strong> Перед перезапуском нужен отдельный биллинг Google Cloud и доработка стилистики и discovery.</li>
+              <li><strong>Check:</strong> Перед возобновлением генераторов перепроверить их доступы, бюджет и критерии отбора.</li>
               <li><strong>Source:</strong> Bots/Telegram Design Taste Bot - Sonya/README.md</li>
             </ul>
           </article>
@@ -2830,10 +2834,10 @@
 
             <article class="ops-panel" data-search-item>
               <div class="label-row"><span class="pill">daily agent</span></div>
-              <h3>Ежедневный watcher</h3>
+              <h3>Watcher правил — приостановлен</h3>
               <ul class="ops-list">
                 <li><strong>Automation ID:</strong> `aim-website-product-rules-sync-watch`.</li>
-                <li><strong>Расписание:</strong> каждый день в 09:00 Europe/Lisbon.</li>
+                <li><strong>Статус:</strong> PAUSED по automation.toml на 14.09.2026; прежнее расписание — 09:00 Europe/Lisbon.</li>
                 <li><strong>Следит за:</strong> `website-ops/*`, docs Суриката, payment popup code, case content/media, QA docs/config.</li>
                 <li><strong>Если меняется правило:</strong> обновляет registry, markdown, hub summary и task canvas.</li>
                 <li><strong>Если правило тестируемое:</strong> добавляет ожидание в QA repo.</li>
@@ -2886,7 +2890,7 @@
               <div class="label-row"><span class="pill ok">cadence</span><span class="pill">agents</span></div>
               <h3>Автоматические обновления</h3>
               <ul class="ops-list">
-                <li><strong>Product rules:</strong> каждый день 09:00 Europe/Lisbon, automation `aim-website-product-rules-sync-watch`.</li>
+                <li><strong>Product rules:</strong> PAUSED по текущей конфигурации; автоматическое ежедневное обновление правил не выполняется.</li>
                 <li><strong>Case source fidelity:</strong> перед каждым новым или существенно обновлённым кейсом, reviewer `Case Source Fidelity Reviewer`.</li>
                 <li><strong>QA dashboards:</strong> manual / health, раз в 2 недели по понедельникам 07:00 UTC на четных ISO-неделях, monthly 1-го числа 08:00 UTC.</li>
                 <li><strong>DeviceCloud:</strong> manual и preflight 2-го числа 09:00 UTC; реальные сессии ждут provider secrets.</li>
@@ -2999,10 +3003,11 @@
             <div class="label-row"><span class="pill ok">главный QA-бот</span><span class="pill">Cloud Run → Telegram → Linear</span><span class="pill surikat-mode-chip" data-surikat-mode-label>day mode / intake</span></div>
             <div>
               <h3>Сурикат Василий</h3>
+              <p class="summary">14.09: health HTTP 200; доставка Telegram/Linear не проверялась.</p>
               <p class="summary">
                 Официальный Telegram-бот QA-контура. Понимает обращения вроде «Вася», «Вась», «Васек», «Васёк» и «суркат»,
                 принимает баги в группе или личке, ставит реакцию если всё понятно, уточняет детали если данных мало
-                и отправляет задачи в Linear. Сейчас живёт на Cloud Run webhook, а локальный watcher выключен и оставлен только для rollback.
+                и имеет маршрут в Linear. Cloud Run health подтверждён 14.09.2026; Telegram-доставка и запись Linear в этой ревизии не проверялись. Локальный watcher оставлен для rollback.
                 На нерелевантные вопросы не превращается в ChatGPT: отшучивается и возвращает разговор к сайту.
                 Его роль — быть менеджером QA-контура, докладчиком по результатам и приемником bug-like handoff от Сони.
               </p>
@@ -3013,9 +3018,10 @@
             <span class="path">Bots/Telegram Bug Intake Bot - Linear</span>
           </a>
           <a class="card dark wide" data-search-item href="#sonya">
-            <div class="label-row"><span class="pill ok">design taste bot</span><span class="pill">Telegram → ratings</span><span class="pill warn">приостановлена · ~80%</span></div>
+            <div class="label-row"><span class="pill ok">design taste bot</span><span class="pill">Telegram → ratings</span><span class="pill warn">доставка не перепроверена</span></div>
             <div>
               <h3>Сурикат Соня</h3>
+              <p class="summary">14.09: health HTTP 200; генераторы PAUSED, доставка не перепроверена.</p>
               <p class="summary">
                 Ночной дизайн-сурикат AIM. Через Telegram приносит Анке и Саше review-only homepage/payment/element варианты,
                 принимает оценки `0-10` и медиа-референсы, пишет taste memory, умеет жить на Cloud Run с Vertex/GCS,
@@ -3025,14 +3031,15 @@
             <span class="path">Bots/Telegram Design Taste Bot - Sonya</span>
           </a>
           <a class="card dark wide" data-search-item href="#tikhon">
-            <div class="label-row"><span class="pill ok">хранитель свежести</span><span class="pill">GitHub Actions → Telegram → PR</span><span class="pill warn">ждёт секретов</span></div>
+            <div class="label-row"><span class="pill ok">хранитель свежести</span><span class="pill">GitHub Actions → Telegram → PR</span><span class="pill">Action проверен 14.09</span></div>
             <div>
               <h3>Сурикат Тихон</h3>
+              <p class="summary">14.09: Actions success; последний просмотренный прогон — 34837509539.</p>
               <p class="summary">
                 Третий сурикат. Следит не за поломками и не за красотой, а за тем, не врёт ли сайт:
                 идёт ли ещё набор на стартовавшую лабораторию, тот ли состав команды опубликован,
                 ведут ли повторяющиеся ссылки туда, куда обещает текст. Раз в сутки просыпается
-                в GitHub Actions: смотрит, писал ли ему владелец, и заново сверяет главную с источниками
+                в GitHub Actions: выполняет настроенный режим почты или проверки свежести
                 (по понедельникам — недельная сводка). Отвечает только владельцу в личке и ничего
                 не меняет молча: максимум — ветка и PR в `main-current` после команды «применить».
               </p>
@@ -3051,6 +3058,7 @@
             <div class="label-row"><span class="pill ok">latest</span><span class="pill">local launcher</span></div>
             <div>
               <h3>Последний QA-дашборд</h3>
+              <p class="summary">Свежий Metrika pull: 14.09 · success (34835155265). Это выгрузка аналитики, не полный QA-прогон. Дату полного отчёта проверяйте в самом dashboard.</p>
               <p class="summary">Главный отчет по production и staging. В Finder есть один прямой launcher: `! Open AIM QA Dashboard.command` / `! 0 App - AIM QA Dashboard.app`.</p>
             </div>
             <span class="path">AIM Site Agent Evaluation/reports/latest/dashboard.html</span>
@@ -3128,14 +3136,14 @@
           </div>
           <div class="ops-board">
             <article class="ops-panel" data-search-item>
-              <div class="label-row"><span class="pill warn">приостановлена</span><span class="pill">~80% готовности</span></div>
-              <h3>Почему выключена</h3>
+              <div class="label-row"><span class="pill warn">генераторы PAUSED</span><span class="pill">health HTTP 200</span></div>
+              <h3>Что проверено и что приостановлено</h3>
               <ul class="ops-list">
                 <li><strong>Не поломка:</strong> идея была в том, чтобы она поняла общий вкус команды, а для этого команде надо постоянно реагировать на присланное.</li>
                 <li><strong>Что копится без реакции:</strong> ничего — копилка вкуса не набирается, и её собственная оценка не становится точнее.</li>
                 <li><strong>Что доделать:</strong> её стилистику и research/discovery pipelines.</li>
                 <li><strong>Что осталось полезного:</strong> дашборд с вариантами элементов и главной — их можно доводить и брать на сайт.</li>
-                <li><strong>Перенос:</strong> жила на Gemini и Google Cloud, при переносе нужен новый биллинг.</li>
+                <li><strong>Runtime:</strong> Cloud Run доступен; перед возобновлением генераторов отдельно проверить доступы и бюджет.</li>
               </ul>
             </article>
 
@@ -3285,6 +3293,7 @@
             <article class="ops-panel" data-search-item>
               <div class="label-row"><span class="pill">заявки</span></div>
               <h3>Рассылка заявок с оплаты</h3>
+              <p class="summary">14.09: конфигурационная проверка /readyz подтверждает включённый relay и три активных адресата. Это не тест доставки: заявки и сообщения при ревизии не отправлялись. Relay оплаты Василия отделён от waitlist-проверок Тихона.</p>
               <ul class="ops-list">
                 <li><strong>Кто отправляет:</strong> отдельный маленький сервис-relay, а Василий хранит правила — кому можно присылать и включена ли рассылка вообще.</li>
                 <li><strong>Команды:</strong> «поставь заявки на паузу» или «можно присылать вот этому человеку» пишутся в чат, и рассылка действительно меняется.</li>
@@ -3428,7 +3437,7 @@
                 <li><strong>Payload:</strong> `waitlist.topic`, `product_code`, имя поля и частичный ввод должны уходить в Метрику.</li>
                 <li><strong>Счётчик:</strong> общий счётчик лабораторий `106857835`, цели `waitlist_input_started` (`599119093`) и `waitlist_contact_entered` (`599119094`).</li>
                 <li><strong>Отчёт:</strong> раз в сутки Action выгружает из Logs API три последних завершённых московских дня и присылает владельцу только новые вводы.</li>
-                <li><strong>Сейчас:</strong> 19.08.2026 живая главная отдаёт полный контракт — четыре кнопки с явной лабораторией, счётчик и обе цели; проверка Тихона по этому пункту больше не жалуется. Ежедневный отчёт появится, когда в Logs API придут первые события.</li>
+                <li><strong>Сейчас:</strong> 14.09.2026 блокировка origin исправлена в production: Google Wild и Pages проходят CORS-проверку. API-тест одной разрешённой waitlist-заявки: 3 доставки, 0 ошибок; нажатие кнопки в браузере отдельно не проверено.</li>
                 <li><strong>Прототип relay:</strong> отдельный Cloud Run `cloud-run/waitlist-relay/` остался в репозитории как код, но из инструкции запуска убран.</li>
               </ul>
             </article>
@@ -3437,7 +3446,7 @@
               <div class="label-row"><span class="pill warn">secrets</span><span class="pill">state</span></div>
               <h3>Состояние и доступы</h3>
               <ul class="ops-list">
-                <li><strong>Состояние:</strong> защищённая ветка `tikhon-state`, файл `state/tikhon-state.json` — сейчас там три change set в статусе `proposed` и три обработанных update ID.</li>
+                <li><strong>Состояние:</strong> защищённая ветка `tikhon-state`, файл `state/tikhon-state.json`; текущее количество change set в этой ревизии не считывалось.</li>
                 <li><strong>Что внутри:</strong> фингерпринты источников, обработанные Telegram update ID, change sets и короткий audit-log (500 update ID, 100 change sets, 2000 фингерпринтов, 500 записей журнала).</li>
                 <li><strong>Чего внутри нет:</strong> токенов, текстов сообщений, chat ID, имён и частичных вводов из формы — от Метрики хранятся только хэши.</li>
                 <li><strong>GitHub App:</strong> `Surikat Tikhon` установлен только на `eppelas/aimindset-main` с правами Contents и Pull requests read/write; Actions, secrets и администрирование — no access.</li>
@@ -3445,7 +3454,7 @@
                 <li><strong>Контекст остаётся в чате:</strong> «когда» по данным Learn и ссылка на источник нужны только владельцу — ни в разметку страницы, ни в тело PR они не уходят.</li>
                 <li><strong>Секреты:</strong> `TIKHON_TELEGRAM_BOT_TOKEN`, `TIKHON_OWNER_TELEGRAM_USER_ID`, `TIKHON_OWNER_TELEGRAM_CHAT_ID`, `TIKHON_METRIKA_OAUTH_TOKEN`, `TIKHON_GITHUB_APP_ID`, `TIKHON_GITHUB_APP_PRIVATE_KEY`.</li>
                 <li><strong>Секреты уже настроены:</strong> все шесть лежат в `ai-mindset-org/surikat-family` с 18.08.2026, включая credentials GitHub App.</li>
-                <li><strong>Что осталось:</strong> влить ветку в `main`, чтобы включилось расписание, и один раз пройти `проверь` → `покажи` → `применить` → тестовый PR без merge.</li>
+                <li><strong>Последний просмотренный запуск:</strong> <a href="https://github.com/ai-mindset-org/surikat-family/actions/runs/34837509539">14.09.2026 · success</a>. Текущие режимы и расписание — в Actions; сообщения и PR в этой ревизии не создавались.</li>
               </ul>
             </article>
 

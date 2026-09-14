@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-19",
+  "updatedAt": "2026-09-14",
   "sourceOfTruth": "website-ops/bot-operating-rules.json",
   "rules": [
     {
@@ -8,10 +8,11 @@
       "title": "Vasily Cloud Run owns Telegram delivery",
       "bot": "Surikat Vasily",
       "area": "runtime",
-      "status": "active",
+      "status": "configured-health-verified",
       "summary": "@aim_surikat_bot is served by Cloud Run service aim-surikat-vasily in dedicated Google Cloud project aim-surikat-vasily, separate from Surikat Sonya's project. Telegram webhook delivery goes to /telegram with max_connections=1; the local launchd poller must stay disabled while the webhook is set. The old Sonya-project Vasily Cloud Run services are rollback only unless the webhook/site secrets are intentionally moved back.",
       "sourceOfTruth": "Bots/Telegram Bug Intake Bot - Linear/cloud-run/README.md",
       "checks": [
+        "Проверка 14.09.2026: health HTTP 200; реальная Telegram-доставка отдельно не проверялась.",
         "Health endpoint https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/health must report mode=webhook, genaiProvider=vertex, vertexProjectConfigured=true, audioTranscriptionEnabled=true, stateGcsEnabled=true, linearConfigured=true, metrikaLeadDmAllowlistConfigured=true, metrikaLeadDmAllowlistCount=3, metrikaLeadDmManagerCount=4, and metrikaLeadDmDeliveryPaused=false in normal delivery mode.",
         "Telegram getWebhookInfo must point to https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/telegram and pending_update_count should normally be 0.",
         "Rollback is deleteWebhook, then launchctl enable/bootstrap ai.aim.surikat.bot."
@@ -140,10 +141,11 @@
       "title": "Sonya Cloud Run owns design-review Telegram",
       "bot": "Surikat Sonya",
       "area": "runtime",
-      "status": "active",
+      "status": "configured-health-verified",
       "summary": "@aim_surikat_sonya_bot runs as Cloud Run webhook aim-surikat-sonya in the Sonya Google Cloud project project-f40c3e3c-0fca-49de-96d. Local polling should not run while webhook mode is active. Sonya uses Vertex AI for the Google Cloud credits path and Cloud Storage for media/state/catalog surfaces. Cloud Run can answer in groups when addressed, but auto-review remains off and send approval remains required. Runtime Veo is configured but currently disabled/expired; the repo Dockerfile runtime has ffmpeg available for real Telegram video_note output if the owner explicitly re-enables that mode. Vasily must not be deployed into this project except as an explicit rollback.",
       "sourceOfTruth": "Bots/Telegram Design Taste Bot - Sonya/cloud-run/README.md",
       "checks": [
+        "Проверка 14.09.2026: health HTTP 200; реальная Telegram-доставка отдельно не проверялась.",
         "Live health should report mode=webhook, genaiProvider=vertex, groupChatEnabled=true, groupVideoReplyEnabled=true, autoReviewEnabled=false, requireSendApproval=true, and sashaProactiveDmEnabled=false.",
         "runtimeVeo should remain enabled=false and expired=true unless the owner explicitly reopens the paid media-generation window; if reopened with sendAsVideoNote=true, health must report ffmpegAvailable=true.",
         "Cloud Run reads only Sonya policy-v2 review cards from GCS catalog.json/inventory.json. The local publisher runs every 30 minutes, caps hard-eligible broad inventory at 12, skips unchanged uploads, and owns scoring, bounded missing-preview capture, stale-lock cleanup, and GCS publication.",
@@ -192,7 +194,7 @@
       "title": "Тихон сторожит правдивость сайта, а не баги и не дизайн",
       "bot": "Сурикат Тихон",
       "area": "роль",
-      "status": "live-manual-runs",
+      "status": "workflow-observed-2026-09-14",
       "summary": "Третий сурикат следит за тем, остаются ли утверждения сайта правдой: идёт ли ещё набор, тот ли состав команды опубликован, ведут ли повторяющиеся ссылки туда, куда обещает текст. Он не заводит второй баг-трекер и не оценивает дизайн: подтверждённая поломка уходит Василию в Linear, вкус остаётся у Сони. Сайт он молча не меняет — результат это дедуплицированный change set с источниками и датами. Статус на 19.08.2026: все шесть секретов настроены, 18.08 прошло пять успешных прогонов Action, владельцу уходят ответы в Telegram, состояние коммитится в ветку tikhon-state.",
       "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
       "checks": [
@@ -206,8 +208,8 @@
       "title": "Проверка раз в неделю, остальные дни — только почта",
       "bot": "Сурикат Тихон",
       "area": "расписание",
-      "status": "live-manual-runs",
-      "summary": "Один workflow .github/workflows/tikhon-freshness.yml запускается ежедневно в 10:00 Europe/Moscow (cron 0 7 * * *), но делает разное: в понедельник это собственно проверка свежести с отчётом владельцу, в остальные дни — только чтение личных сообщений владельца через getUpdates и суточная выгрузка waitlist из Метрики. Если сайт не изменился, будни проходят молча. Отчёт вне понедельника приходит, только если появились правки или владелец сам попросил (ручной режим report-now). Webhook не ставится, Cloud Run и отдельный сервер не нужны.",
+      "status": "workflow-observed-2026-09-14",
+      "summary": "Workflow Surikat Tikhon freshness находится в ai-mindset-org/surikat-family; последний просмотренный запуск 34837509539 от 14.09.2026 завершился success. Расписание и режим следует читать в действующем workflow. Успех Action не является отдельным доказательством доставки сообщения владельцу; сообщений при ревизии не отправляли.",
       "sourceOfTruth": "Bots/Website Freshness Bot/GITHUB_ACTIONS_SETUP.md",
       "checks": [
         "Ветка влита в main 19.08.2026, поэтому schedule наконец работает: GitHub запускает cron только с дефолтной ветки.",
@@ -220,7 +222,7 @@
       "title": "Отчёт Тихона читается сверху вниз, а согласие — это «да»",
       "bot": "Сурикат Тихон",
       "area": "telegram",
-      "status": "live-manual-runs",
+      "status": "workflow-observed-2026-09-14",
       "summary": "Allowlist — numeric user/chat ID владельца; сообщения из групп и чужих личек игнорируются без ответа. Отчёт приходит четырьмя частями: верхние карточки, блок «Обучение», «что поменять» с построчным до/после и «решать вам». В первых двух частях видно и что совпало с источником, и что разошлось, и что проверить не удалось. В конце — обычный вопрос: ответ «да» (а также «давай», «ок», «применяй») подтверждает единственный предложенный план и запускает подготовку ветки и PR.",
       "sourceOfTruth": "Bots/Website Freshness Bot/src/tikhon-team-runtime.mjs",
       "checks": [
@@ -234,7 +236,7 @@
       "title": "Единственная запись Тихона — ветка и PR после «применить»",
       "bot": "Сурикат Тихон",
       "area": "правки через PR",
-      "status": "live-manual-runs",
+      "status": "workflow-observed-2026-09-14",
       "summary": "«применить <id>» сначала повторно проверяет фингерпринты источников и только потом разрешает Action создать одну ветку tikhon/<change-set-id> и один PR в eppelas/aimindset-main. Merge, deploy, удаление и локальная запись на маке недоступны. GitHub App Surikat Tikhon установлен только на этот репозиторий с правами Contents и Pull requests read/write; Actions, secrets, администрирование и другие репозитории — no access.",
       "sourceOfTruth": "Bots/Website Freshness Bot/config/team-runtime.json",
       "checks": [
@@ -248,7 +250,7 @@
       "title": "Даты лабораторий на главной: сезон до страницы, снятие набора через 7 дней после старта",
       "bot": "Сурикат Тихон",
       "area": "даты лабораторий",
-      "status": "live-manual-runs",
+      "status": "workflow-observed-2026-09-14",
       "summary": "Пока страницы нет, лаборатория показывается только сезоном и годом («ближайшая лаборатория — осень 2026»), а точные даты из чата хранятся как неподтверждённые свидетельства. Когда страница найдена в sitemap, внутренней ссылке, настроенном маршруте или подтверждённой ссылке из чата, Тихон семантически проверяет, что это страница лаборатории, извлекает название, даты и состояние CTA и ставит срок снятия набора: дата старта плюс семь календарных дней. Смена даты старта пересчитывает срок. Прошедшая дата не означает удаление страницы: она может стать текущим потоком, листом ожидания, итогами или архивом.",
       "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
       "checks": [
@@ -262,7 +264,7 @@
       "title": "Learn — только «лаборатория планируется», а не страница лаборатории",
       "bot": "Сурикат Тихон",
       "area": "каталог обучения",
-      "status": "live-manual-runs",
+      "status": "workflow-observed-2026-09-14",
       "summary": "learn.aimindset.org — база знаний и источник данных, а не страница лаборатории. Из каталога Learn можно узнать, что поток планируется, но нельзя брать оттуда точные даты и ссылку на покупку: строка и верхняя карточка остаются в waitlist без дат, пока у лаборатории не появится собственная опубликованная страница. Каждая строка блока «Обучение» — постоянное направление: завершённый поток возвращает свою строку в waitlist, но не удаляет её. Верхних карточек ровно две — «сейчас идёт набор» (только при опубликованном CTA) и «ближайшие лаборатории» (только название запланированной лаборатории, без дат и ссылки).",
       "sourceOfTruth": "Bots/Website Freshness Bot/config/team-runtime.json",
       "checks": [
@@ -276,7 +278,7 @@
       "title": "Состав команды сверяется раз в месяц одним нейтральным вопросом",
       "bot": "Сурикат Тихон",
       "area": "состав команды",
-      "status": "live-manual-runs",
+      "status": "workflow-observed-2026-09-14",
       "summary": "Раз в 30 дней Тихон показывает один нейтральный список опубликованных на сайте имён и задаёт один вопрос: «Команда на сайте: … Список и написание актуальны?». Иру и Сашу в этот список не включает вообще. Он не оценивает людей по отдельности, не выводит из переписки, кто пришёл, ушёл или давно не появлялся, и не предлагает добавить или убрать конкретного сотрудника.",
       "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
       "checks": [
@@ -290,7 +292,7 @@
       "title": "Повторяющиеся ссылки проверяются еженедельно по смыслу",
       "bot": "Сурикат Тихон",
       "area": "ссылки",
-      "status": "live-manual-runs",
+      "status": "workflow-observed-2026-09-14",
       "summary": "Повторяющиеся и периодически меняющиеся ссылки проверяются не реже раза в неделю. Важен не только HTTP-ответ, но и конечный адрес после редиректов, текст ссылки и смысловое назначение: «записаться на весенний поток», ведущее на прошлогоднюю страницу, — это проблема при полностью рабочем 200. Одинаковая ссылка в нескольких местах создаёт одно обязательство с перечнем всех мест.",
       "sourceOfTruth": "Bots/Website Freshness Bot/README.md",
       "checks": [
@@ -304,8 +306,8 @@
       "title": "Waitlist приходит через Метрику, а не через сервер",
       "bot": "Сурикат Тихон",
       "area": "waitlist",
-      "status": "live",
-      "summary": "Каждый ежедневный прогон читает HTML живой главной aimindset-main.web.app и проверяет контракт формы: форма существует, Telegram обязателен, у каждой кнопки есть явные data-waitlist-topic и data-waitlist-code, payload Метрики несёт waitlist.topic, product_code, имя поля и частичный ввод, а в общем счётчике лабораторий 106857835 заведены JavaScript-цели waitlist_input_started (599119093) и waitlist_contact_entered (599119094). Раз в сутки Action выгружает из Logs API три последних завершённых московских дня (перекрытие ради поздних визитов) и присылает владельцу только новые вводы.",
+      "status": "workflow-observed-2026-09-14",
+      "summary": "Тихон проверяет контракт waitlist и Метрики на контролируемых страницах. 14.09.2026 блокировка origin исправлена в production и проверена с Google Wild и Pages; API-тест одной разрешённой waitlist-заявки: 3 доставки, 0 ошибок; нажатие кнопки в браузере отдельно не проверено. Не трактовать наличие формы, HTTP 200 или успешный Action как успешную доставку лида.",
       "sourceOfTruth": "Bots/Website Freshness Bot/src/tikhon-metrika-logs.mjs",
       "checks": [
         "Проверка не имитирует заявку посетителя и не отправляет лид через Василия или Cloud Run.",
@@ -318,7 +320,7 @@
       "title": "В ветке tikhon-state нет ни токенов, ни личных данных",
       "bot": "Сурикат Тихон",
       "area": "состояние",
-      "status": "live-manual-runs",
+      "status": "workflow-observed-2026-09-14",
       "summary": "Состояние живёт в защищённой ветке tikhon-state (state/tikhon-state.json) и содержит только фингерпринты источников, обработанные Telegram update ID, change sets и короткий audit-log. Токены, тексты сообщений, chat ID, имена и частичные вводы из формы туда не попадают: от Метрики сохраняются только хэши уже отправленных событий.",
       "sourceOfTruth": "Bots/Website Freshness Bot/src/tikhon-team-runtime.mjs",
       "checks": [
@@ -358,11 +360,11 @@
     },
     {
       "id": "vasily-qa-status-answer-broken",
-      "title": "Ответ Василия о состоянии сайта сейчас без цифр",
+      "title": "QA-отчёт для Василия: облачная передача требует проверки",
       "bot": "Surikat Vasily",
       "area": "qa",
-      "status": "action-required",
-      "summary": "Задумано: на вопрос «что там с сайтом?» Василий отвечает свежими цифрами последнего QA-прогона — сколько страниц проверено, сколько находок, какие критичные. Сейчас это не работает: в production-конфигурации Cloud Run не задан BOT_QA_REPORT_PATH и нет облачного источника report.json, свежий отчёт живёт только на маке. Фикс: QA-раннер публикует report.json в vasily-state, Василий читает его при гидрации.",
+      "status": "handoff-not-rechecked",
+      "summary": "Код QA worker и Telegram-слой Василия разделены. Локальная инвентаризация отмечает отсутствующий cloud handoff свежего report.json; в этой ревизии доставка отчёта Василию не проверялась. Успешный Metrika pull не означает успешный полный аудит сайта.",
       "sourceOfTruth": "Bots/AIM Site QA Agent/QA-INVENTORY.md",
       "checks": [
         "Пока облачного отчёта нет, Василий отвечает fallback-текстом и не имеет права утверждать, что полный visual QA выполнен.",
@@ -386,16 +388,16 @@
     },
     {
       "id": "sonya-paused-status",
-      "title": "Соня приостановлена на ~80% готовности",
+      "title": "Соня: runtime доступен, генераторы приостановлены",
       "bot": "Surikat Sonya",
       "area": "status",
-      "status": "paused",
-      "summary": "Соня выключена не из-за поломки. Её идея — понять общий вкус команды, а для этого команда должна регулярно реагировать на то, что она приносит; без этого копилка вкуса не набирается. Дополнительно требуют доработки её собственная стилистика и research/discovery pipelines. Она жила на Gemini и Google Cloud, поэтому при переносе нужен новый биллинг.",
+      "status": "delivery-not-rechecked",
+      "summary": "Ночные массовые генераторы и homepage full/element automations остаются PAUSED по текущим automation.toml. Cloud Run Сони доступен по health; текущая Telegram-доставка и готовность сценариев не перепроверены, процент готовности не используется как метрика.",
       "sourceOfTruth": "Bots/Telegram Design Taste Bot - Sonya/README.md",
       "checks": [
         "Дашборд с вариантами элементов и главной остаётся полезным артефактом: варианты можно доводить и брать на сайт.",
         "Возобновление имеет смысл только вместе с договорённостью команды регулярно оценивать присланное.",
-        "Перед перезапуском нужен отдельный биллинг Google Cloud и доработка стилистики и discovery."
+        "Перед возобновлением генераторов перепроверить их доступы, бюджет и критерии отбора."
       ]
     }
   ]

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-19",
+  "updatedAt": "2026-09-14",
   "sourceOfTruth": "website-ops/update-rules.json",
   "updateRules": [
     {
@@ -8,7 +8,7 @@
       "title": "Product rules and Website Hub sync",
       "ownerAgent": "AIM Website Product Rules Sync Watch",
       "automationId": "aim-website-product-rules-sync-watch",
-      "cadence": "daily at 09:00 Europe/Lisbon",
+      "cadence": "PAUSED (verified automation.toml 2026-09-14); former schedule daily 09:00 Europe/Lisbon",
       "trigger": "Codex app cron automation",
       "inputs": [
         "website-ops/product-rules.json",
@@ -31,7 +31,8 @@
         "Do not invent product rules when sources conflict.",
         "If implementation code contradicts the registry, report drift with exact files and lines.",
         "Do not push or deploy."
-      ]
+      ],
+      "status": "PAUSED"
     },
     {
       "id": "case-source-fidelity-review",

@@ -8,7 +8,7 @@ Structured source: `website-ops/update-rules.json`
 
 | Surface | Owner agent | Cadence | Trigger | Output |
 | --- | --- | --- | --- | --- |
-| Product rules and Website Hub sync | `AIM Website Product Rules Sync Watch` | Daily at 09:00 Europe/Lisbon | Codex automation `aim-website-product-rules-sync-watch` | Updated product-rule registry, markdown, hub summary, task canvas |
+| Product rules and Website Hub sync | `AIM Website Product Rules Sync Watch` | **PAUSED**, checked 2026-09-14; former 09:00 Europe/Lisbon | Codex automation `aim-website-product-rules-sync-watch` | Updated product-rule registry, markdown, hub summary, task canvas |
 | Case source fidelity review | `Case Source Fidelity Reviewer` | Before every new or materially updated case study handoff | Manual Codex work, case-source update, YouTube fragment extraction, or user-provided case notes | Verified case task, description, tools, result, media notes, and clean screenshots/portrait |
 | Production/staging QA dashboards | `AIM Site Agent Evaluation` | Manual; biweekly Monday 07:00 UTC on even ISO weeks; monthly day 1 at 08:00 UTC | GitHub Actions `site-qa.yml` | `reports/latest/*`, `reports/history/*`, GitHub Pages dashboard |
 | DeviceCloud preflight | `AI Mindset Device Cloud QA` | Manual; monthly day 2 at 09:00 UTC | GitHub Actions `device-cloud.yml` | Job summary now; provider session evidence later |

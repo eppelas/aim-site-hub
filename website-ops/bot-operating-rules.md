@@ -1,5 +1,17 @@
 # AIM Bot Operating Rules
 
+## 2026-09-14 · Ops inventory verification
+
+Update: waitlist origin block fixed live in relay revision 00018-7kw. Google Wild/Pages preflight204 and invalid-payload400 verified; unknown origin403. One authorized waitlist API test: 3 deliveries, 0 failures (2026-09-14); browser button test not completed.
+
+- Scope: existing AIM Website bots, QA, Google↔GitHub publication, source instructions, site versions and review links. No messages, leads or bot commands sent. Canonical bot/update registries and their Hub export copies reconciled.
+- Vasily and Sonya public health endpoints: HTTP 200. This verifies process availability only; Telegram delivery, Linear issue creation and design delivery were not exercised. The payment relay readiness configuration reports three active recipients and paused=false; it is separate from Tikhon and is not a lead-delivery receipt.
+- Tikhon workflow observed successful: [34837509539](https://github.com/ai-mindset-org/surikat-family/actions/runs/34837509539). Its workflow success is not a separate Telegram-delivery proof. Current full-site QA freshness is not inferred from [Metrika pull 34835155265](https://github.com/eppelas/aim-site-agent-evaluation/actions/runs/34835155265); local reports/latest/report.json is dated 2026-07-06. QA→Vasily cloud report handoff remains unverified according to the existing inventory.
+- Product-rules watcher, bug continuation, night design and full/element homepage generators are PAUSED in current automation.toml. Existing design-index and Blocks public links return HTTP 200. V3/Sanity, experimental Main and Wild remain distinct surfaces; no CMS migration is claimed.
+- Wild checkpoint `370d71b9449eaf2bbfce2c6b49b4e38426cded1e`, parent `abc1304e65bf52ac46c61f2fde3a7be23bb2c8cd`, [release 34837559824](https://github.com/eppelas/aimindset-main/actions/runs/34837559824) succeeded. Root verified all 85 public files and all three Google/public pages; subsequent versions are in the live manifest. Existing waitlist error is still under separate repair; no fixed/delivered claim is made here.
+- Password 0281 is explicitly authorized for the public Hub under details/summary. No new secret values, keys, personal identifiers or message content were added. Local review: http://localhost:5123/aim-site-hub/ ; phone http://172.20.10.9:5123/aim-site-hub/ .
+
+
 Structured source: `website-ops/bot-operating-rules.json`.
 
 These rules describe the current operating contract for AIM Website bots and
