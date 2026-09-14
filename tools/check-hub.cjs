@@ -27,8 +27,14 @@ const fs = require('node:fs');
       assert.equal(await details.locator('code').innerText(), '0281');
       assert.equal(await details.locator('code').isVisible(), true);
       await details.locator('summary').click();
+      for (const tab of await page.locator('[data-tab-link]').all()) {
+        await tab.scrollIntoViewIfNeeded();
+        const r = await tab.boundingBox();
+        assert(r && r.x >= -1 && r.x + r.width <= width + 1, 'Tab must be reachable within its horizontal scroller');
+      }
+      await page.locator('#domain-tabs').evaluate(n => { n.scrollLeft = 0; });
       const geometry = await page.evaluate(() => {
-        const selectors = '#wild-release,#main-current-release,[data-tab-link]';
+        const selectors = '#wild-release,#main-current-release,#domain-tabs';
         return {
           width: innerWidth, scrollWidth: document.documentElement.scrollWidth,
           elements: [...document.querySelectorAll(selectors)].filter(n => n.getClientRects().length).map(n => {
