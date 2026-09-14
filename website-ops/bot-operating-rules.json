@@ -16,7 +16,11 @@
         "Health endpoint https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/health must report mode=webhook, genaiProvider=vertex, vertexProjectConfigured=true, audioTranscriptionEnabled=true, stateGcsEnabled=true, linearConfigured=true, metrikaLeadDmAllowlistConfigured=true, metrikaLeadDmAllowlistCount=3, metrikaLeadDmManagerCount=4, and metrikaLeadDmDeliveryPaused=false in normal delivery mode.",
         "Telegram getWebhookInfo must point to https://aim-surikat-vasily-qpxb4cl6pq-uc.a.run.app/telegram and pending_update_count should normally be 0.",
         "Rollback is deleteWebhook, then launchctl enable/bootstrap ai.aim.surikat.bot."
-      ]
+      ],
+      "hubTitle": "Где работает Василий",
+      "hubBot": "Василий",
+      "hubScope": "Размещение",
+      "hubSummary": "@aim_surikat_bot принимает сообщения через Google Cloud Run. Пока включена облачная доставка, локальный процесс приёма Telegram должен быть выключен: сообщения обрабатывает один экземпляр бота."
     },
     {
       "id": "vasily-intake-scope",
@@ -39,7 +43,11 @@
         "Per-thread link aliases are learned from real URLs, Telegram text_link labels, explicit naming phrases, and URL-derived labels; later directly addressed owner commands can use the alias without repeating the URL, but alias memory is not task authorization by itself.",
         "If a report is clear, use the 👀 reaction instead of noisy text.",
         "If context is missing, ask for page/link, device/browser, screenshot, or expected behavior."
-      ]
+      ],
+      "hubTitle": "Сообщения об ошибках сайта",
+      "hubBot": "Василий",
+      "hubScope": "Обращения",
+      "hubSummary": "Василию можно передать ошибку страницы, формы, оплаты, ссылки или текста. В группе обращайтесь к нему прямо и приложите адрес страницы и описание проблемы. Голосовые сообщения он расшифровывает перед обработкой."
     },
     {
       "id": "vasily-durable-telegram-learned-state",
@@ -55,7 +63,11 @@
         "Vasily writes only to its own vasily/state prefix, never to sonya/state.",
         "OwnerRuntimeInstructions persist in bot-rules.local.json and are included in future LLM conversational and task prompts.",
         "If GCS hydrate fails while enabled, the webhook is acknowledged without changing behavior to avoid overwriting durable state from stale local /tmp files."
-      ]
+      ],
+      "hubTitle": "Как сохраняются настройки Василия",
+      "hubBot": "Василий",
+      "hubScope": "Память",
+      "hubSummary": "Принятые от владельца правила поведения, стиль ответов и настройки уведомлений хранятся в Google Cloud Storage. Они сохраняются при перезапуске и обновлении облачного бота."
     },
     {
       "id": "vasily-llm-conversation-layer",
@@ -71,7 +83,11 @@
         "Owner style feedback returns rules_style_updated and persists conversationalReplyStyle through the Vasily GCS state mirror.",
         "Generic owner runtime rules return rules_owner_instruction_updated and do not override Metrika DM allowlists, read-only audit limits, secrets, Linear, or deploy guards.",
         "Provider failures fall back to deterministic reply variants and deterministic task fallback; LLM semantic routing is the primary owner intent classifier for task-vs-conversation, pause/resume, bug report, and owner-rule update decisions when available."
-      ]
+      ],
+      "hubTitle": "Вопросы о сайте и ботах",
+      "hubBot": "Василий",
+      "hubScope": "Общение",
+      "hubSummary": "Василий отвечает на вопросы о сайте, проверках, формах, оплате и работе ботов. Прямое замечание владельца о стиле общения или правилах работы может стать настройкой для следующих ответов."
     },
     {
       "id": "vasily-llm-site-audit",
@@ -96,7 +112,11 @@
         "This immediate acceptance reply applies to LLM/QA task mode only; ordinary bug intake stays quiet with reactions or clarifying questions.",
         "Related Labs such as health/selfdev must be checked for stale or ending-soon dates, not only HTTP 200.",
         "The bot must never edit the site or push code from a Telegram audit command."
-      ]
+      ],
+      "hubTitle": "Проверка по просьбе владельца",
+      "hubBot": "Василий",
+      "hubScope": "Проверки сайта",
+      "hubSummary": "Прямая просьба владельца запускает ограниченную проверку страниц и ссылок. Ответ приходит в личный или исходный чат. Полный отчёт с браузерными снимками создаётся отдельной системой проверок сайта."
     },
     {
       "id": "vasily-linear-and-product-rules",
@@ -111,7 +131,11 @@
         "If LINEAR_API_KEY is missing, save to pending queue and do not drop the report.",
         "GitHub/GitHub Pages draft links are excluded surfaces unless the same issue is reproduced on staging/production.",
         "Payment discount logic must match product-rules.json."
-      ]
+      ],
+      "hubTitle": "Куда попадают задачи об ошибках",
+      "hubBot": "Василий",
+      "hubScope": "Linear",
+      "hubSummary": "Проект и команда Linear задаются в конфигурации бота. При смене проекта нужно обновить весь маршрут задач, включая статусы и метки. В задаче сохраняются ссылка на исходное сообщение и сведения для защиты от дубликатов."
     },
     {
       "id": "vasily-metrika-lead-dm-allowlist",
@@ -134,7 +158,11 @@
         "Future Metrika delivery code must call canSendMetrikaLeadDmTo() before sending any personal message.",
         "Non-owner Telegram attempts to change the allowlist are rejected; owner commands without concrete @usernames ask for exact recipients.",
         "Vasily /health must expose metrikaLeadDmAllowlistConfigured=true, metrikaLeadDmAllowlistCount=3, metrikaLeadDmManagerCount=4, and metrikaLeadDmDeliveryPaused=false in normal delivery mode."
-      ]
+      ],
+      "hubTitle": "Кому приходят заявки",
+      "hubBot": "Василий",
+      "hubScope": "Заявки с сайта",
+      "hubSummary": "Получатели уведомлений задаются утверждённым списком Telegram: @stavenski, @Irhen_N и @dan_named. Добавление получателя требует согласования владельца и подтверждённого чата с ботом. Настройки паузы доставки сохраняются между перезапусками."
     },
     {
       "id": "sonya-cloud-run-runtime",
@@ -154,7 +182,11 @@
         "Do not mix local getUpdates polling with Telegram webhook mode.",
         "Webhook idempotency must suppress duplicate Telegram update retries; if GCS state hydration fails, the webhook acknowledges and skips side effects instead of retrying a half-processed action loop.",
         "Protected admin/helper endpoints include /review-queue, /agent-link, /group-intro, /scan-candidates, and /conversation-log."
-      ]
+      ],
+      "hubTitle": "Где работает Соня",
+      "hubBot": "Соня",
+      "hubScope": "Размещение",
+      "hubSummary": "@aim_surikat_sonya_bot работает в Google Cloud Run в отдельном от Василия проекте. Медиа, каталог вариантов и оценки хранятся в облаке. Автоматическую отправку вариантов включают отдельно."
     },
     {
       "id": "shared-surikat-weekly-long-memory",
@@ -168,7 +200,11 @@
         "Соня сжимает оценки и разговоры: устойчивые вкусовые паттерны, причины высоких и низких оценок, направления keep/avoid и договорённости.",
         "Василий сжимает хвост аудита: повторяющиеся проблемы, созданные Linear-тикеты, стиль общения владельца, постоянные просьбы и ложные срабатывания.",
         "Сводка хранится примерно в пределах 2K символов и добавляется в основные рабочие промпты; технические вызовы вроде анализа медиа не обязаны получать этот контекст."
-      ]
+      ],
+      "hubTitle": "Как накапливается память ботов",
+      "hubBot": "Василий и Соня",
+      "hubScope": "Память",
+      "hubSummary": "После истечения семи дней первое новое сообщение запускает обновление накопленной сводки. Подтверждённые наблюдения переносятся в следующую сводку. При противоречии приоритет имеет новое сообщение владельца."
     },
     {
       "id": "sonya-design-memory",
@@ -187,7 +223,11 @@
         "Explicit low owner ratings override cached Sonya self-scores.",
         "Bug-like design/page feedback is handed to Vasily instead of creating Linear issues directly.",
         "Manual broad review means all unrated candidates for the requesting reviewer, paced by per-person limits; it does not dump the entire inventory or bypass already-rated filtering."
-      ]
+      ],
+      "hubTitle": "Как оценки влияют на новые варианты",
+      "hubBot": "Соня",
+      "hubScope": "Оценки дизайна",
+      "hubSummary": "Соня собирает оценки вариантов по шкале 0–10 и записывает пожелания: что сохранить, изменить или больше не повторять. Эти сведения используются при подготовке следующих вариантов дизайна."
     },
     {
       "id": "tikhon-role-boundary",
@@ -201,7 +241,11 @@
         "Публичное имя — Сурикат Тихон, техническое имя пакета — website-freshness-bot; весь код и доки лежат в Bots/Website Freshness Bot/.",
         "Рабочие чаты он не читает, краулера и LLM у него нет: снимок состояния собирается из настроенных URL и discovery-корней.",
         "В tikhon-state лежат три change set в статусе proposed (update-hero-card, promote-learning-row, replace-learning-row) и три обработанных Telegram update ID."
-      ]
+      ],
+      "hubTitle": "Что отслеживает Тихон",
+      "hubBot": "Тихон",
+      "hubScope": "Актуальность сайта",
+      "hubSummary": "Тихон сверяет опубликованные утверждения с источниками: набор на обучение, состав команды и назначения ссылок. Результат — список предлагаемых изменений со ссылками на источники. Сообщения о поломках передают Василию отдельно."
     },
     {
       "id": "tikhon-github-actions-runtime",
@@ -215,7 +259,11 @@
         "Ветка влита в main 19.08.2026, поэтому schedule наконец работает: GitHub запускает cron только с дефолтной ветки.",
         "План, в котором одни вопросы и ни одной правки, сам по себе владельца не дёргает.",
         "Сбой выгрузки Метрики записывается в состояние и показывается с недельной проверкой, а не каждый день заново."
-      ]
+      ],
+      "hubTitle": "Где запускается Тихон",
+      "hubBot": "Тихон",
+      "hubScope": "Размещение",
+      "hubSummary": "Проверки Тихона запускаются через GitHub Actions в репозитории ai-mindset-org/surikat-family. Расписание задаётся в workflow Surikat Tikhon freshness; его настройки определяют периодичность проверок и обработки сообщений."
     },
     {
       "id": "tikhon-owner-only-commands",
@@ -229,7 +277,11 @@
         "Команды: «проверь», «да», «покажи <id>», «описание <id> <текст>», «применить <id>», «отмена <id>».",
         "Обычный вопрос вроде «расскажи подробнее» не запускает правку: Тихон отвечает тем же отчётом и подсказывает следующий шаг.",
         "Стрелки и эмодзи со страницы в отчёт не переносятся; вместо внутреннего пути показывается ссылка на живую страницу."
-      ]
+      ],
+      "hubTitle": "Как согласовать изменения Тихона",
+      "hubBot": "Тихон",
+      "hubScope": "Согласование",
+      "hubSummary": "Владелец получает список расхождений, предлагаемый текст до и после правки и вопросы, требующие решения. Ответ «да» подтверждает единственный предложенный план и разрешает подготовить ветку с запросом на изменения в GitHub."
     },
     {
       "id": "tikhon-pr-only-write-path",
@@ -243,7 +295,11 @@
         "На 19.08.2026 PR ещё ни разу не создавался: в прогонах шаги создания токена App и PR пропущены, потому что ни один change set не подтверждён командой «применить».",
         "Правки ограничены whitelist полей: видимость, заголовок и дата верхних карточек и заголовок, дата, описание, ссылка, CTA строки «Обучения». Планировочный контекст — сезон по данным Learn и ссылка на источник — остаётся в личке владельца: ни в разметку страницы, ни в тело PR он не попадает.",
         "Неподтверждённый источник или несовпадение ожидаемого HTML превращаются в вопрос владельцу, а не в запись."
-      ]
+      ],
+      "hubTitle": "Как Тихон передаёт правки",
+      "hubBot": "Тихон",
+      "hubScope": "Изменения сайта",
+      "hubSummary": "После согласования Тихон повторно сверяет источники и создаёт отдельную ветку и pull request в eppelas/aimindset-main. Слияние и публикация сайта остаются отдельными действиями команды."
     },
     {
       "id": "tikhon-lab-lifecycle",
@@ -257,7 +313,11 @@
         "Одна лаборатория, упомянутая в нескольких местах, даёт одно обязательство со списком всех мест, а не пять сообщений.",
         "Канонической поверхностью набора считается ссылка из действующего блока набора на главной; похожие страницы остаются связанными, но не подменяют канонический URL по совпадению slug.",
         "Обнаружение страницы — это факт сайта, sitemap или краула, а не подтверждение индексации поисковиком; запись в каталоге Learn страницей лаборатории не считается. Первым отслеживаемым объектом был S26: старт 2026-08-03, контрольная дата снятия 2026-08-10."
-      ]
+      ],
+      "hubTitle": "Когда заканчивается набор",
+      "hubBot": "Тихон",
+      "hubScope": "Обучение",
+      "hubSummary": "До появления страницы лаборатории на сайте указываются сезон и год. После публикации страницы Тихон берёт её даты и ставит срок снятия набора: через семь дней после старта. Завершённый поток может перейти в итоги, архив или лист ожидания."
     },
     {
       "id": "tikhon-learning-catalog-and-hero",
@@ -271,7 +331,11 @@
         "Всё, что получено через Learn, помечается как planning: даты и landing URL отбрасываются, в отчёте это называется «запланирована», а не «сверено».",
         "Точные даты и CTA берутся только со страницы самой лаборатории или направления (marketing.aimindset.org, health.aimindset.org, ai-native.aimindset.org).",
         "Новая лаборатория в каталоге Learn, название которой не совпало ни с одним направлением (сверка по названию и алиасам, а не по id Learn), превращается в вопрос владельцу с конкретной безопасной правкой: добавить одну строку «Обучения» как waitlist, без дат и ссылки. После «да» строка вставляется с топиком и кодом направления; вставка отказывается работать, если строка с таким названием уже есть."
-      ]
+      ],
+      "hubTitle": "Лаборатории в каталоге обучения",
+      "hubBot": "Тихон",
+      "hubScope": "Обучение",
+      "hubSummary": "Из Learn можно брать сведения о запланированном потоке. Точные даты и ссылку на покупку берём с опубликованной страницы лаборатории. После завершения потока его направление остаётся в блоке обучения с листом ожидания."
     },
     {
       "id": "tikhon-team-reconciliation",
@@ -285,7 +349,11 @@
         "Ира и Саша не упоминаются в месячном вопросе. Расхождение: в коде reviewCadenceDays=30, а владелец в описании функционала называет 60 дней — интервал нужно подтвердить.",
         "Ровно один вопрос уровня списка, без отдельных вопросов и суждений о людях.",
         "Рабочий чат может помочь выбрать спокойный момент для сверки, но не превращается в рейтинг активности сотрудников."
-      ]
+      ],
+      "hubTitle": "Как сверяется состав команды",
+      "hubBot": "Тихон",
+      "hubScope": "Команда",
+      "hubSummary": "Раз в 30 дней Тихон предлагает владельцу сверить список опубликованных имён и их написание. Из переписки он не делает выводов о найме, уходе или необходимости убрать человека с сайта."
     },
     {
       "id": "tikhon-link-watch",
@@ -299,7 +367,11 @@
         "Ответ 200 недостаточен, если изменился конечный адрес редиректа или смысл назначения.",
         "Места-источники и даты сохраняются как доказательства.",
         "Подтверждённые дефекты сайта передаются Василию/Linear вместо параллельного трекера."
-      ]
+      ],
+      "hubTitle": "Повторяющиеся ссылки",
+      "hubBot": "Тихон",
+      "hubScope": "Ссылки",
+      "hubSummary": "Правило проверки — раз в неделю сверять повторяющиеся ссылки, конечный адрес после перенаправлений и обещание в тексте. Ссылка на прошлый поток считается устаревшей, даже если страница открывается."
     },
     {
       "id": "tikhon-waitlist-metrika",
@@ -313,7 +385,11 @@
         "Проверка не имитирует заявку посетителя и не отправляет лид через Василия или Cloud Run.",
         "19.08.2026 живая главная отдаёт полный контракт: четыре кнопки с data-waitlist-topic и data-waitlist-code, счётчик 106857835 и обе цели. Проверка Тихона по этому пункту больше не жалуется; ежедневный отчёт появится, когда в Logs API придут первые события.",
         "Сбой контракта даёт одно дедуплицированное review-сообщение владельцу, а не поток алертов."
-      ]
+      ],
+      "hubTitle": "Заявки и события Метрики",
+      "hubBot": "Тихон",
+      "hubScope": "Заявки с сайта",
+      "hubSummary": "Тихон получает события листа ожидания из Метрики и следит за их учётом. Сама форма Wild отправляет заявку через отдельный сервис Василия; этот путь и наблюдение в Метрике работают как разные части системы."
     },
     {
       "id": "tikhon-state-privacy",
@@ -327,7 +403,11 @@
         "Объёмы ограничены: 500 последних update ID, 100 change sets, 2000 фингерпринтов Метрики, 500 записей журнала.",
         "GITHUB_TOKEN семейного репозитория пишет только эту state-ветку; токен GitHub App создаётся временно и только под одобренный PR.",
         "Конкурентные прогоны Action сериализованы, чтобы состояние не разъезжалось."
-      ]
+      ],
+      "hubTitle": "Как Тихон хранит состояние",
+      "hubBot": "Тихон",
+      "hubScope": "Хранение данных",
+      "hubSummary": "Служебное состояние хранится в ветке tikhon-state: отметки обработанных событий, контрольные суммы источников и краткий журнал действий. Тексты сообщений, контакты из форм и секреты туда не записываются."
     },
     {
       "id": "site-qa-worker-reports-to-vasily",
@@ -341,7 +421,11 @@
         "Быстрый owner-аудит Василия из Telegram — это ограниченный обход HTML и ссылок, а не CLI QA-репозитория: он не создаёт report.json, baseline, Playwright-скриншоты или dashboard.",
         "Полного transaction runner, который кликает CTA, заполняет форму и подтверждает оплату, в текущем src/ нет: проверяются ссылки и их назначения.",
         "QA findings не маршрутизируются в Linear автоматически: Linear появляется через intake и решение Василия."
-      ]
+      ],
+      "hubTitle": "Проверки ссылок и отображения",
+      "hubBot": "Проверки сайта",
+      "hubScope": "Отчёты QA",
+      "hubSummary": "AIM Site Agent Evaluation — отдельный проект для проверки ссылок, кнопок, дат и отображения страниц в браузерах. Он сохраняет отчёты и дашборды. Перечень проверяемых страниц задаётся в его конфигурации."
     },
     {
       "id": "shared-bot-safety",
@@ -356,7 +440,11 @@
         "Do not publish remote changes without the required review/push authorization path.",
         "Every meaningful bot rule or architecture change must update website-ops/bot-operating-rules.json first; the Website Hub summary is regenerated from that source by local-preview/sync-bot-operating-rules-summary.mjs and the local preview auto-sync.",
         "Keep bot behavior changes synchronized across code, README/runtime docs, update rules, Hub, and TASK_VERIFICATION_CANVAS.md."
-      ]
+      ],
+      "hubTitle": "Доступы и публикация изменений",
+      "hubBot": "Василий, Соня и Тихон",
+      "hubScope": "Общие правила",
+      "hubSummary": "Секреты хранятся отдельно от репозиториев. Изменения сайта проходят согласованный путь проверки и публикации. При изменении роли или поведения бота вместе с кодом обновляют его инструкцию и описание в Site Hub."
     },
     {
       "id": "vasily-qa-status-answer-broken",
@@ -370,7 +458,11 @@
         "Пока облачного отчёта нет, Василий отвечает fallback-текстом и не имеет права утверждать, что полный visual QA выполнен.",
         "Один reports/latest/report.json перезаписывается последним режимом: выбирать отдельный latest для production, staging или AI Native Василий не умеет.",
         "Автоматического канала «каждый finding → Василий → Linear» нет намеренно: один неудачный прогон не должен молча создать десятки задач."
-      ]
+      ],
+      "hubTitle": "Где смотреть полный отчёт",
+      "hubBot": "Василий",
+      "hubScope": "Отчёты QA",
+      "hubSummary": "Полный результат браузерной проверки находится в дашборде AIM Site Agent Evaluation. Передача свежего полного отчёта в облачного Василия не подтверждена; его ответ в Telegram не заменяет этот дашборд."
     },
     {
       "id": "vasily-ownership-and-autonomy",
@@ -384,7 +476,11 @@
         "При потере мака Telegram token восстанавливается через BotFather, всё остальное поднимается из GitHub, Secret Manager и GCS.",
         "Опционально: GitHub Action deploy-on-push в surikat-family — нужен ключ deploy-SA в GitHub Secrets.",
         "Перенос на командный биллинг и командные ключи — отдельная незакрытая задача."
-      ]
+      ],
+      "hubTitle": "Код и доступы Василия",
+      "hubBot": "Василий",
+      "hubScope": "Ответственность команды",
+      "hubSummary": "Код и инструкции хранятся в ai-mindset-org/surikat-family. Облачный проект и ключи сервисов привязаны к доступам владельца; перевод на командные доступы и оплату оформляется отдельно."
     },
     {
       "id": "sonya-paused-status",
@@ -398,7 +494,12 @@
         "Дашборд с вариантами элементов и главной остаётся полезным артефактом: варианты можно доводить и брать на сайт.",
         "Возобновление имеет смысл только вместе с договорённостью команды регулярно оценивать присланное.",
         "Перед возобновлением генераторов перепроверить их доступы, бюджет и критерии отбора."
-      ]
+      ],
+      "hubTitle": "Автоматические подборки дизайна",
+      "hubBot": "Соня",
+      "hubScope": "Приостановлено",
+      "hubSummary": "На 14 сентября 2026 года ночная генерация вариантов главной страницы и элементов приостановлена. Архив вариантов и накопленные оценки доступны для работы. Возобновление подборок требует отдельной договорённости о регулярной оценке."
     }
-  ]
+  ],
+  "hubPresentationUpdatedAt": "2026-09-14"
 }

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Аналитика AIM Website</title>
+    <title>Аналитика · настройки и история | AIM Site Hub</title>
     <style>
       :root {
         color-scheme: dark;
@@ -361,6 +361,7 @@
           font-size: clamp(36px, 15vw, 58px);
         }
       }
+    h1 { overflow-wrap: anywhere; } .hero > * { min-width: 0; }
     </style>
   </head>
   <body>
@@ -381,16 +382,17 @@
       <section class="hero">
         <div>
           <p class="kicker">Метрика / Вебвизор / UTM</p>
-          <h1>Аналитика</h1>
+          <h1>Аналитика: настройки и история</h1>
         </div>
         <div>
+          <p class="lead">Справка по прежнему контуру главной, AI Native и S26. Описанные подключения и ограничения относятся к сохранённой настройке июля 2026; текущее состояние счётчиков и доступов здесь не перепроверено.</p>
           <p class="lead">
             Главная aimindset.org живёт в отдельном счётчике. AI Native и S26 используют
             общий лабораторный счётчик и разделяются по URL лендинга и product_code на оплате.
           </p>
           <div class="actions">
-            <a class="action" href="metrika-report.html">открыть аналитический отчёт</a>
-            <a class="action" href="md.html?f=website-ops/analytics-current-setup.md">текущая настройка</a>
+            <a class="action" href="metrika-report.html">отчёт за 7–14 июля 2026</a>
+            <a class="action" href="md.html?f=website-ops/analytics-current-setup.md">сохранённая настройка</a>
             <a class="action" href="md.html?f=website-ops/analytics-rules.md">правила отчетов</a>
             <a class="action" href="md.html?f=website-ops/analytics-surface-map.md">карта счетчиков</a>
             <a class="action" href="md.html?f=website-ops/utm-link-table.md">markdown-таблица</a>
@@ -409,7 +411,7 @@
             <h3>Главная aimindset.org</h3>
             <p class="summary">
               Посещения и поведение на главной. Не смешивается с лабораторной оплатой.
-              Счётчик установлен на live, но текущий API-ключ хаба не имеет к нему доступа.
+              В сохранённой проверке июля 2026 счётчик был установлен на сайте, но API-доступ Hub отсутствовал. Текущий доступ требует отдельной проверки.
             </p>
             <div class="actions">
               <a class="action" href="https://metrica.yandex.com/overview?id=102211004" target="_blank" rel="noopener noreferrer">открыть счётчик главной</a>
@@ -429,11 +431,11 @@
             </div>
           </article>
           <article class="card">
-            <div class="label-row"><span class="pill">нужно подключить лендинг</span><span class="pill">s26_main</span></div>
+            <div class="label-row"><span class="pill">проверка июля 2026</span><span class="pill">s26_main</span></div>
             <h3>S26</h3>
             <p class="summary">
               Оплата уже разделяется по product_code=s26_main в счётчике 106857835.
-              На живом лендинге S26 счётчик пока не найден, поэтому просмотры и CTA ещё теряются.
+              В проверке июля 2026 счётчик на лендинге S26 не был найден. Это историческое наблюдение, а не подтверждение нынешней потери просмотров и нажатий.
             </p>
             <div class="actions">
               <a class="action" href="https://metrica.yandex.com/overview?id=106857835" target="_blank" rel="noopener noreferrer">открыть общий счётчик</a>
@@ -454,7 +456,7 @@
             <h3>Общий контур лабораторий + оплата</h3>
             <p class="summary">
               Счётчик 106857835 собирает подтверждённые данные AI Native и общие payment-события.
-              Каждый новый лендинг нужно подключать отдельно; S26 пока виден только на этапе /pay.
+              Каждый новый лендинг нужно подключать отдельно; в сохранённой проверке июля 2026 S26 был виден только на этапе /pay.
             </p>
           </article>
           <article class="card">

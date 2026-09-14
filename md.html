@@ -211,6 +211,7 @@
         #content.payment-guide .faq-item { padding: 19px 17px 20px; border-radius: 10px; }
         #content.payment-guide .faq-question { font-size: 15px; margin-bottom: 12px; }
       }
+    .brand { min-width: 0; max-width: 100%; } #doc-title { overflow-wrap: anywhere; } .brand-mark { flex-shrink: 0; } #content { min-width: 0; overflow-wrap: anywhere; }
     </style>
   </head>
   <body>
@@ -332,7 +333,8 @@
       }
       const safe = file && !/^([a-z]+:)?\/\//i.test(file) && !file.includes('..');
       if (!safe) {
-        content.innerHTML = '<p class="err">Не указан файл или путь недопустим. Пример: md.html?f=website-ops/qa-weekly-digest.md</p>';
+        content.innerHTML = '<h1>Выберите документ</h1><p>Откройте нужную инструкцию из справочника сайта.</p><p><a href="index.html">Вернуться в Site Hub</a></p>';
+        document.querySelector('#download-link').hidden = true;
       } else {
         document.querySelector('#doc-path').textContent = file;
         const dl = document.querySelector('#download-link');
@@ -342,6 +344,12 @@
           .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.text(); })
           .then((text) => {
             content.innerHTML = renderMd(text);
+            const historicalDocument = /(?:2026-07|2025-2026|sanity|vibecode|create-lab-from-md|common_content)/i.test(file);
+            if (historicalDocument) {
+              const notice = document.createElement('p');
+              notice.textContent = 'Архив прежнего процесса или периода. Документ сохранён для справки; его инструкции не заменяют текущий порядок работы с финальной версией Wild.';
+              content.prepend(notice);
+            }
             const tariffHeading = content.querySelector('#коды-тарифов');
             let tariffTable = tariffHeading?.nextElementSibling || null;
             while (tariffTable && tariffTable.tagName !== 'TABLE') tariffTable = tariffTable.nextElementSibling;

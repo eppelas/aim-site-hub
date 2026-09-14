@@ -21,6 +21,11 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
+      - name: Verify generated reference cards
+        run: |
+          node tools/sync-product-rules-summary.mjs --check
+          node tools/sync-bot-operating-rules-summary.mjs --check
+          node tools/sync-tool-registry-summary.mjs --check
       - name: Install browser test runtime
         run: |
           npm install --prefix "$RUNNER_TEMP/hub-qa" --no-package-lock playwright@1.55.0

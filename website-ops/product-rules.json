@@ -107,7 +107,10 @@
         "Payment popup tests should cover alumni_only, promo_only, alumni_and_promo, alumni_and_crypto, promo_and_crypto, and alumni_promo_and_crypto.",
         "Website Hub should expose this rule in Product Rules and Pipelines.",
         "Surikat docs should link to this rule before answering payment-rule questions."
-      ]
+      ],
+      "hubTitle": "Сочетание скидок в V3",
+      "hubScope": "Архив V3 · оплата",
+      "hubSummary": "В старой платёжной форме скидка Alumni заменяет промокод. Скидка 5% за оплату USDT может применяться вместе с одной из них. Это описание реализации V3, сохранённое в июле 2026 года."
     },
     {
       "id": "case-source-fidelity",
@@ -169,7 +172,10 @@
         "Every new or materially updated case should have a Case Source Fidelity Reviewer pass before local review handoff.",
         "For YouTube-sourced cases, reviewer notes should explicitly confirm screenshots, speaker portrait, transcript/video claims, and technology list evidence.",
         "Website Hub should expose this rule in Product Rules and Pipelines so future agents can find it."
-      ]
+      ],
+      "hubTitle": "Источники для кейсов",
+      "hubScope": "Контент · кейсы",
+      "hubSummary": "Текст, инструменты, результаты и иллюстрации кейса берём из материалов именно этого проекта. Кадры должны показывать продукт или процесс; факты и технологии из соседних историй не переносим."
     },
     {
       "id": "payment-display-equals-charge",
@@ -184,7 +190,10 @@
         "For any product code, discount-check amounts {eur, rub, usdt} must match what each provider actually charges after the same discounts.",
         "Rounded values appear only once at the end of the chain: RUB integer, USDT integer, no intermediate rounding."
       ],
-      "sourceOfTruth": "website-ops/product-rules.json"
+      "sourceOfTruth": "website-ops/product-rules.json",
+      "hubTitle": "Цена на странице и сумма оплаты",
+      "hubScope": "Правила оплаты · июнь 2026",
+      "hubSummary": "По согласованной схеме показанная цена и сумма у платёжного провайдера рассчитываются по одному курсу и одной цепочке скидок. Округление выполняется в конце; приблизительная сумма в USDT отмечается знаком ≈."
     },
     {
       "id": "payment-tariff-overlap-switchover",
@@ -199,7 +208,10 @@
         "During any tariff switch, at least one payable tariff for the lab must return a valid price from discount-check at all times.",
         "Payment QA should re-run the purchase path immediately after any tariff config change in NocoDB."
       ],
-      "sourceOfTruth": "website-ops/product-rules.json"
+      "sourceOfTruth": "website-ops/product-rules.json",
+      "hubTitle": "Переключение тарифов",
+      "hubScope": "Правила оплаты · июль 2026",
+      "hubSummary": "Сначала включаем новый тариф и проверяем возможность оплаты. Старый тариф сохраняем, пока новый не заработает; индивидуальные условия для участников оформляются вручную."
     },
     {
       "id": "product-code-source-of-truth",
@@ -214,7 +226,10 @@
         "Every product_code used on a page or in a lab MD import must exist in NocoDB Lab Config (site-list-products / discount-check confirm it).",
         "Tariff-code lookup should be case-insensitive end to end; until the n8n root fix is confirmed, keep catalog keys lowercase."
       ],
-      "sourceOfTruth": "website-ops/product-rules.json"
+      "sourceOfTruth": "website-ops/product-rules.json",
+      "hubTitle": "Откуда брать цены и коды продуктов",
+      "hubScope": "Правила оплаты · май–июль 2026",
+      "hubSummary": "В описанной платёжной системе цены, тарифы и коды продуктов берутся из таблицы Lab Config в NocoDB. Коды нельзя придумывать по названию страницы. Корпоративные условия оформляются через команду."
     },
     {
       "id": "testimonials-consent-scope",
@@ -229,7 +244,10 @@
         "No testimonial from the site set appears in emails, decks, or ads without recorded new consent.",
         "No page visually links the Raiffeisen logo to a specific testimonial or employee name."
       ],
-      "sourceOfTruth": "website-ops/product-rules.json"
+      "sourceOfTruth": "website-ops/product-rules.json",
+      "hubTitle": "Где можно использовать отзывы",
+      "hubScope": "Контент · согласия 2026",
+      "hubSummary": "Отзывы из набора AI Native согласованы для сайта. Для рассылок, презентаций и рекламы нужно отдельное согласие автора. У кейсов может быть другой объём разрешений; логотип компании нельзя связывать с конкретным отзывом без согласования."
     },
     {
       "id": "staff-analytics-exclusion",
@@ -244,7 +262,10 @@
         "QA/bot browser profiles set aim_staff=on before crawling production or staging.",
         "Metrika sessions from team devices and agent runs do not appear in funnel numbers."
       ],
-      "sourceOfTruth": "website-ops/product-rules.json"
+      "sourceOfTruth": "website-ops/product-rules.json",
+      "hubTitle": "Исключение команды из статистики",
+      "hubScope": "Архив · аналитика 2026",
+      "hubSummary": "В прежних версиях AI Native и staging сотрудники и браузеры агентов исключались из Метрики через ссылку с aim_staff=on. Ссылки и срок cookie сохранены в полном правиле; для новой версии способ исключения нужно сверять с её настройками аналитики."
     },
     {
       "id": "sanity-agent-access",
@@ -259,7 +280,10 @@
         "Sanity access review: only Rakitin + team account hold Admin; agent tokens are Viewer/read-only.",
         "New vibecode lab pages appear under staging.aimindset.org/labs-custom/* and update on Sanity publish."
       ],
-      "sourceOfTruth": "website-ops/product-rules.json"
+      "sourceOfTruth": "website-ops/product-rules.json",
+      "hubTitle": "Доступ агентов к Sanity",
+      "hubScope": "Архив · Sanity",
+      "hubSummary": "В прежней архитектуре агенты получали только чтение Sanity. Связанные с CMS страницы находились в общем репозитории, чтобы работала публикация по событию из Sanity. Это история старой схемы; Google-редактор Wild устроен отдельно."
     },
     {
       "id": "site-entities-notification",
@@ -274,7 +298,11 @@
         "Every new collaborator or agent with repo/Sanity/analytics access maps to an introduction message in the site chat.",
         "Hub registries (bots, tools, rules) are updated when such an entity becomes permanent."
       ],
-      "sourceOfTruth": "website-ops/product-rules.json"
+      "sourceOfTruth": "website-ops/product-rules.json",
+      "hubTitle": "Новые участники и сервисы",
+      "hubScope": "Работа команды",
+      "hubSummary": "При подключении к сайту нового человека, агента, репозитория или сервиса сообщаем об этом в рабочем чате сайта. Команда должна понимать его назначение, доступы и ответственность."
     }
-  ]
+  ],
+  "hubPresentationUpdatedAt": "2026-09-14"
 }
