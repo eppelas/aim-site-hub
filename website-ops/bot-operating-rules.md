@@ -2,7 +2,7 @@
 
 ## 2026-09-14 · Ops inventory verification
 
-Update: waitlist origin block fixed live in relay revision 00018-7kw; unknown origin403 remains enforced. Two explicitly authorized, clearly marked test leads were sent on 2026-09-14: one API test at 12:06 UTC and one real Google Wild browser-button test at 16:00 UTC. Each returned 3 deliveries and 0 failures. The browser showed success, cleared inputs, re-enabled the button and closed the dialog. Eight intercepted UI cases across Google/Pages, home/NGO and desktop/mobile passed validation, error/retry and success with zero page errors and no additional leads.
+Update: waitlist origin block fixed live in relay revision 00018-7kw; unknown origin403 remains enforced. Two explicitly authorized, clearly marked test leads were sent on 2026-09-14: one API test at 12:06 UTC and one real Google Wild browser-button test at 16:00 UTC. Each returned 3 deliveries and 0 failures. The browser showed success, cleared inputs and re-enabled the submit button; the separate close button also worked. Eight intercepted UI cases across Google/Pages, home/NGO and desktop/mobile passed validation, error/retry and success with zero page errors and no additional leads.
 
 - Scope: AIM bot inventory was read-only, except the two explicitly authorized waitlist tests described above. No other bot commands or test leads were sent. Canonical registries and Hub mirrors are reconciled.
 - Vasily and Sonya public health endpoints: HTTP 200. This verifies process availability only; Telegram delivery, Linear issue creation and design delivery were not exercised. The payment relay readiness configuration reports three active recipients and paused=false; it is separate from Tikhon and is not a lead-delivery receipt.
