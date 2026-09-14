@@ -1860,49 +1860,6 @@
 
       </nav>
 
-      <section class="section" id="current" data-tab="overview"><div class="section-head"><h2>Основные ссылки</h2></div><div class="grid primary-sites"><article class="card green" id="wild-release" data-search-item>
-      <div class="label-row"><span class="pill">Google · редактор</span></div>
-      <h3>Редактировать тексты в Google</h3><div class="summary">Главная, «Для команд» и non-profit с редактором. Откройте страницу на компьютере, нажмите «править» и введите пароль. Сохранение отправляет текст в GitHub и обновляет обе версии.<details class="editor-password"><summary>Пароль редактора</summary><p><code>0281</code></p></details></div>
-      <div class="actions"><a class="action" href="https://aimindset-wild.web.app/" target="_blank" rel="noopener noreferrer">Главная</a><a class="action" href="https://aimindset-wild.web.app/ai-mindset-consulting/" target="_blank" rel="noopener noreferrer">Для команд</a><a class="action" href="https://aimindset-wild.web.app/non-profit/" target="_blank" rel="noopener noreferrer">Non-profit</a></div>
-    </article><article class="card " id="wild-source-release" data-search-item>
-      <div class="label-row"><span class="pill">Wild · финальная версия</span></div>
-      <h3>Финальный Wild в GitHub</h3><div class="summary">Принятая новая версия сайта. Исходники пока в личном GitHub Виолы, в ветке <code>wild</code>. Перенос на основной сервер ещё впереди. Предпросмотр показывает эту версию без редактора.</div>
-      <div class="actions"><a class="action" href="https://github.com/eppelas/aimindset-main/tree/wild" target="_blank" rel="noopener noreferrer">Исходники Wild</a><a class="action" href="https://eppelas.github.io/aimindset-main/wild/" target="_blank" rel="noopener noreferrer">Предпросмотр Wild</a></div>
-    </article><article class="card " id="production-release" data-search-item>
-      <div class="label-row"><span class="pill">Основной адрес</span></div>
-      <h3>Действующий сайт на сервере</h3><div class="summary">Сайт, которым сейчас пользуются посетители по основному адресу aimindset.org. Публикация Wild в Google или GitHub сама по себе не заменяет сайт на этом сервере.</div>
-      <div class="actions"><a class="action" href="https://aimindset.org/" target="_blank" rel="noopener noreferrer">Открыть aimindset.org</a></div>
-    </article></div></section><section class="section" id="architecture" data-tab="overview"><div class="section-head"><h2>Как устроен сайт</h2></div><div class="grid guide-grid"><article class="card "  data-search-item>
-
-      <h3>Текст: Google ↔ GitHub</h3><div class="summary"><ol><li>Вы сохраняете текст в Google-редакторе.</li><li>Автоматика создаёт коммит в ветке <code>wild</code>, без PR.</li><li>GitHub Actions пересобирает Google-версию и предпросмотр Wild.</li></ol><p>Коммит кода в Wild также обновляет Google. При сохранении дождитесь подтверждения публикации в редакторе: «записано в HTML» обозначает только первый этап. При ошибке используйте повтор синхронизации.</p></div>
-      <div class="actions"><a class="action" href="https://github.com/eppelas/aimindset-main/actions" target="_blank" rel="noopener noreferrer">История сохранений и публикаций</a><a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/docs/team-handoff.md" target="_blank" rel="noopener noreferrer">Инструкция по синхронизации</a></div>
-    </article><article class="card "  data-search-item>
-
-      <h3>Общие элементы — у родителя</h3><div class="summary"><p><code>aim-web-platform</code> хранит верхнее меню, футер и блок обучения. Сейчас к нему подключён один репозиторий <code>aimindset-main</code>, ветка <code>wild</code>, с пятью страницами.</p><p>Обычная работа над страницей не разрешает менять структуру, тексты, ссылки или порядок общих элементов. Их меняют отдельной задачей в родителе через специальный скилл. Зависимые страницы получают принятую версию при пересборке.</p></div>
-      <div class="actions"><a class="action" href="https://github.com/eppelas/aim-web-platform" target="_blank" rel="noopener noreferrer">Родитель компонентов</a><a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/MANDATORY_INSTRUCTIONS.md" target="_blank" rel="noopener noreferrer">Обязательная инструкция</a></div>
-    </article><article class="card "  data-search-item>
-
-      <h3>Что принадлежит странице</h3><div class="summary"><p>Собственные тексты, блоки и необязательное подменю. Полоса «кто мы / команда / подход / …» на главной — такое подменю; её подписи доступны в Google-редакторе.</p><p>Цвета и размеры общей оболочки меняют только через разрешённые параметры оформления. Локально прятать или подменять верхнее меню, футер и обучение нельзя.</p></div>
-      <div class="actions"><a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/MANDATORY_INSTRUCTIONS.md" target="_blank" rel="noopener noreferrer">Границы изменений</a></div>
-    </article><article class="card "  data-search-item>
-
-      <h3>Как добавить новую страницу</h3><div class="summary"><p>Дайте агенту доступ на чтение к родителю и обязательную инструкцию. Подключите общие элементы через готовый адаптер и скилл <code>connect-page</code>.</p><p>В репозитории страницы появится связанная копия инструкции. Она обновляется вместе с версией родителя; проверки сборки обнаруживают несоответствие. Порядок подключения и передачи в командный GitHub описан в инструкции.</p></div>
-      <div class="actions"><a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/skills/connect-page/SKILL.md" target="_blank" rel="noopener noreferrer">Подключение страницы</a><a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/docs/team-handoff.md" target="_blank" rel="noopener noreferrer">Передача команде</a></div>
-    </article></div></section><section class="section" id="team-shortcuts" data-tab="overview"><div class="section-head"><h2>Рабочие инструкции</h2></div><div class="grid compact-cards"><article class="card "  data-search-item>
-
-      <h3>Сообщить о проблеме</h3><div class="summary">Василию нужны ссылка на страницу, описание проблемы и, если это ошибка отображения, устройство и скриншот.</div>
-      <div class="actions"><a class="action" href="https://t.me/aim_surikat_bot" target="_blank" rel="noopener noreferrer">Василий в Telegram</a><a class="action" href="#qa">Боты и проверки</a></div>
-    </article><article class="card "  data-search-item>
-
-      <h3>Посмотреть посещения и заявки</h3><div class="summary">Счётчики, цели и правила UTM-ссылок. Для новых данных открывайте Метрику; сохранённые отчёты имеют свой период.</div>
-      <div class="actions"><a class="action" href="analytics.html">Аналитика</a></div>
-    </article><article class="card "  data-search-item>
-
-      <h3>Найти предыдущую версию</h3><div class="summary">Старые Main и V3, staging, Sanity, история изменений и архив дизайнов.</div>
-      <div class="actions"><a class="action" href="#site-archive">История и архив</a></div>
-    </article></div></section>
-
-
       <section class="section" id="system-map-section" data-tab="overview"><div class="section-head"><h2>Связи и инструменты</h2></div><div class="hero-panel hero-map-panel">
           <div class="system-map" aria-label="Кликабельная карта зависимостей AIM Website">
             <div class="map-head">
@@ -2126,7 +2083,52 @@
               </span>
             </a>
           </div>
-        </div></section><section class="section" id="analytics" data-tab="analytics">
+        </div></section>
+
+      <section class="section" id="current" data-tab="overview"><div class="section-head"><h2>Основные ссылки</h2></div><div class="grid primary-sites"><article class="card green" id="wild-release" data-search-item>
+      <div class="label-row"><span class="pill">Google · редактор</span></div>
+      <h3>Редактировать тексты в Google</h3><div class="summary">Главная, «Для команд» и non-profit с редактором. Откройте страницу на компьютере, нажмите «править» и введите пароль. Сохранение отправляет текст в GitHub и обновляет обе версии.<details class="editor-password"><summary>Пароль редактора</summary><p><code>0281</code></p></details></div>
+      <div class="actions"><a class="action" href="https://aimindset-wild.web.app/" target="_blank" rel="noopener noreferrer">Главная</a><a class="action" href="https://aimindset-wild.web.app/ai-mindset-consulting/" target="_blank" rel="noopener noreferrer">Для команд</a><a class="action" href="https://aimindset-wild.web.app/non-profit/" target="_blank" rel="noopener noreferrer">Non-profit</a></div>
+    </article><article class="card " id="wild-source-release" data-search-item>
+      <div class="label-row"><span class="pill">Wild · финальная версия</span></div>
+      <h3>Финальный Wild в GitHub</h3><div class="summary">Принятая новая версия сайта. Исходники пока в личном GitHub Виолы, в ветке <code>wild</code>. Перенос на основной сервер ещё впереди. Предпросмотр показывает эту версию без редактора.</div>
+      <div class="actions"><a class="action" href="https://github.com/eppelas/aimindset-main/tree/wild" target="_blank" rel="noopener noreferrer">Исходники Wild</a><a class="action" href="https://eppelas.github.io/aimindset-main/wild/" target="_blank" rel="noopener noreferrer">Предпросмотр Wild</a></div>
+    </article><article class="card " id="production-release" data-search-item>
+      <div class="label-row"><span class="pill">Основной адрес</span></div>
+      <h3>Действующий сайт на сервере</h3><div class="summary">Сайт, которым сейчас пользуются посетители по основному адресу aimindset.org. Публикация Wild в Google или GitHub сама по себе не заменяет сайт на этом сервере.</div>
+      <div class="actions"><a class="action" href="https://aimindset.org/" target="_blank" rel="noopener noreferrer">Открыть aimindset.org</a></div>
+    </article></div></section><section class="section" id="architecture" data-tab="overview"><div class="section-head"><h2>Как устроен сайт</h2></div><div class="grid guide-grid"><article class="card "  data-search-item>
+
+      <h3>Текст: Google ↔ GitHub</h3><div class="summary"><ol><li>Вы сохраняете текст в Google-редакторе.</li><li>Автоматика создаёт коммит в ветке <code>wild</code>, без PR.</li><li>GitHub Actions пересобирает Google-версию и предпросмотр Wild.</li></ol><p>Коммит кода в Wild также обновляет Google. При сохранении дождитесь подтверждения публикации в редакторе: «записано в HTML» обозначает только первый этап. При ошибке используйте повтор синхронизации.</p></div>
+      <div class="actions"><a class="action" href="https://github.com/eppelas/aimindset-main/actions" target="_blank" rel="noopener noreferrer">История сохранений и публикаций</a><a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/docs/team-handoff.md" target="_blank" rel="noopener noreferrer">Инструкция по синхронизации</a></div>
+    </article><article class="card "  data-search-item>
+
+      <h3>Общие элементы — у родителя</h3><div class="summary"><p><code>aim-web-platform</code> хранит верхнее меню, футер и блок обучения. Сейчас к нему подключён один репозиторий <code>aimindset-main</code>, ветка <code>wild</code>, с пятью страницами.</p><p>Обычная работа над страницей не разрешает менять структуру, тексты, ссылки или порядок общих элементов. Их меняют отдельной задачей в родителе через специальный скилл. Зависимые страницы получают принятую версию при пересборке.</p></div>
+      <div class="actions"><a class="action" href="https://github.com/eppelas/aim-web-platform" target="_blank" rel="noopener noreferrer">Родитель компонентов</a><a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/MANDATORY_INSTRUCTIONS.md" target="_blank" rel="noopener noreferrer">Обязательная инструкция</a></div>
+    </article><article class="card "  data-search-item>
+
+      <h3>Что принадлежит странице</h3><div class="summary"><p>Собственные тексты, блоки и необязательное подменю. Полоса «кто мы / команда / подход / …» на главной — такое подменю; её подписи доступны в Google-редакторе.</p><p>Цвета и размеры общей оболочки меняют только через разрешённые параметры оформления. Локально прятать или подменять верхнее меню, футер и обучение нельзя.</p></div>
+      <div class="actions"><a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/MANDATORY_INSTRUCTIONS.md" target="_blank" rel="noopener noreferrer">Границы изменений</a></div>
+    </article><article class="card "  data-search-item>
+
+      <h3>Как добавить новую страницу</h3><div class="summary"><p>Дайте агенту доступ на чтение к родителю и обязательную инструкцию. Подключите общие элементы через готовый адаптер и скилл <code>connect-page</code>.</p><p>В репозитории страницы появится связанная копия инструкции. Она обновляется вместе с версией родителя; проверки сборки обнаруживают несоответствие. Порядок подключения и передачи в командный GitHub описан в инструкции.</p></div>
+      <div class="actions"><a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/skills/connect-page/SKILL.md" target="_blank" rel="noopener noreferrer">Подключение страницы</a><a class="action" href="https://github.com/eppelas/aim-web-platform/blob/main/docs/team-handoff.md" target="_blank" rel="noopener noreferrer">Передача команде</a></div>
+    </article></div></section><section class="section" id="team-shortcuts" data-tab="overview"><div class="section-head"><h2>Рабочие инструкции</h2></div><div class="grid compact-cards"><article class="card "  data-search-item>
+
+      <h3>Сообщить о проблеме</h3><div class="summary">Василию нужны ссылка на страницу, описание проблемы и, если это ошибка отображения, устройство и скриншот.</div>
+      <div class="actions"><a class="action" href="https://t.me/aim_surikat_bot" target="_blank" rel="noopener noreferrer">Василий в Telegram</a><a class="action" href="#qa">Боты и проверки</a></div>
+    </article><article class="card "  data-search-item>
+
+      <h3>Посмотреть посещения и заявки</h3><div class="summary">Счётчики, цели и правила UTM-ссылок. Для новых данных открывайте Метрику; сохранённые отчёты имеют свой период.</div>
+      <div class="actions"><a class="action" href="analytics.html">Аналитика</a></div>
+    </article><article class="card "  data-search-item>
+
+      <h3>Найти предыдущую версию</h3><div class="summary">Старые Main и V3, staging, Sanity, история изменений и архив дизайнов.</div>
+      <div class="actions"><a class="action" href="#site-archive">История и архив</a></div>
+    </article></div></section>
+
+
+      <section class="section" id="analytics" data-tab="analytics">
         <div class="section-head">
           <h2>Аналитика</h2>
           <p class="section-note">Поведение посетителей, путь до оплаты и проверка источников трафика — отдельно от внутренних тестовых визитов.</p>
