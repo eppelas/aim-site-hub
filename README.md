@@ -1,15 +1,16 @@
 # AIM Site Hub
 
-Static GitHub Pages export for the AIM Site Hub.
-
-Source workspace: local `AIM Website`
-Source page: `aim-site-hub.html`
+The canonical public Hub is this repository's `index.html`. The workspace `AIM Website/aim-site-hub.html` is a local entry and pointer; do not export it over the canonical page.
 
 ## Published
 
-Repo: `https://github.com/eppelas/aim-site-hub`
-Pages URL: `https://eppelas.github.io/aim-site-hub/`
+Repository: https://github.com/eppelas/aim-site-hub
+Pages: https://eppelas.github.io/aim-site-hub/
 
-## Notes
+Pages uses `build_type: workflow`. Pushes to `main` and manual runs execute `.github/workflows/pages.yml`: browser checks at 1440 and 390 verify cards, editor links, mandatory instructions, and the password disclosure before deployment. Mobile must have no document overflow; the existing desktop 32px baseline must not grow. Evidence is attached to the workflow run.
 
-This is an operations hub export. It intentionally excludes the local design feedback registry data because that file contains local workspace paths and review memory. Public links that can be mapped to existing Pages/GitHub surfaces are rewritten in `index.html`.
+## Source and artifact boundaries
+
+Edit Hub content in `index.html`. Bot and update rules live in `website-ops/`; keep their workspace mirrors and generated Hub summaries synchronized. Preserve the separate Main, Wild, and V3 links.
+
+The Pages artifact uses an explicit allowlist of existing public HTML, assets, and operations documents. Test tools, workflows, Git metadata, QA evidence, and private backups are excluded. The local feedback registry remains excluded because it contains workspace paths and review memory.
