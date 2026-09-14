@@ -10,6 +10,7 @@ const fs = require('node:fs');
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`${process.env.HUB_URL || 'http://127.0.0.1:8123'}/#wild-release`, { waitUntil: 'domcontentloaded' });
+      await page.screenshot({ path: `qa-artifacts/hub-initial-${width}.png` });
       const card = page.locator('#wild-release');
       assert.equal(await card.count(), 1);
       assert.equal(await page.locator('#main-current-release').count(), 1);
